@@ -18,10 +18,12 @@ import static vilij.settings.PropertyTypes.NOT_SUPPORTED_FOR_TEMPLATE_ERROR_TITL
  */
 public class ApplicationTemplate extends Application {
 
+    /* Class object values */
     public final    PropertyManager    manager            = PropertyManager.getManager();
     protected final ErrorDialog        errorDialog        = ErrorDialog.getDialog();
     protected final ConfirmationDialog confirmationDialog = ConfirmationDialog.getDialog();
 
+    /* Class interface values */
     protected DataComponent   dataComponent;
     protected UIComponent     uiComponent;
     protected ActionComponent actionComponent;
@@ -38,15 +40,16 @@ public class ApplicationTemplate extends Application {
         confirmationDialog.init(primaryStage);
     }
 
+    //if manager is null or loadProperties doesn't load the XML properties set failed to true and display errorDialog
     protected boolean propertyAudit() {
-        boolean failed = manager == null || !loadProperties(PROPERTIES_XML);
+        boolean failed = manager == null || !loadProperties(PROPERTIES_XML); // failed = true if manager=null or properties dont load
         if (failed)
             errorDialog.show(LOAD_ERROR_TITLE.getParameterName(), PROPERTIES_LOAD_ERROR_MESSAGE.getParameterName());
         return !failed;
     }
 
     protected void userInterfaceAudit(Stage primaryStage) {
-        uiComponent = new UITemplate(primaryStage, this);
+        uiComponent = new UITemplate(primaryStage, this); // CREATING UITemplate object4
         try {
             uiComponent.initialize();
         } catch (UnsupportedOperationException e) {
@@ -68,6 +71,7 @@ public class ApplicationTemplate extends Application {
         return true;
     }
 
+    /* getter and setter methods for class interface values */
     public DataComponent getDataComponent()                   { return dataComponent; }
 
     public UIComponent getUIComponent()                       { return uiComponent; }
