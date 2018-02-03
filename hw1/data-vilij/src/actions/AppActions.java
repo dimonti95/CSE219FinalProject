@@ -41,6 +41,7 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleExitRequest() {
         // TODO for homework 1
+        applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
     @Override
