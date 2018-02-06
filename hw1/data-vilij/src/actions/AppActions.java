@@ -1,8 +1,9 @@
 package actions;
 
+import dataprocessors.AppData;
+import ui.AppUI;
 import vilij.components.ActionComponent;
 import vilij.templates.ApplicationTemplate;
-
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -19,6 +20,9 @@ public final class AppActions implements ActionComponent {
     /** Path to the data file currently active. */
     Path dataFilePath;
 
+    /** added */
+    //AppData dataController = new AppData(applicationTemplate); // test
+
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
     }
@@ -26,6 +30,7 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleNewRequest() {
         // TODO for homework 1
+        //applicationTemplate.getUIComponent().
     }
 
     @Override
@@ -52,6 +57,11 @@ public final class AppActions implements ActionComponent {
     public void handleScreenshotRequest() throws IOException {
         // TODO: NOT A PART OF HW 1
     }
+
+    //unfinished
+    public void handleDisplayRequest(String userText) throws Exception {
+    }
+
 
     /**
      * This helper method verifies that the user really wants to save their unsaved work, which they might not want to

@@ -1,6 +1,7 @@
 package ui;
 
 import actions.AppActions;
+import dataprocessors.AppData;
 import javafx.geometry.Insets;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
@@ -34,6 +35,8 @@ public final class AppUI extends UITemplate {
     private Label                        chartLabel;     // label above chart
     private NumberAxis                   xAxis;          // x axis value
     private NumberAxis                   yAxis;          // y axis value
+    //private AppActions actionsController = new AppActions(applicationTemplate); // MAY NOT NEED
+    //private AppData dataController = new AppData(applicationTemplate);
 
     public ScatterChart<Number, Number> getChart() { return chart; }
 
@@ -72,9 +75,7 @@ public final class AppUI extends UITemplate {
         textArea = new TextArea();
         textAreaLabel = new Label("Data File");
         chartLabel = new Label("Data Visualization");
-
         appPane.getChildren().add(workspace);
-
         layout();
         setWorkspaceActions();
     }
@@ -82,21 +83,14 @@ public final class AppUI extends UITemplate {
     @Override
     public void clear() {
         // TODO for homework 1
+        applicationTemplate.getDataComponent().clear(); // TEST
     }
 
     private void layout() {
         // TODO for homework 1
         workspace.setPadding(new Insets(10));
         textArea.setMaxSize(250, 125);
-        GridPane.setConstraints(textAreaLabel, 0, 0);
-        GridPane.setConstraints(textArea, 0, 1);
-        GridPane.setConstraints(displayButton, 0,2);
-        GridPane.setConstraints(chartLabel, 1, 0);
-        GridPane.setConstraints(chart, 1, 1);
-    }
-
-    private void setWorkspaceActions() {
-        // TODO for homework 1
+        setGridPaneConstraints();
         workspace.getChildren().add(textAreaLabel);
         workspace.getChildren().add(textArea);
         workspace.getChildren().add(displayButton);
@@ -104,9 +98,35 @@ public final class AppUI extends UITemplate {
         workspace.getChildren().add(chart);
     }
 
+    private void setWorkspaceActions() {
+        // TODO for homework 1
+        displayButton.setOnAction(e -> {
+            try {
+                ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
+                ((AppData) applicationTemplate.getDataComponent()).displayData();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+    }
+
+
+
+    /* ADDED METHODS */
     private void initializeChart(){
         xAxis = new NumberAxis();
         yAxis = new NumberAxis();
         chart =  new ScatterChart<Number, Number>(xAxis, yAxis);
     }
+
+    private void setGridPaneConstraints(){
+        GridPane.setConstraints(textAreaLabel, 0, 0);
+        GridPane.setConstraints(textArea, 0, 1);
+        GridPane.setConstraints(displayButton, 0,2);
+        GridPane.setConstraints(chartLabel, 1, 0);
+        GridPane.setConstraints(chart, 1, 1);
+    }
+
+
+
 }
