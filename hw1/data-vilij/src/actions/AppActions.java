@@ -20,9 +20,6 @@ public final class AppActions implements ActionComponent {
     /** Path to the data file currently active. */
     Path dataFilePath;
 
-    /** added */
-    //AppData dataController = new AppData(applicationTemplate); // test
-
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
     }
@@ -56,10 +53,6 @@ public final class AppActions implements ActionComponent {
 
     public void handleScreenshotRequest() throws IOException {
         // TODO: NOT A PART OF HW 1
-    }
-
-    //unfinished
-    public void handleDisplayRequest(String userText) throws Exception {
     }
 
 

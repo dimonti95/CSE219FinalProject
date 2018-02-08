@@ -10,8 +10,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import vilij.components.ErrorDialog;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
+
+import static vilij.settings.PropertyTypes.NEW_TOOLTIP;
+import static vilij.settings.PropertyTypes.SAVE_TOOLTIP;
 
 /**
  * This is the application's user interface implementation.
@@ -35,8 +39,6 @@ public final class AppUI extends UITemplate {
     private Label                        chartLabel;     // label above chart
     private NumberAxis                   xAxis;          // x axis value
     private NumberAxis                   yAxis;          // y axis value
-    //private AppActions actionsController = new AppActions(applicationTemplate); // MAY NOT NEED
-    //private AppData dataController = new AppData(applicationTemplate);
 
     public ScatterChart<Number, Number> getChart() { return chart; }
 
@@ -70,6 +72,7 @@ public final class AppUI extends UITemplate {
     @Override
     public void initialize() {
         initializeChart();
+        ErrorDialog.getDialog().init(primaryStage);
         workspace = new GridPane();
         displayButton = new Button("Display");
         textArea = new TextArea();
@@ -100,14 +103,8 @@ public final class AppUI extends UITemplate {
 
     private void setWorkspaceActions() {
         // TODO for homework 1
-        displayButton.setOnAction(e -> {
-            try {
-                ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
-                ((AppData) applicationTemplate.getDataComponent()).displayData();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
+        setDisplayButton();
+        setTextAreaListeners();
     }
 
 
@@ -125,6 +122,33 @@ public final class AppUI extends UITemplate {
         GridPane.setConstraints(displayButton, 0,2);
         GridPane.setConstraints(chartLabel, 1, 0);
         GridPane.setConstraints(chart, 1, 1);
+    }
+
+    private void setDisplayButton(){
+        displayButton.setOnAction(e -> {
+            try {
+                ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
+                if(((AppData) applicationTemplate.getDataComponent()).getProcessor().getDataLabels() != null){
+                    ((AppData) applicationTemplate.getDataComponent()).displayData();
+                    applicationTemplate.getDataComponent().clear();
+                }
+            } catch (Exception e1) {
+                ErrorDialog.getDialog().show("Invalid Input Format",
+                        "Input must be formatted correctly and tab separated. For example: @a    label1   1,1");
+            }
+        });
+    }
+
+    private void setTextAreaListeners(){
+        textArea.textProperty().addListener((obs,old,niu)->{
+            if(textArea.getText().isEmpty()){
+                newButton.setDisable(true);
+                saveButton.setDisable(true);
+            } else{
+                newButton.setDisable(false);
+                saveButton.setDisable(false);
+            }
+        });
     }
 
 

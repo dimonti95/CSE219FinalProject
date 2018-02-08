@@ -93,4 +93,10 @@ public final class TSDProcessor {
             throw new InvalidDataNameException(name);
         return name;
     }
+
+    /* added */
+    public Map<String, String> getDataLabels() {
+        return dataLabels;
+    }
+
 }
