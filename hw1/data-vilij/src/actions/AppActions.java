@@ -1,9 +1,14 @@
 package actions;
 
-import dataprocessors.AppData;
+import javafx.stage.FileChooser;
+import settings.AppPropertyTypes;
 import ui.AppUI;
 import vilij.components.ActionComponent;
+import vilij.components.ConfirmationDialog;
+import vilij.components.ErrorDialog;
 import vilij.templates.ApplicationTemplate;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -26,8 +31,13 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleNewRequest() {
-        // TODO for homework 1
-        //applicationTemplate.getUIComponent().
+        try {
+            if(promptToSave())  { clearOldData(); }
+        } catch (IOException e) {
+                ErrorDialog.getDialog().show
+                        (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.FILE_NOT_FOUND_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.FILE_NOT_FOUND.name()));
+            }
     }
 
     @Override
@@ -42,7 +52,6 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleExitRequest() {
-        // TODO for homework 1
         applicationTemplate.getUIComponent().getPrimaryWindow().close();
     }
 
@@ -54,6 +63,13 @@ public final class AppActions implements ActionComponent {
     public void handleScreenshotRequest() throws IOException {
         // TODO: NOT A PART OF HW 1
     }
+
+    /** added methods */
+    public void clearOldData(){
+        ((AppUI) applicationTemplate.getUIComponent()).getTextArea().clear();
+        ((AppUI) applicationTemplate.getUIComponent()).getChart().getData().clear();
+    }
+
 
 
     /**
@@ -69,8 +85,26 @@ public final class AppActions implements ActionComponent {
      * @return <code>false</code> if the user presses the <i>cancel</i>, and <code>true</code> otherwise.
      */
     private boolean promptToSave() throws IOException {
-        // TODO for homework 1
-        // TODO remove the placeholder line below after you have implemented this method
-        return false;
+        //FileWriter writer;
+        ConfirmationDialog.getDialog().show
+                (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
+                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+        if(ConfirmationDialog.getDialog().getSelectedOption() == null) { return false; }
+        if(ConfirmationDialog.getDialog().getSelectedOption().name().equalsIgnoreCase
+                (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.NO_STRING.name()))) { return true; }
+            if(ConfirmationDialog.getDialog().getSelectedOption().name().equalsIgnoreCase
+                    (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.YES_STRING.name()))) {
+                FileChooser fc = new FileChooser();
+                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter
+                        (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
+                fc.getExtensionFilters().add(extFilter);
+                File selectedFile = fc.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+                if (selectedFile == null) { throw new IOException(); }
+                return true;
+            }
+            else { return false; }
     }
+
+
 }

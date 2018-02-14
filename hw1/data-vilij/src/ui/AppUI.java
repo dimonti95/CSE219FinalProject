@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import settings.AppPropertyTypes;
+import vilij.components.ConfirmationDialog;
 import vilij.components.ErrorDialog;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
@@ -73,11 +75,12 @@ public final class AppUI extends UITemplate {
     public void initialize() {
         initializeChart();
         ErrorDialog.getDialog().init(primaryStage);
+        ConfirmationDialog.getDialog().init(primaryStage);
         workspace = new GridPane();
-        displayButton = new Button("Display");
+        displayButton = new Button(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_NAME.name()));
         textArea = new TextArea();
-        textAreaLabel = new Label("Data File");
-        chartLabel = new Label("Data Visualization");
+        textAreaLabel = new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.TEXT_AREA_TITLE.name()));
+        chartLabel = new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CHART_TITLE.name()));
         appPane.getChildren().add(workspace);
         layout();
         setWorkspaceActions();
@@ -103,13 +106,14 @@ public final class AppUI extends UITemplate {
 
     private void setWorkspaceActions() {
         // TODO for homework 1
-        setDisplayButton();
+        setDisplayButtonAction();
         setTextAreaListeners();
+        setNewButtonAction();
     }
 
 
 
-    /* ADDED METHODS */
+    /** ADDED METHODS */
     private void initializeChart(){
         xAxis = new NumberAxis();
         yAxis = new NumberAxis();
@@ -124,7 +128,7 @@ public final class AppUI extends UITemplate {
         GridPane.setConstraints(chart, 1, 1);
     }
 
-    private void setDisplayButton(){
+    private void setDisplayButtonAction(){
         displayButton.setOnAction(e -> {
             try {
                 ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
@@ -133,8 +137,9 @@ public final class AppUI extends UITemplate {
                     applicationTemplate.getDataComponent().clear();
                 }
             } catch (Exception e1) {
-                ErrorDialog.getDialog().show("Invalid Input Format",
-                        "Input must be formatted correctly and tab separated. For example: @a    label1   1,1");
+                ErrorDialog.getDialog().show
+                        (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT_TITLE.name()),
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT.name()));
             }
         });
     }
@@ -150,6 +155,13 @@ public final class AppUI extends UITemplate {
             }
         });
     }
+
+    private void setNewButtonAction(){
+            newButton.setOnAction(e -> applicationTemplate.getActionComponent().handleNewRequest());
+    }
+
+
+    public TextArea getTextArea(){ return this.textArea; }
 
 
 

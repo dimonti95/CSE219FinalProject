@@ -27,10 +27,39 @@ functionality within the main workspace. -->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
 
         <!-- APPLICATION-SPECIFIC PARAMETERS -->
-        <property name="DATA_FILE_EXT" value=".tsd"/>
+        <property name="DATA_FILE_EXT" value="*.tsd"/>
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
         <property name="TEXT_AREA" value="text area"/>
         <property name="SPECIFIED_FILE" value=" specified file"/>
+
+
+        <!-- APPLICATION-SPECIFIC ERROR MESSAGE FILE NOT FOUND -->
+        <property name="FILE_NOT_FOUND" value="File not found"/>
+
+        <!-- APPLICATION-SPECIFIC ERROR MESSAGE TITLE FILE NOT FOUND -->
+        <property name="FILE_NOT_FOUND_TITLE" value="Error"/>
+
+        <!-- APPLICATION-SPECIFIC ERROR MESSAGE INVALID INPUT -->
+        <property name="INVALID_INPUT" value="Input must be in tab separated format"/>
+
+        <!-- APPLICATION-SPECIFIC ERROR MESSAGE TITLE INVALID INPUT -->
+        <property name="INVALID_INPUT_TITLE" value="Invalid Input Format"/>
+
+        <!-- CHART TITLE -->
+        <property name="CHART_TITLE" value="Data Visualization"/>
+
+        <!-- TEXT AREA TITLE -->
+        <property name="TEXT_AREA_TITLE" value="Data File"/>
+
+        <!-- DISPLAY BUTTON NAME -->
+        <property name="DISPLAY_BUTTON_NAME" value="Display"/>
+
+        <!-- YES STRING -->
+        <property name="YES_STRING" value="yes"/>
+        <!-- NO STRING -->
+        <property name="NO_STRING" value="no"/>
+
+
 
     </property_list>
     <property_options_list/>

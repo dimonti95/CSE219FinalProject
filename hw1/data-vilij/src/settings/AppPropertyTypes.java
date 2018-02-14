@@ -20,16 +20,28 @@ public enum AppPropertyTypes {
 
     /* error messages */
     RESOURCE_SUBDIR_NOT_FOUND,
+    FILE_NOT_FOUND,
 
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
+    FILE_NOT_FOUND_TITLE,
+    INVALID_INPUT_TITLE,
 
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
+    INVALID_INPUT,
 
     /* application-specific parameters */
     DATA_FILE_EXT,
     DATA_FILE_EXT_DESC,
     TEXT_AREA,
-    SPECIFIED_FILE
+    SPECIFIED_FILE,
+
+    /* added */
+    CHART_TITLE,
+    TEXT_AREA_TITLE,
+    DISPLAY_BUTTON_NAME,
+    YES_STRING,
+    NO_STRING
+
 }
