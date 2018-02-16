@@ -46,7 +46,5 @@ public class AppData implements DataComponent {
         processor.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart());
     }
 
-    /* added */
-    public TSDProcessor getProcessor()  { return processor; }
 
 }

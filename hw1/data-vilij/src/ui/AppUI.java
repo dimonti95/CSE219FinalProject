@@ -2,6 +2,8 @@ package ui;
 
 import actions.AppActions;
 import dataprocessors.AppData;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
@@ -13,11 +15,9 @@ import javafx.stage.Stage;
 import settings.AppPropertyTypes;
 import vilij.components.ConfirmationDialog;
 import vilij.components.ErrorDialog;
+import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
-
-import static vilij.settings.PropertyTypes.NEW_TOOLTIP;
-import static vilij.settings.PropertyTypes.SAVE_TOOLTIP;
 
 /**
  * This is the application's user interface implementation.
@@ -41,6 +41,8 @@ public final class AppUI extends UITemplate {
     private Label                        chartLabel;     // label above chart
     private NumberAxis                   xAxis;          // x axis value
     private NumberAxis                   yAxis;          // y axis value
+    private String                       scrnshoticonPath;   // path to the 'screenshot' icon
+    private static final String SEPARATOR = "/";
 
     public ScatterChart<Number, Number> getChart() { return chart; }
 
@@ -59,6 +61,17 @@ public final class AppUI extends UITemplate {
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
         // TODO for homework 1
         super.setToolBar(applicationTemplate);
+        String iconsPath = SEPARATOR + String.join(SEPARATOR,
+                applicationTemplate.manager.getPropertyValue(PropertyTypes.GUI_RESOURCE_PATH.name()),
+                applicationTemplate.manager.getPropertyValue(PropertyTypes.ICONS_RESOURCE_PATH.name()));
+
+        scrnshoticonPath = String.join(SEPARATOR, iconsPath,
+                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
+        scrnshotButton = setToolbarButton
+                (scrnshoticonPath, applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),
+                        true);
+
+        toolBar.getItems().add(scrnshotButton);
     }
 
     @Override
@@ -131,15 +144,15 @@ public final class AppUI extends UITemplate {
     private void setDisplayButtonAction(){
         displayButton.setOnAction(e -> {
             try {
+                chart.getData().clear();
+                hasNewText = false;
                 ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
-                if(((AppData) applicationTemplate.getDataComponent()).getProcessor().getDataLabels() != null){
-                    ((AppData) applicationTemplate.getDataComponent()).displayData();
-                    applicationTemplate.getDataComponent().clear();
-                }
+                ((AppData) applicationTemplate.getDataComponent()).displayData();
+                applicationTemplate.getDataComponent().clear();
             } catch (Exception e1) {
-                ErrorDialog.getDialog().show
+                applicationTemplate.getDialog(ErrorDialog.DialogType.ERROR).show
                         (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT_TITLE.name()),
-                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT.name()));
+                                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT.name()));
             }
         });
     }
@@ -154,14 +167,26 @@ public final class AppUI extends UITemplate {
                 saveButton.setDisable(false);
             }
         });
+
+        textArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                hasNewText = true;
+            }
+        });
     }
 
     private void setNewButtonAction(){
             newButton.setOnAction(e -> applicationTemplate.getActionComponent().handleNewRequest());
     }
 
-
     public TextArea getTextArea(){ return this.textArea; }
+
+    public boolean getHasNewText(){ return this.hasNewText; }
+
+    public void setHasNewText(boolean hasNewText){ this.hasNewText = hasNewText; }
+
+
 
 
 

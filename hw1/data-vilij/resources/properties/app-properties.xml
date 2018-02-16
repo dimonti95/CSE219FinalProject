@@ -54,12 +54,8 @@ functionality within the main workspace. -->
         <!-- DISPLAY BUTTON NAME -->
         <property name="DISPLAY_BUTTON_NAME" value="Display"/>
 
-        <!-- YES STRING -->
-        <property name="YES_STRING" value="yes"/>
-        <!-- NO STRING -->
-        <property name="NO_STRING" value="no"/>
-
-
+        <!-- RESOURCE FILES AND FOLDERS -->
+        <property name="DATA_RESOURCE_PATH2" value="hw1/data-vilij/resources/"/>
 
     </property_list>
     <property_options_list/>

@@ -6,11 +6,13 @@ import ui.AppUI;
 import vilij.components.ActionComponent;
 import vilij.components.ConfirmationDialog;
 import vilij.components.ErrorDialog;
+import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This is the concrete implementation of the action handlers required by the application.
@@ -35,7 +37,7 @@ public final class AppActions implements ActionComponent {
             if(promptToSave())  { clearOldData(); }
         } catch (IOException e) {
                 ErrorDialog.getDialog().show
-                        (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.FILE_NOT_FOUND_TITLE.name()),
+                        (applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
                         applicationTemplate.manager.getPropertyValue(AppPropertyTypes.FILE_NOT_FOUND.name()));
             }
     }
@@ -68,6 +70,9 @@ public final class AppActions implements ActionComponent {
     public void clearOldData(){
         ((AppUI) applicationTemplate.getUIComponent()).getTextArea().clear();
         ((AppUI) applicationTemplate.getUIComponent()).getChart().getData().clear();
+        if(((AppUI) applicationTemplate.getUIComponent()).getHasNewText()) {
+            ((AppUI) applicationTemplate.getUIComponent()).setHasNewText(false);
+        }
     }
 
 
@@ -85,22 +90,40 @@ public final class AppActions implements ActionComponent {
      * @return <code>false</code> if the user presses the <i>cancel</i>, and <code>true</code> otherwise.
      */
     private boolean promptToSave() throws IOException {
-        //FileWriter writer;
-        ConfirmationDialog.getDialog().show
+        String relativePath = applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH2.name())
+                + applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
+
+        dataFilePath = Paths.get(relativePath);
+
+        applicationTemplate.getDialog(ConfirmationDialog.DialogType.CONFIRMATION).show
                 (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK_TITLE.name()),
-                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+                        applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SAVE_UNSAVED_WORK.name()));
+
         if(ConfirmationDialog.getDialog().getSelectedOption() == null) { return false; }
-        if(ConfirmationDialog.getDialog().getSelectedOption().name().equalsIgnoreCase
-                (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.NO_STRING.name()))) { return true; }
-            if(ConfirmationDialog.getDialog().getSelectedOption().name().equalsIgnoreCase
-                    (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.YES_STRING.name()))) {
+
+        if(ConfirmationDialog.getDialog().getSelectedOption() == ConfirmationDialog.Option.NO) { return true; }
+            if(ConfirmationDialog.getDialog().getSelectedOption() == ConfirmationDialog.Option.YES) {
                 FileChooser fc = new FileChooser();
                 FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter
                         (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT_DESC.name()),
                         applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DATA_FILE_EXT.name()));
+
+                fc.setTitle(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name()));
                 fc.getExtensionFilters().add(extFilter);
-                File selectedFile = fc.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
-                if (selectedFile == null) { throw new IOException(); }
+
+                if(!dataFilePath.toFile().isDirectory()) { applicationTemplate.getDialog(ErrorDialog.DialogType.ERROR).show
+                        (applicationTemplate.manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name()),
+                                applicationTemplate.manager.getPropertyValue
+                                        (AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name())); }
+
+                fc.setInitialDirectory(dataFilePath.toFile());
+                File savedFile = fc.showSaveDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
+
+                if (savedFile == null) { throw new IOException(); }
+
+                FileWriter writer = new FileWriter(savedFile);
+                writer.write(((AppUI)applicationTemplate.getUIComponent()).getTextArea().getText());
+                writer.close();
                 return true;
             }
             else { return false; }

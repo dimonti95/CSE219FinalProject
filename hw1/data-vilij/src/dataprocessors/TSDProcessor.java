@@ -94,9 +94,4 @@ public final class TSDProcessor {
         return name;
     }
 
-    /* added */
-    public Map<String, String> getDataLabels() {
-        return dataLabels;
-    }
-
 }
