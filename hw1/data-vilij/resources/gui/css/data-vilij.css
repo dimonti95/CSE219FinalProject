@@ -1,0 +1,26 @@
+.workspace-chart {}
+
+.axis{
+    -fx-tick-length: 20px;
+    -fx-minor-tick-count: 5;
+    -fx-minor-tick-length: 10;
+    -fx-tick-label-fill: brown;
+}
+
+.axis-tick-mark {
+    -fx-stroke: green;
+    -fx-stroke-width: 3.5;
+}
+
+.chart-series-line {
+    -fx-stroke-width: 0px;
+}
+
+.chart-plot-background {
+    -fx-border-style: solid;
+    -fx-border-width: 5px;
+}
+
+
+
+

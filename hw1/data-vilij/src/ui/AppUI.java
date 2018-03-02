@@ -1,23 +1,33 @@
 package ui;
 
 import actions.AppActions;
+import com.sun.javafx.geom.Path2D;
 import dataprocessors.AppData;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
-import vilij.components.ConfirmationDialog;
-import vilij.components.ErrorDialog;
+import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
+
+import static vilij.settings.PropertyTypes.GUI_RESOURCE_PATH;
+import static vilij.settings.PropertyTypes.ICONS_RESOURCE_PATH;
 
 /**
  * This is the application's user interface implementation.
@@ -31,22 +41,14 @@ public final class AppUI extends UITemplate {
 
     @SuppressWarnings("FieldCanBeLocal")
     private Button                       scrnshotButton; // toolbar button to take a screenshot of the data
-    private ScatterChart<Number, Number> chart;          // the chart where data will be displayed
+    private LineChart<Number, Number>    chart;          // the chart where data will be displayed
     private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
+    private RadioButton                  readOnlyButton; // sets text area to read only
 
-    // added
-    private Label                        textAreaLabel;  // label above textArea
-    private Label                        chartLabel;     // label above chart
-    private NumberAxis                   xAxis;          // x axis value
-    private NumberAxis                   yAxis;          // y axis value
-    private String                       scrnshoticonPath;   // path to the 'screenshot' icon
-    private static final String SEPARATOR = "/";
+    public LineChart<Number, Number> getChart() { return chart; }
 
-    public ScatterChart<Number, Number> getChart() { return chart; }
-
-    /* constructor */
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
         this.applicationTemplate = applicationTemplate;
@@ -55,22 +57,26 @@ public final class AppUI extends UITemplate {
     @Override
     protected void setResourcePaths(ApplicationTemplate applicationTemplate) {
         super.setResourcePaths(applicationTemplate);
+        PropertyManager manager = applicationTemplate.manager;
+        cssPath = SEPARATOR + String.join(SEPARATOR,
+                manager.getPropertyValue(GUI_RESOURCE_PATH.name()),
+                manager.getPropertyValue(PropertyTypes.CSS_RESOURCE_PATH.name()),
+                manager.getPropertyValue(AppPropertyTypes.CSS_RESOURCE_FILENAME.name()));
     }
 
     @Override
     protected void setToolBar(ApplicationTemplate applicationTemplate) {
-        // TODO for homework 1
         super.setToolBar(applicationTemplate);
+        PropertyManager manager = applicationTemplate.manager;
         String iconsPath = SEPARATOR + String.join(SEPARATOR,
-                applicationTemplate.manager.getPropertyValue(PropertyTypes.GUI_RESOURCE_PATH.name()),
-                applicationTemplate.manager.getPropertyValue(PropertyTypes.ICONS_RESOURCE_PATH.name()));
-
-        scrnshoticonPath = String.join(SEPARATOR, iconsPath,
-                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
-        scrnshotButton = setToolbarButton
-                (scrnshoticonPath, applicationTemplate.manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),
-                        true);
-
+                                                   manager.getPropertyValue(GUI_RESOURCE_PATH.name()),
+                                                   manager.getPropertyValue(ICONS_RESOURCE_PATH.name()));
+        String scrnshoticonPath = String.join(SEPARATOR,
+                                              iconsPath,
+                                              manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_ICON.name()));
+        scrnshotButton = setToolbarButton(scrnshoticonPath,
+                                          manager.getPropertyValue(AppPropertyTypes.SCREENSHOT_TOOLTIP.name()),
+                                          true);
         toolBar.getItems().add(scrnshotButton);
     }
 
@@ -86,108 +92,206 @@ public final class AppUI extends UITemplate {
 
     @Override
     public void initialize() {
-        initializeChart();
-        ErrorDialog.getDialog().init(primaryStage);
-        ConfirmationDialog.getDialog().init(primaryStage);
-        workspace = new GridPane();
-        displayButton = new Button(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_NAME.name()));
-        textArea = new TextArea();
-        textAreaLabel = new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.TEXT_AREA_TITLE.name()));
-        chartLabel = new Label(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.CHART_TITLE.name()));
-        appPane.getChildren().add(workspace);
+        hasNewText = true;
         layout();
         setWorkspaceActions();
     }
 
     @Override
     public void clear() {
-        // TODO for homework 1
-        applicationTemplate.getDataComponent().clear(); // TEST
+        textArea.clear();
+        chart.getData().clear();
     }
 
+    public String getCurrentText() { return textArea.getText(); }
+
     private void layout() {
-        // TODO for homework 1
-        workspace.setPadding(new Insets(10));
-        textArea.setMaxSize(250, 125);
-        setGridPaneConstraints();
-        workspace.getChildren().add(textAreaLabel);
-        workspace.getChildren().add(textArea);
-        workspace.getChildren().add(displayButton);
-        workspace.getChildren().add(chartLabel);
-        workspace.getChildren().add(chart);
+        PropertyManager manager = applicationTemplate.manager;
+        NumberAxis      xAxis   = new NumberAxis();
+        NumberAxis      yAxis   = new NumberAxis();
+        chart = new LineChart<>(xAxis, yAxis);
+        chart.setTitle(manager.getPropertyValue(AppPropertyTypes.CHART_TITLE.name()));
+        applicationTemplate.getUIComponent().getPrimaryScene().getStylesheets().add(cssPath);
+        chart.setVerticalGridLinesVisible(false);
+        chart.setHorizontalGridLinesVisible(false);
+
+        VBox leftPanel = new VBox(8);
+        leftPanel.setAlignment(Pos.TOP_CENTER);
+        leftPanel.setPadding(new Insets(10));
+
+        VBox.setVgrow(leftPanel, Priority.ALWAYS);
+        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.3);
+        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.3);
+
+        Text   leftPanelTitle = new Text(manager.getPropertyValue(AppPropertyTypes.LEFT_PANE_TITLE.name()));
+        String fontname       = manager.getPropertyValue(AppPropertyTypes.LEFT_PANE_TITLEFONT.name());
+        Double fontsize       = Double.parseDouble(manager.getPropertyValue(AppPropertyTypes.LEFT_PANE_TITLESIZE.name()));
+        leftPanelTitle.setFont(Font.font(fontname, fontsize));
+
+        textArea = new TextArea();
+
+        HBox processButtonsBox = new HBox();
+        displayButton = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
+        HBox.setHgrow(processButtonsBox, Priority.ALWAYS);
+        processButtonsBox.getChildren().add(displayButton);
+
+        readOnlyButton = new RadioButton(manager.getPropertyValue(AppPropertyTypes.RADIO_BUTTON_TEXT.name()));
+        processButtonsBox.getChildren().add(readOnlyButton);
+        processButtonsBox.setSpacing(10);
+
+        leftPanel.getChildren().addAll(leftPanelTitle, textArea, processButtonsBox);
+
+        StackPane rightPanel = new StackPane(chart);
+        rightPanel.setMaxSize(windowWidth * 0.69, windowHeight * 0.69);
+        rightPanel.setMinSize(windowWidth * 0.69, windowHeight * 0.69);
+        StackPane.setAlignment(rightPanel, Pos.CENTER);
+
+        workspace = new HBox(leftPanel, rightPanel);
+        HBox.setHgrow(workspace, Priority.ALWAYS);
+
+        appPane.getChildren().add(workspace);
+        VBox.setVgrow(appPane, Priority.ALWAYS);
     }
 
     private void setWorkspaceActions() {
-        // TODO for homework 1
-        setDisplayButtonAction();
-        setTextAreaListeners();
-        setNewButtonAction();
+        setTextAreaActions();
+        setDisplayButtonActions();
+        setRadioButtonActions();
     }
 
+    private void setTextAreaActions() {
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
 
+            AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
+            dataComponent.checkDataFormat(getCurrentText());
 
-    /** ADDED METHODS */
-    private void initializeChart(){
-        xAxis = new NumberAxis();
-        yAxis = new NumberAxis();
-        chart =  new ScatterChart<Number, Number>(xAxis, yAxis);
-    }
-
-    private void setGridPaneConstraints(){
-        GridPane.setConstraints(textAreaLabel, 0, 0);
-        GridPane.setConstraints(textArea, 0, 1);
-        GridPane.setConstraints(displayButton, 0,2);
-        GridPane.setConstraints(chartLabel, 1, 0);
-        GridPane.setConstraints(chart, 1, 1);
-    }
-
-    private void setDisplayButtonAction(){
-        displayButton.setOnAction(e -> {
             try {
-                chart.getData().clear();
-                hasNewText = false;
-                ((AppData) applicationTemplate.getDataComponent()).loadData(textArea.getText());
-                ((AppData) applicationTemplate.getDataComponent()).displayData();
-                applicationTemplate.getDataComponent().clear();
-            } catch (Exception e1) {
-                applicationTemplate.getDialog(ErrorDialog.DialogType.ERROR).show
-                        (applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT_TITLE.name()),
-                                applicationTemplate.manager.getPropertyValue(AppPropertyTypes.INVALID_INPUT.name()));
+                if (!newValue.equals(oldValue)) {
+                    if (!newValue.isEmpty()) {
+                        ((AppActions) applicationTemplate.getActionComponent()).setIsUnsavedProperty(true);
+                        if (newValue.charAt(newValue.length() - 1) == '\n')
+                            hasNewText = true;
+                        newButton.setDisable(false);
+                        saveButton.setDisable(false);
+                    } else {
+                        hasNewText = true;
+                        newButton.setDisable(true);
+                        saveButton.setDisable(true);
+                    }
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.err.println(newValue);
             }
         });
     }
 
-    private void setTextAreaListeners(){
-        textArea.textProperty().addListener((obs,old,niu)->{
-            if(textArea.getText().isEmpty()){
-                newButton.setDisable(true);
-                saveButton.setDisable(true);
-            } else{
-                newButton.setDisable(false);
-                saveButton.setDisable(false);
-            }
-        });
-
-        textArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                hasNewText = true;
+    private void setDisplayButtonActions() {
+        displayButton.setOnAction(event -> {
+            if (hasNewText) {
+                try {
+                    chart.getData().clear();
+                    AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
+                    dataComponent.clear();
+                    dataComponent.loadData(textArea.getText());
+                    dataComponent.displayData();
+                    plotAverageYLine();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    private void setNewButtonAction(){
-            newButton.setOnAction(e -> applicationTemplate.getActionComponent().handleNewRequest());
+    private void setRadioButtonActions() {
+        readOnlyButton.setOnAction(event -> {
+          if(textArea.isDisabled()){
+              textArea.setDisable(false);
+          } else { textArea.setDisable(true); }
+        });
     }
 
-    public TextArea getTextArea(){ return this.textArea; }
+    private Double calculateAverageYValue(){
+        Double yValue;
+        Double ySum         = 0d;
+        int totalSeries     = chart.getData().size();
+        int totalPoints     = 0;
+        int totalSeriesPoints;
+        int series;
+        int points;
 
-    public boolean getHasNewText(){ return this.hasNewText; }
+        for(series = 0; series < totalSeries; series++){
+            totalSeriesPoints = chart.getData().get(series).getData().size();
+            totalPoints       = totalSeriesPoints + totalPoints;
 
-    public void setHasNewText(boolean hasNewText){ this.hasNewText = hasNewText; }
+            for(points = 0; points < totalSeriesPoints; points++){
+                yValue = (Double) chart.getData().get(series).getData().get(points).getYValue();
+                ySum   = ySum + yValue;
+            }
+
+        }
+        System.out.println(ySum / totalPoints); //test
+        return ySum / totalPoints;
+    }
+
+    private Double calculateMaxXValue(){
+        Double maxXValue    = 0d;
+        Double currentValue = 0d;
+        int totalSeries     = chart.getData().size();
+        int totalPoints     = 0;
+        int totalSeriesPoints;
+        int series;
+        int points;
+
+        for(series = 0; series < totalSeries; series++){
+            totalSeriesPoints = chart.getData().get(series).getData().size();
+            totalPoints       = totalSeriesPoints + totalPoints;
+
+            for(points = 0; points < totalSeriesPoints; points++){
+                currentValue =  (Double) chart.getData().get(series).getData().get(points).getXValue();
+                if(currentValue > maxXValue) { maxXValue = currentValue; }
+            }
+        }
+        System.out.println("Max: " + maxXValue); //test
+        return maxXValue;
+    }
+
+    private Double calculateMinXValue(){
+        Double minXValue    = 0d;
+        Double currentValue = 0d;
+        int totalSeries     = chart.getData().size();
+        int totalPoints     = 0;
+        int totalSeriesPoints;
+        int series;
+        int points;
+
+        for(series = 0; series < totalSeries; series++){
+            totalSeriesPoints = chart.getData().get(series).getData().size();
+            totalPoints       = totalSeriesPoints + totalPoints;
+
+            for(points = 0; points < totalSeriesPoints; points++){
+                currentValue =  (Double) chart.getData().get(series).getData().get(points).getXValue();
+
+                if(currentValue < minXValue) { minXValue = currentValue; }
+            }
+        }
+        System.out.println("Min: " + minXValue); //test
+        return minXValue;
+    }
+
+    private void plotAverageYLine(){
+        Double aveYValue = calculateAverageYValue();
+        Double maxXValue = calculateMaxXValue();
+        Double minXValue = calculateMinXValue();
+
+        XYChart.Series<Number, Number> aveYLineSeries = new XYChart.Series<>();
+        aveYLineSeries.getData().add(new XYChart.Data<>(minXValue, aveYValue));
+        aveYLineSeries.getData().add(new XYChart.Data<>(maxXValue, aveYValue));
+
+        chart.getData().add(aveYLineSeries);
+    }
 
 
 
-
+    public Button getScrnshotButton() { return scrnshotButton; }
 
 }

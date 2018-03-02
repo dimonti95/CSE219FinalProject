@@ -11,6 +11,7 @@ public enum AppPropertyTypes {
 
     /* resource files and folders */
     DATA_RESOURCE_PATH,
+    CSS_RESOURCE_FILENAME,
 
     /* user interface icon file names */
     SCREENSHOT_ICON,
@@ -20,28 +21,25 @@ public enum AppPropertyTypes {
 
     /* error messages */
     RESOURCE_SUBDIR_NOT_FOUND,
-
+    LINE_OF_ERROR,
 
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
+    LOAD_WORK_TITLE,
 
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
-
 
     /* application-specific parameters */
     DATA_FILE_EXT,
     DATA_FILE_EXT_DESC,
     TEXT_AREA,
     SPECIFIED_FILE,
-
-    /* added */
+    LEFT_PANE_TITLE,
+    LEFT_PANE_TITLEFONT,
+    LEFT_PANE_TITLESIZE,
     CHART_TITLE,
-    TEXT_AREA_TITLE,
-    DISPLAY_BUTTON_NAME,
-    DATA_RESOURCE_PATH2,
-    INVALID_INPUT_TITLE,
-    FILE_NOT_FOUND,
-    INVALID_INPUT
+    DISPLAY_BUTTON_TEXT,
+    RADIO_BUTTON_TEXT,
 
 }

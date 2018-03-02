@@ -5,6 +5,7 @@ import javafx.scene.chart.XYChart;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -31,6 +32,8 @@ public final class TSDProcessor {
     private Map<String, String>  dataLabels;
     private Map<String, Point2D> dataPoints;
 
+    public AtomicInteger lineOfError;
+
     public TSDProcessor() {
         dataLabels = new HashMap<>();
         dataPoints = new HashMap<>();
@@ -43,12 +46,14 @@ public final class TSDProcessor {
      * @throws Exception if the input string does not follow the <code>.tsd</code> data format
      */
     public void processString(String tsdString) throws Exception {
+        lineOfError = new AtomicInteger(0);
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
         StringBuilder errorMessage = new StringBuilder();
         Stream.of(tsdString.split("\n"))
               .map(line -> Arrays.asList(line.split("\t")))
               .forEach(list -> {
                   try {
+                      lineOfError.getAndIncrement();
                       String   name  = checkedname(list.get(0));
                       String   label = list.get(1);
                       String[] pair  = list.get(2).split(",");
@@ -56,6 +61,7 @@ public final class TSDProcessor {
                       dataLabels.put(name, label);
                       dataPoints.put(name, point);
                   } catch (Exception e) {
+                      //System.out.println(lineOfError.get()); //test
                       errorMessage.setLength(0);
                       errorMessage.append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
                       hadAnError.set(true);
@@ -93,5 +99,4 @@ public final class TSDProcessor {
             throw new InvalidDataNameException(name);
         return name;
     }
-
 }

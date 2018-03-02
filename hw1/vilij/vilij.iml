@@ -9,6 +9,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="xmlutil" />
-    <orderEntry type="module" module-name="xmlutil" />
   </component>
 </module>
