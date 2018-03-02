@@ -28,9 +28,9 @@ public final class DataVisualizer extends ApplicationTemplate {
         boolean failed = manager == null || !(loadProperties(PROPERTIES_XML) && loadProperties(WORKSPACE_PROPERTIES_XML));
         if (failed)
             errorDialog.show(LOAD_ERROR_TITLE.getParameterName(), PROPERTIES_LOAD_ERROR_MESSAGE.getParameterName());
-        return !failed; // return false
+        return !failed;
     }
-    
+
     @Override
     protected void userInterfaceAudit(Stage primaryStage) {
         setUIComponent(new AppUI(primaryStage, this));
@@ -39,6 +39,5 @@ public final class DataVisualizer extends ApplicationTemplate {
 
         uiComponent.initialize();
     }
-
 
 }
