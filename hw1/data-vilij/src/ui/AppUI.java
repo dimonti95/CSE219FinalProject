@@ -6,6 +6,7 @@ import dataprocessors.AppData;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -25,6 +26,8 @@ import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
+
+import java.util.*;
 
 import static vilij.settings.PropertyTypes.GUI_RESOURCE_PATH;
 import static vilij.settings.PropertyTypes.ICONS_RESOURCE_PATH;
@@ -46,6 +49,9 @@ public final class AppUI extends UITemplate {
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
     private RadioButton                  readOnlyButton; // sets text area to read only
+
+    public String                       duplicate;      // duplicate instance (if found)
+    public boolean                      duplicateFound; // whether or not a duplicate instance was found
 
     public LineChart<Number, Number> getChart() { return chart; }
 
@@ -164,6 +170,7 @@ public final class AppUI extends UITemplate {
 
             AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
             dataComponent.checkDataFormat(getCurrentText());
+            checkForDuplicates();
 
             try {
                 if (!newValue.equals(oldValue)) {
@@ -193,6 +200,7 @@ public final class AppUI extends UITemplate {
                     AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
                     dataComponent.clear();
                     dataComponent.loadData(textArea.getText());
+                    checkForDuplicates();
                     dataComponent.displayData();
                     plotAverageYLine();
                 } catch (Exception e) {
@@ -229,7 +237,7 @@ public final class AppUI extends UITemplate {
             }
 
         }
-        System.out.println(ySum / totalPoints); //test
+        //System.out.println(ySum / totalPoints); //test
         return ySum / totalPoints;
     }
 
@@ -251,7 +259,7 @@ public final class AppUI extends UITemplate {
                 if(currentValue > maxXValue) { maxXValue = currentValue; }
             }
         }
-        System.out.println("Max: " + maxXValue); //test
+        //System.out.println("Max: " + maxXValue); //test
         return maxXValue;
     }
 
@@ -274,22 +282,42 @@ public final class AppUI extends UITemplate {
                 if(currentValue < minXValue) { minXValue = currentValue; }
             }
         }
-        System.out.println("Min: " + minXValue); //test
+        //System.out.println("Min: " + minXValue); //test
         return minXValue;
     }
 
     private void plotAverageYLine(){
-        Double aveYValue = calculateAverageYValue();
-        Double maxXValue = calculateMaxXValue();
-        Double minXValue = calculateMinXValue();
+        boolean dataIsValid = ((AppData)applicationTemplate.getDataComponent()).getDataIsValid();
+        if(!textArea.getText().isEmpty() && dataIsValid) {
+            PropertyManager manager = applicationTemplate.manager;
+            Double aveYValue = calculateAverageYValue();
+            Double maxXValue = calculateMaxXValue();
+            Double minXValue = calculateMinXValue();
 
-        XYChart.Series<Number, Number> aveYLineSeries = new XYChart.Series<>();
-        aveYLineSeries.getData().add(new XYChart.Data<>(minXValue, aveYValue));
-        aveYLineSeries.getData().add(new XYChart.Data<>(maxXValue, aveYValue));
-
-        chart.getData().add(aveYLineSeries);
+            XYChart.Series<Number, Number> aveYLineSeries = new XYChart.Series<>();
+            aveYLineSeries.getData().add(new XYChart.Data<>(minXValue, aveYValue));
+            aveYLineSeries.getData().add(new XYChart.Data<>(maxXValue, aveYValue));
+            aveYLineSeries.setName(manager.getPropertyValue(AppPropertyTypes.AVERAGE_SERIES_NAME.name()));
+            chart.getData().add(aveYLineSeries);
+            aveYLineSeries.getNode().setStyle("-fx-stroke-width: 2px");
+            aveYLineSeries.getData().get(0).getNode().setStyle("-fx-background-color: transparent, transparent;");
+            aveYLineSeries.getData().get(1).getNode().setStyle("-fx-background-color: transparent, transparent;");
+        }
     }
 
+    private void checkForDuplicates(){
+        AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
+        ArrayList<String> pointNames = dataComponent.getTSDProcessor().pointNames;
+        Set<String> set = new HashSet<>();
+        set.clear();
+
+        for (int i = 0; i < pointNames.size(); i++) {
+            boolean duplicateExists = set.add(pointNames.get(i)); // returns false if duplicate exists
+            if(!duplicateExists)         { duplicate = pointNames.get(i); duplicateFound = true; break; }
+            else                         { duplicateFound = false; }
+        }
+
+    }
 
 
     public Button getScrnshotButton() { return scrnshotButton; }

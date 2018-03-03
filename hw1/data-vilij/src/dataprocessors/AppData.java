@@ -1,6 +1,5 @@
 package dataprocessors;
 
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Button;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This is the concrete application-specific implementation of the data component defined by the Vilij framework.
@@ -46,12 +46,7 @@ public class AppData implements DataComponent {
             scrnshotButton.setDisable(false);
         } catch (Exception e) {
             scrnshotButton.setDisable(true);
-            ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-            PropertyManager manager  = applicationTemplate.manager;
-            String          errTitle = manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name());
-            String          errMsg   = manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name());
-            String          errInput = manager.getPropertyValue(AppPropertyTypes.TEXT_AREA.name());
-            dialog.show(errTitle, errMsg + errInput);
+            errorHandlingHelper();
         }
     }
 
@@ -75,6 +70,8 @@ public class AppData implements DataComponent {
 
     public boolean getDataIsValid(){ return dataIsValid; }
 
+    public void setDataIsValid(boolean isValid){ dataIsValid = isValid; }
+
     public TSDProcessor getTSDProcessor(){ return processor; }
 
     public void checkDataFormat(String dataString){
@@ -87,5 +84,19 @@ public class AppData implements DataComponent {
             processor.clear();
         }
     }
+
+    private void errorHandlingHelper() {
+        clear();
+        ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        PropertyManager manager  = applicationTemplate.manager;
+        String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
+        String          errMsg   = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name());
+        String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
+        String          newLine  = "\n\n";
+        String          lineMsg  = manager.getPropertyValue(AppPropertyTypes.LINE_OF_ERROR.name());
+        AtomicInteger   errLine  = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().lineOfError;
+        dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine.get());
+    }
+
 
 }

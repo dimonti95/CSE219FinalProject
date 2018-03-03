@@ -33,10 +33,12 @@ public final class TSDProcessor {
     private Map<String, Point2D> dataPoints;
 
     public AtomicInteger lineOfError;
+    public ArrayList<String> pointNames;
 
     public TSDProcessor() {
         dataLabels = new HashMap<>();
         dataPoints = new HashMap<>();
+        pointNames = new ArrayList<>();
     }
 
     /**
@@ -47,6 +49,7 @@ public final class TSDProcessor {
      */
     public void processString(String tsdString) throws Exception {
         lineOfError = new AtomicInteger(0);
+        pointNames.clear();
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
         StringBuilder errorMessage = new StringBuilder();
         Stream.of(tsdString.split("\n"))
@@ -60,8 +63,8 @@ public final class TSDProcessor {
                       Point2D  point = new Point2D(Double.parseDouble(pair[0]), Double.parseDouble(pair[1]));
                       dataLabels.put(name, label);
                       dataPoints.put(name, point);
+                      pointNames.add(name);
                   } catch (Exception e) {
-                      //System.out.println(lineOfError.get()); //test
                       errorMessage.setLength(0);
                       errorMessage.append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
                       hadAnError.set(true);
@@ -99,4 +102,7 @@ public final class TSDProcessor {
             throw new InvalidDataNameException(name);
         return name;
     }
+
+    //public Map getDataPoints(){ return dataPoints; }
+
 }

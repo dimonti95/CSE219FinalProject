@@ -64,8 +64,10 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleSaveRequest() {
         // TODO: NOT A PART OF HW 1
-        AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
-        if(!dataComponent.getDataIsValid()) { errorHandlingHelper(); }
+        AppData dataComponent  = (AppData) applicationTemplate.getDataComponent();
+        boolean duplicateFound = ((AppUI) applicationTemplate.getUIComponent()).duplicateFound;
+        if(duplicateFound) { duplicateHandlingHelper(); dataComponent.setDataIsValid(false); }
+        if(!dataComponent.getDataIsValid() && !duplicateFound) { errorHandlingHelper(); }
         if(dataComponent.getDataIsValid()) {
             try {
                 if(!isUnsaved.get() || promptToSave()) {
@@ -170,6 +172,19 @@ public final class AppActions implements ActionComponent {
         AtomicInteger   errLine  = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().lineOfError;
         dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine.get());
     }
+
+    private void duplicateHandlingHelper() {
+        ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        PropertyManager manager  = applicationTemplate.manager;
+        String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
+        String          errMsg   = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name());
+        String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
+        String          newLine  = "\n\n";
+        String          dupeMsg  = manager.getPropertyValue(AppPropertyTypes.DUPLICATE_ERROR.name());
+        String          dupe     = ((AppUI) applicationTemplate.getUIComponent()).duplicate;
+        dialog.show(errTitle, errMsg + errInput + newLine + dupeMsg + dupe);
+    }
+
 
     private void promptToLoad() throws IOException {
         PropertyManager    manager = applicationTemplate.manager;
