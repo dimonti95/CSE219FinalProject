@@ -20,7 +20,8 @@ functionality within the main workspace. -->
 
         <!-- ERROR MESSAGES -->
         <property name="RESOURCE_SUBDIR_NOT_FOUND" value="Directory not found under resources."/>
-            <property name="LINE_OF_ERROR" value="Error on line: "/>
+        <property name="LINE_OF_ERROR" value="Error on line: "/>
+        <property name="DUPLICATE_ERROR" value="Duplicate Instance found: "/>
 
         <!-- APPLICATION-SPECIFIC MESSAGE TITLES -->
         <property name="SAVE_UNSAVED_WORK_TITLE" value="Save Current Work"/>
@@ -40,6 +41,7 @@ functionality within the main workspace. -->
         <property name="CHART_TITLE" value="Data Visualization"/>
         <property name="DISPLAY_BUTTON_TEXT" value="Display Data"/>
         <property name="RADIO_BUTTON_TEXT" value="Read Only"/>
+        <property name="AVERAGE_SERIES_NAME" value="Average"/>
 
 
 

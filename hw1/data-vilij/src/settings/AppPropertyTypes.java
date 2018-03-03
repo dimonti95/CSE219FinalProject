@@ -22,6 +22,7 @@ public enum AppPropertyTypes {
     /* error messages */
     RESOURCE_SUBDIR_NOT_FOUND,
     LINE_OF_ERROR,
+    DUPLICATE_ERROR,
 
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
@@ -41,5 +42,6 @@ public enum AppPropertyTypes {
     CHART_TITLE,
     DISPLAY_BUTTON_TEXT,
     RADIO_BUTTON_TEXT,
+    AVERAGE_SERIES_NAME,
 
 }

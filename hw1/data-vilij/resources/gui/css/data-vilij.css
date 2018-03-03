@@ -1,5 +1,3 @@
-.workspace-chart {}
-
 .axis{
     -fx-tick-length: 20px;
     -fx-minor-tick-count: 5;
@@ -20,7 +18,3 @@
     -fx-border-style: solid;
     -fx-border-width: 5px;
 }
-
-
-
-
