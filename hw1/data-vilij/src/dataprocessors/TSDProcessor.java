@@ -34,6 +34,7 @@ public final class TSDProcessor {
 
     public AtomicInteger lineOfError;
     public ArrayList<String> pointNames;
+    public ArrayList<String> orderedPointNames;
 
     public TSDProcessor() {
         dataLabels = new HashMap<>();
@@ -82,12 +83,14 @@ public final class TSDProcessor {
      * @param chart the specified chart
      */
     void toChartData(XYChart<Number, Number> chart) {
+        orderedPointNames = new ArrayList<>();
         Set<String> labels = new HashSet<>(dataLabels.values());
         for (String label : labels) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             series.setName(label);
             dataLabels.entrySet().stream().filter(entry -> entry.getValue().equals(label)).forEach(entry -> {
                 Point2D point = dataPoints.get(entry.getKey());
+                orderedPointNames.add(entry.getKey());
                 series.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
             });
             chart.getData().add(series);

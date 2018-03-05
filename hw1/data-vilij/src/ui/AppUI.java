@@ -226,7 +226,7 @@ public final class AppUI extends UITemplate {
         scrnshotButton.setOnAction(event -> {
             try{ ((AppActions) applicationTemplate.getActionComponent()).handleScreenshotRequest(); }
             catch (IOException ex) {
-                errorHandlingHelper();
+                ((AppActions) applicationTemplate.getActionComponent()).errorHandlingHelper2();
             }
         });
     }
@@ -328,7 +328,7 @@ public final class AppUI extends UITemplate {
     }
 
     private void setChartToolTips(){
-        ArrayList<String> dataPointNames = dataPointNames();
+        ArrayList<String> orderedPointNames = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().orderedPointNames;
         int totalSeries     = chart.getData().size();
         int totalSeriesPoints;
         int series;
@@ -342,7 +342,7 @@ public final class AppUI extends UITemplate {
                 try {
 
                     Node chartSymbol = chart.getData().get(series).getData().get(points).getNode();
-                    Tooltip tooltip = new Tooltip(dataPointNames.get(iterator++));
+                    Tooltip tooltip = new Tooltip(orderedPointNames.get(iterator++));
                     Tooltip.install(chartSymbol, tooltip);
                     chartSymbol.setCursor(Cursor.HAND);
 
@@ -361,15 +361,6 @@ public final class AppUI extends UITemplate {
         }
 
         return dataPointNames;
-    }
-
-    private void errorHandlingHelper(){
-        ErrorDialog dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-        PropertyManager manager  = applicationTemplate.manager;
-        String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
-        String          errMsg   = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name());
-        String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
-        dialog.show(errTitle, errMsg + errInput);
     }
 
     public void setDisplayActions(){
