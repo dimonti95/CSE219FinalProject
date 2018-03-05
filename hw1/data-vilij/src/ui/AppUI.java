@@ -1,32 +1,32 @@
 package ui;
 
 import actions.AppActions;
-import com.sun.javafx.geom.Path2D;
+
 import dataprocessors.AppData;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
+import vilij.components.Dialog;
+import vilij.components.ErrorDialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
+import java.io.IOException;
 import java.util.*;
 
 import static vilij.settings.PropertyTypes.GUI_RESOURCE_PATH;
@@ -53,7 +53,10 @@ public final class AppUI extends UITemplate {
     public String                       duplicate;      // duplicate instance (if found)
     public boolean                      duplicateFound; // whether or not a duplicate instance was found
 
-    public LineChart<Number, Number> getChart() { return chart; }
+    public LineChart<Number, Number> getChart()          { return chart; }
+    public Button                    getScrnshotButton() { return scrnshotButton; }
+    public Button                    getSaveButton()     { return saveButton; }
+    public TextArea                  getTextArea()       { return textArea; }
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -163,14 +166,17 @@ public final class AppUI extends UITemplate {
         setTextAreaActions();
         setDisplayButtonActions();
         setRadioButtonActions();
+        setScrnshotButtonActions();
     }
 
     private void setTextAreaActions() {
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
 
+            AppActions actionComponent = (AppActions) applicationTemplate.getActionComponent();
             AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
             dataComponent.checkDataFormat(getCurrentText());
             checkForDuplicates();
+            actionComponent.setIsUnsavedProperty(true);
 
             try {
                 if (!newValue.equals(oldValue)) {
@@ -200,9 +206,7 @@ public final class AppUI extends UITemplate {
                     AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
                     dataComponent.clear();
                     dataComponent.loadData(textArea.getText());
-                    checkForDuplicates();
-                    dataComponent.displayData();
-                    plotAverageYLine();
+                    setDisplayActions();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -215,6 +219,15 @@ public final class AppUI extends UITemplate {
           if(textArea.isDisabled()){
               textArea.setDisable(false);
           } else { textArea.setDisable(true); }
+        });
+    }
+
+    private void setScrnshotButtonActions() {
+        scrnshotButton.setOnAction(event -> {
+            try{ ((AppActions) applicationTemplate.getActionComponent()).handleScreenshotRequest(); }
+            catch (IOException ex) {
+                errorHandlingHelper();
+            }
         });
     }
 
@@ -235,9 +248,7 @@ public final class AppUI extends UITemplate {
                 yValue = (Double) chart.getData().get(series).getData().get(points).getYValue();
                 ySum   = ySum + yValue;
             }
-
         }
-        //System.out.println(ySum / totalPoints); //test
         return ySum / totalPoints;
     }
 
@@ -259,7 +270,6 @@ public final class AppUI extends UITemplate {
                 if(currentValue > maxXValue) { maxXValue = currentValue; }
             }
         }
-        //System.out.println("Max: " + maxXValue); //test
         return maxXValue;
     }
 
@@ -282,26 +292,25 @@ public final class AppUI extends UITemplate {
                 if(currentValue < minXValue) { minXValue = currentValue; }
             }
         }
-        //System.out.println("Min: " + minXValue); //test
         return minXValue;
     }
 
-    private void plotAverageYLine(){
+    public void plotAverageYLine(){
         boolean dataIsValid = ((AppData)applicationTemplate.getDataComponent()).getDataIsValid();
-        if(!textArea.getText().isEmpty() && dataIsValid) {
+        if(dataIsValid && !textArea.getText().isEmpty()) {
             PropertyManager manager = applicationTemplate.manager;
             Double aveYValue = calculateAverageYValue();
             Double maxXValue = calculateMaxXValue();
             Double minXValue = calculateMinXValue();
 
-            XYChart.Series<Number, Number> aveYLineSeries = new XYChart.Series<>();
-            aveYLineSeries.getData().add(new XYChart.Data<>(minXValue, aveYValue));
-            aveYLineSeries.getData().add(new XYChart.Data<>(maxXValue, aveYValue));
-            aveYLineSeries.setName(manager.getPropertyValue(AppPropertyTypes.AVERAGE_SERIES_NAME.name()));
-            chart.getData().add(aveYLineSeries);
-            aveYLineSeries.getNode().setStyle("-fx-stroke-width: 2px");
-            aveYLineSeries.getData().get(0).getNode().setStyle("-fx-background-color: transparent, transparent;");
-            aveYLineSeries.getData().get(1).getNode().setStyle("-fx-background-color: transparent, transparent;");
+                XYChart.Series<Number, Number> aveYLineSeries = new XYChart.Series<>();
+                aveYLineSeries.getData().add(new XYChart.Data<>(minXValue, aveYValue));
+                aveYLineSeries.getData().add(new XYChart.Data<>(maxXValue, aveYValue));
+                aveYLineSeries.setName(manager.getPropertyValue(AppPropertyTypes.AVERAGE_SERIES_NAME.name()));
+                chart.getData().add(aveYLineSeries);
+                aveYLineSeries.getNode().setStyle("-fx-stroke-width: 2px");
+                aveYLineSeries.getData().get(0).getNode().setStyle("-fx-background-color: transparent, transparent;");
+                aveYLineSeries.getData().get(1).getNode().setStyle("-fx-background-color: transparent, transparent;");
         }
     }
 
@@ -316,10 +325,62 @@ public final class AppUI extends UITemplate {
             if(!duplicateExists)         { duplicate = pointNames.get(i); duplicateFound = true; break; }
             else                         { duplicateFound = false; }
         }
+    }
 
+    private void setChartToolTips(){
+        ArrayList<String> dataPointNames = dataPointNames();
+        int totalSeries     = chart.getData().size();
+        int totalSeriesPoints;
+        int series;
+        int points;
+        int iterator = 0;
+
+        for(series = 0; series < totalSeries; series++){
+            totalSeriesPoints = chart.getData().get(series).getData().size();
+
+            for(points = 0; points < totalSeriesPoints; points++){
+                try {
+
+                    Node chartSymbol = chart.getData().get(series).getData().get(points).getNode();
+                    Tooltip tooltip = new Tooltip(dataPointNames.get(iterator++));
+                    Tooltip.install(chartSymbol, tooltip);
+                    chartSymbol.setCursor(Cursor.HAND);
+
+                } catch (IndexOutOfBoundsException e){}
+            }
+        }
+    }
+
+    private ArrayList dataPointNames(){
+        AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
+        Map dataPoints = dataComponent.getTSDProcessor().getDataPoints();
+        ArrayList<String> dataPointNames = new ArrayList<>();
+
+        for (Object key : dataPoints.keySet()) {
+            dataPointNames.add(key.toString());
+        }
+
+        return dataPointNames;
+    }
+
+    private void errorHandlingHelper(){
+        ErrorDialog dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        PropertyManager manager  = applicationTemplate.manager;
+        String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
+        String          errMsg   = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name());
+        String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
+        dialog.show(errTitle, errMsg + errInput);
+    }
+
+    public void setDisplayActions(){
+        AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
+        checkForDuplicates();
+        dataComponent.displayData();
+        plotAverageYLine();
+        setChartToolTips();
     }
 
 
-    public Button getScrnshotButton() { return scrnshotButton; }
+
 
 }

@@ -44,9 +44,11 @@ public class AppData implements DataComponent {
         try {
             processor.processString(dataString);
             scrnshotButton.setDisable(false);
+            setDataIsValid(true);
         } catch (Exception e) {
             scrnshotButton.setDisable(true);
             errorHandlingHelper();
+            setDataIsValid(false);
         }
     }
 
@@ -95,7 +97,7 @@ public class AppData implements DataComponent {
         String          newLine  = "\n\n";
         String          lineMsg  = manager.getPropertyValue(AppPropertyTypes.LINE_OF_ERROR.name());
         AtomicInteger   errLine  = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().lineOfError;
-        dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine.get());
+        dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine);
     }
 
 
