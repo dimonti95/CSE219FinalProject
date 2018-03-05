@@ -279,7 +279,7 @@ public final class AppActions implements ActionComponent {
         dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine.get());
     }
 
-    private void errorHandlingHelper2() {
+    public void errorHandlingHelper2() {
         ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager  = applicationTemplate.manager;
         String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
