@@ -1,3 +1,8 @@
+.chart {
+    -fx-horizontal-zero-line-visible:	false;
+    -fx-vertical-zero-line-visible:		false;
+}
+
 .axis{
     -fx-tick-length: 20px;
     -fx-minor-tick-count: 5;

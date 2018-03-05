@@ -26,13 +26,19 @@ functionality within the main workspace. -->
         <!-- APPLICATION-SPECIFIC MESSAGE TITLES -->
         <property name="SAVE_UNSAVED_WORK_TITLE" value="Save Current Work"/>
         <property name="LOAD_WORK_TITLE" value="Load Previous Work"/>
+        <property name="SAVE_SCRNSHOT_TITLE" value="Save Data Screenshot"/>
+        <property name="TOTAL_DATA_LOADED_TITLE" value="Loaded Data"/>
 
         <!-- APPLICATION-SPECIFIC MESSAGES -->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
+        <property name="TOTAL_DATA_LOADED_MSG" value="Loading the first 10 lines."/>
+        <property name="TOTAL_DATA_MSG" value="Loaded Data Consists of: "/>
 
         <!-- APPLICATION-SPECIFIC PARAMETERS -->
         <property name="DATA_FILE_EXT" value=".tsd"/>
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
+        <property name="SCRNSHOT_FILE_EXT" value=".png"/>
+        <property name="SCRNSHOT_FILE_EXT_DESC" value="Portable Network Graphics File"/>
         <property name="TEXT_AREA" value="text area"/>
         <property name="SPECIFIED_FILE" value=" specified file"/>
         <property name="LEFT_PANE_TITLE" value="Data File"/>
@@ -42,7 +48,7 @@ functionality within the main workspace. -->
         <property name="DISPLAY_BUTTON_TEXT" value="Display Data"/>
         <property name="RADIO_BUTTON_TEXT" value="Read Only"/>
         <property name="AVERAGE_SERIES_NAME" value="Average"/>
-
+        <property name="LINES" value=" lines."/>
 
 
     </property_list>

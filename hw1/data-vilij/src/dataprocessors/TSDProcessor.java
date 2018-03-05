@@ -48,6 +48,7 @@ public final class TSDProcessor {
      * @throws Exception if the input string does not follow the <code>.tsd</code> data format
      */
     public void processString(String tsdString) throws Exception {
+        AtomicInteger currentLine = new AtomicInteger(0);
         lineOfError = new AtomicInteger(0);
         pointNames.clear();
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
@@ -56,7 +57,7 @@ public final class TSDProcessor {
               .map(line -> Arrays.asList(line.split("\t")))
               .forEach(list -> {
                   try {
-                      lineOfError.getAndIncrement();
+                      currentLine.getAndIncrement();
                       String   name  = checkedname(list.get(0));
                       String   label = list.get(1);
                       String[] pair  = list.get(2).split(",");
@@ -65,6 +66,7 @@ public final class TSDProcessor {
                       dataPoints.put(name, point);
                       pointNames.add(name);
                   } catch (Exception e) {
+                      lineOfError.set(currentLine.get());
                       errorMessage.setLength(0);
                       errorMessage.append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
                       hadAnError.set(true);
@@ -103,6 +105,6 @@ public final class TSDProcessor {
         return name;
     }
 
-    //public Map getDataPoints(){ return dataPoints; }
+    public Map getDataPoints(){ return dataPoints; }
 
 }
