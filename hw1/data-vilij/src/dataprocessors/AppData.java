@@ -45,6 +45,7 @@ public class AppData implements DataComponent {
             processor.processString(dataString);
             scrnshotButton.setDisable(false);
             setDataIsValid(true);
+            ((AppUI) applicationTemplate.getUIComponent()).checkForDuplicates(); //test
         } catch (Exception e) {
             scrnshotButton.setDisable(true);
             errorHandlingHelper();

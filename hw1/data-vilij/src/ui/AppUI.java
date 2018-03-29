@@ -19,8 +19,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
-import vilij.components.Dialog;
-import vilij.components.ErrorDialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -50,13 +48,14 @@ public final class AppUI extends UITemplate {
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
     private RadioButton                  readOnlyButton; // sets text area to read only
 
-    public String                       duplicate;      // duplicate instance (if found)
-    public boolean                      duplicateFound; // whether or not a duplicate instance was found
+    public  String                       duplicate;      // duplicate instance (if found)
+    public  boolean                      duplicateFound; // whether or not a duplicate instance was found
 
     public LineChart<Number, Number> getChart()          { return chart; }
     public Button                    getScrnshotButton() { return scrnshotButton; }
     public Button                    getSaveButton()     { return saveButton; }
     public TextArea                  getTextArea()       { return textArea; }
+
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -102,12 +101,14 @@ public final class AppUI extends UITemplate {
     @Override
     public void initialize() {
         hasNewText = true;
+        ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false; //TEST
         layout();
         setWorkspaceActions();
     }
 
     @Override
     public void clear() {
+        ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false; //TEST
         textArea.clear();
         chart.getData().clear();
     }
@@ -176,6 +177,7 @@ public final class AppUI extends UITemplate {
             AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
             dataComponent.checkDataFormat(getCurrentText());
             checkForDuplicates();
+            checkForDeletedLines();
             actionComponent.setIsUnsavedProperty(true);
 
             try {
@@ -225,9 +227,7 @@ public final class AppUI extends UITemplate {
     private void setScrnshotButtonActions() {
         scrnshotButton.setOnAction(event -> {
             try{ ((AppActions) applicationTemplate.getActionComponent()).handleScreenshotRequest(); }
-            catch (IOException ex) {
-                ((AppActions) applicationTemplate.getActionComponent()).errorHandlingHelper2();
-            }
+            catch (IOException ex) { ((AppActions) applicationTemplate.getActionComponent()).saveErrHandlingHelper(); }
         });
     }
 
@@ -314,7 +314,7 @@ public final class AppUI extends UITemplate {
         }
     }
 
-    private void checkForDuplicates(){
+    public void checkForDuplicates(){
         AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
         ArrayList<String> pointNames = dataComponent.getTSDProcessor().pointNames;
         Set<String> set = new HashSet<>();
@@ -326,6 +326,33 @@ public final class AppUI extends UITemplate {
             else                         { duplicateFound = false; }
         }
     }
+
+    //called from setTextAreaActions (Listener)
+    private void checkForDeletedLines(){
+        boolean dataWasLoaded    = ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded;
+        int     totalLinesOfData = ((AppActions) applicationTemplate.getActionComponent()).totalLinesOfData;
+
+        if(dataWasLoaded && totalLinesOfData > 10){
+            LinkedList<String> subsequentLines = ((AppActions) applicationTemplate.getActionComponent()).subsequentLines;
+            int totalLinesInTxtArea = countLinesOfDataInTxtArea();
+
+            if(totalLinesInTxtArea < 10){
+
+                int numOfLinesToFeed = 10 - totalLinesInTxtArea;
+
+                for(int i = 0; i < numOfLinesToFeed; i++){
+                    if(subsequentLines.peekFirst() == null){ break; }
+                    textArea.appendText(subsequentLines.removeFirst() + System.getProperty("line.separator"));
+                }
+            }
+        }
+    }
+
+    //called from checkForDeletedLines()
+    private int countLinesOfDataInTxtArea(){
+        return Integer.parseInt(String.valueOf(textArea.getText().split(System.getProperty("line.separator")).length));
+    }
+
 
     private void setChartToolTips(){
         ArrayList<String> orderedPointNames = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().orderedPointNames;
@@ -351,27 +378,15 @@ public final class AppUI extends UITemplate {
         }
     }
 
-    private ArrayList dataPointNames(){
-        AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
-        Map dataPoints = dataComponent.getTSDProcessor().getDataPoints();
-        ArrayList<String> dataPointNames = new ArrayList<>();
-
-        for (Object key : dataPoints.keySet()) {
-            dataPointNames.add(key.toString());
-        }
-
-        return dataPointNames;
-    }
-
     public void setDisplayActions(){
         AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
-        checkForDuplicates();
-        dataComponent.displayData();
-        plotAverageYLine();
-        setChartToolTips();
+        if(!duplicateFound) {
+            dataComponent.displayData();
+            plotAverageYLine();
+            setChartToolTips();
+        } else { ((AppActions)applicationTemplate.getActionComponent()).duplicateHandlingHelper();
+        scrnshotButton.setDisable(true); }
     }
-
-
 
 
 }

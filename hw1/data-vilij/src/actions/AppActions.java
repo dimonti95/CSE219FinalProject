@@ -9,9 +9,7 @@ import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import settings.AppPropertyTypes;
-import sun.security.krb5.internal.APOptions;
 import ui.AppUI;
-import ui.DataVisualizer;
 import vilij.components.ActionComponent;
 import vilij.components.ConfirmationDialog;
 import vilij.components.Dialog;
@@ -21,17 +19,15 @@ import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.io.File.separator;
 import static settings.AppPropertyTypes.LOAD_WORK_TITLE;
@@ -57,8 +53,10 @@ public final class AppActions implements ActionComponent {
     /** The boolean property marking whether or not there are any unsaved changes. */
     SimpleBooleanProperty isUnsaved;
 
-    private ArrayList<String> firstTenLines;
-    private int               totalLinesOfData;
+    private ArrayList<String>   firstTenLines;
+    public  LinkedList<String>  subsequentLines;
+    public  int                 totalLinesOfData;
+    public  boolean             dataWasLoaded;
 
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
@@ -110,8 +108,9 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleLoadRequest() {
-        PropertyManager    manager = applicationTemplate.manager;
-
+        PropertyManager manager = applicationTemplate.manager;
+        AppUI   appUI             = ((AppUI) applicationTemplate.getUIComponent());
+        AppData dataComponent   = (AppData) applicationTemplate.getDataComponent();
 
         if(dataFilePath == null){ /* no previously saved data */  }
 
@@ -132,31 +131,48 @@ public final class AppActions implements ActionComponent {
         fileChooser.getExtensionFilters().add(extFilter);
         File selected = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
 
+        dataWasLoaded = false;
+
         if(selected != null) {
 
             String data = "";
             int i = 0;
             totalLinesOfData = 0;
-            firstTenLines = new ArrayList<>(10);
+            firstTenLines   = new ArrayList<>(10);
+            subsequentLines = new LinkedList<>();
 
             try {
                 Scanner scanner = new Scanner(selected);
+
                 while (scanner.hasNextLine()) {
                     totalLinesOfData++;
                     String lineOfData = scanner.nextLine();
-                    data = data + lineOfData + "\n";
+                    data = data + lineOfData + System.getProperty("line.separator");
                     if (i < 10) {
                         firstTenLines.add(lineOfData);
                         i++;
                     }
+                    if(i >= 10 && i < totalLinesOfData){
+                        subsequentLines.add(lineOfData);
+                        i++;
+                    }
                 }
-                outputDataToTxtArea();
+
                 ((AppData) applicationTemplate.getDataComponent()).loadData(data);
-                ((AppUI)   applicationTemplate.getUIComponent()).setDisplayActions();
-                ((AppUI)   applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
-                ((AppUI)   applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(false);
+                boolean duplicateFound  = appUI.duplicateFound;
+                if(!duplicateFound && dataComponent.getDataIsValid()) {
+                    outputDataToTxtArea();
+                    ((AppData) applicationTemplate.getDataComponent()).loadData(data);
+                    ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
+                    ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(false);
+                    dataWasLoaded = true;
+                    isUnsaved.set(false); //test
+                }
+
+                ((AppUI) applicationTemplate.getUIComponent()).setDisplayActions(); //prompts user about existing duplicates
+
             } catch (FileNotFoundException e) {
-                errorHandlingHelper2();
+                loadErrHandlingHelper();
             }
         }   else { /* no file selected */ }
     }
@@ -273,13 +289,22 @@ public final class AppActions implements ActionComponent {
         String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
         String          errMsg   = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name());
         String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
-        String          newLine  = "\n\n";
+        String          newLine  = System.getProperty("line.separator") + System.getProperty("line.separator");
         String          lineMsg  = manager.getPropertyValue(AppPropertyTypes.LINE_OF_ERROR.name());
         AtomicInteger   errLine  = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().lineOfError;
         dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine.get());
     }
 
-    public void errorHandlingHelper2() {
+    public void loadErrHandlingHelper() {
+        ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        PropertyManager manager  = applicationTemplate.manager;
+        String          errTitle = manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name());
+        String          errMsg   = manager.getPropertyValue(PropertyTypes.LOAD_ERROR_MSG.name());
+        String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
+        dialog.show(errTitle, errMsg + errInput);
+    }
+
+    public void saveErrHandlingHelper(){
         ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager  = applicationTemplate.manager;
         String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
@@ -288,13 +313,13 @@ public final class AppActions implements ActionComponent {
         dialog.show(errTitle, errMsg + errInput);
     }
 
-    private void duplicateHandlingHelper() {
+    public void duplicateHandlingHelper() {
         ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager  = applicationTemplate.manager;
         String          errTitle = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_TITLE.name());
         String          errMsg   = manager.getPropertyValue(PropertyTypes.SAVE_ERROR_MSG.name());
         String          errInput = manager.getPropertyValue(AppPropertyTypes.SPECIFIED_FILE.name());
-        String          newLine  = "\n\n";
+        String          newLine  = System.getProperty("line.separator") + System.getProperty("line.separator");
         String          dupeMsg  = manager.getPropertyValue(AppPropertyTypes.DUPLICATE_ERROR.name());
         String          dupe     = ((AppUI) applicationTemplate.getUIComponent()).duplicate;
         dialog.show(errTitle, errMsg + errInput + newLine + dupeMsg + dupe);
@@ -304,10 +329,10 @@ public final class AppActions implements ActionComponent {
         TextArea textArea = ((AppUI) applicationTemplate.getUIComponent()).getTextArea();
             for (int i = 0; i < firstTenLines.size(); i++) {
                 if (firstTenLines.get(i) == null) { break; }
-                else                              { textArea.appendText(firstTenLines.get(i) + "\n"); }
+                else                              { textArea.appendText(firstTenLines.get(i) +
+                                                        System.getProperty("line.separator")); }
             }
         if(totalLinesOfData > 10) { promptUserAboutTotalData(); }
-        firstTenLines.clear();
     }
 
     private void promptUserAboutTotalData() {
@@ -315,7 +340,7 @@ public final class AppActions implements ActionComponent {
         PropertyManager manager  = applicationTemplate.manager;
         String          loadMsgTitle = manager.getPropertyValue(AppPropertyTypes.TOTAL_DATA_LOADED_TITLE.name());
         String          loadMsg      = manager.getPropertyValue(AppPropertyTypes.TOTAL_DATA_LOADED_MSG.name());
-        String          newLine      =  "\n\n";
+        String          newLine      = System.getProperty("line.separator") + System.getProperty("line.separator");
         String          totalDataMsg = manager.getPropertyValue(AppPropertyTypes.TOTAL_DATA_MSG.name());
         String          lines        = manager.getPropertyValue(AppPropertyTypes.LINES.name());
         dialog.show(loadMsgTitle,  totalDataMsg + totalLinesOfData + lines + newLine + loadMsg);
@@ -348,6 +373,7 @@ public final class AppActions implements ActionComponent {
         } else
             save();
     }
+
 
 
 }
