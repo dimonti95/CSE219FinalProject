@@ -10,10 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -46,16 +43,23 @@ public final class AppUI extends UITemplate {
     private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
-    private RadioButton                  readOnlyButton; // sets text area to read only
+    private Label                        dataInfo;       // the label used to display data statistics     /
+    private VBox                         leftPanel;      // left panel of the workspace
 
     public  String                       duplicate;      // duplicate instance (if found)
     public  boolean                      duplicateFound; // whether or not a duplicate instance was found
 
+    /** Algorithm Type UI */
+    private Button                       classificationTypeBtn;
+    private Button                       clusteringTypeBtn;
+    private Label                        algorithmTypeLbl;
+
+    /** getters */
     public LineChart<Number, Number> getChart()          { return chart; }
     public Button                    getScrnshotButton() { return scrnshotButton; }
     public Button                    getSaveButton()     { return saveButton; }
+    public Label                     getDataInfoLabel()  { return dataInfo; }
     public TextArea                  getTextArea()       { return textArea; }
-
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -101,7 +105,7 @@ public final class AppUI extends UITemplate {
     @Override
     public void initialize() {
         hasNewText = true;
-        ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false; //TEST
+        ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false;
         layout();
         setWorkspaceActions();
     }
@@ -111,6 +115,7 @@ public final class AppUI extends UITemplate {
         ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false; //TEST
         textArea.clear();
         chart.getData().clear();
+        hideAlgorithmTypeOption();
     }
 
     public String getCurrentText() { return textArea.getText(); }
@@ -125,13 +130,15 @@ public final class AppUI extends UITemplate {
         chart.setVerticalGridLinesVisible(false);
         chart.setHorizontalGridLinesVisible(false);
 
-        VBox leftPanel = new VBox(8);
+        leftPanel = new VBox(8);
         leftPanel.setAlignment(Pos.TOP_CENTER);
         leftPanel.setPadding(new Insets(10));
 
         VBox.setVgrow(leftPanel, Priority.ALWAYS);
-        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.3);
-        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.3);
+        //leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.3); //original specs
+        //leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.3); //original specs
+        leftPanel.setMaxSize(windowWidth * 0.29, windowHeight * 0.8);
+        leftPanel.setMinSize(windowWidth * 0.29, windowHeight * 0.8);
 
         Text   leftPanelTitle = new Text(manager.getPropertyValue(AppPropertyTypes.LEFT_PANE_TITLE.name()));
         String fontname       = manager.getPropertyValue(AppPropertyTypes.LEFT_PANE_TITLEFONT.name());
@@ -145,11 +152,18 @@ public final class AppUI extends UITemplate {
         HBox.setHgrow(processButtonsBox, Priority.ALWAYS);
         processButtonsBox.getChildren().add(displayButton);
 
+        dataInfo = new Label("");
+        dataInfo.setPadding(new Insets(5));
+
+        //dataInfo.setVisible();
+
+
+        /*
         readOnlyButton = new RadioButton(manager.getPropertyValue(AppPropertyTypes.RADIO_BUTTON_TEXT.name()));
         processButtonsBox.getChildren().add(readOnlyButton);
         processButtonsBox.setSpacing(10);
-
-        leftPanel.getChildren().addAll(leftPanelTitle, textArea, processButtonsBox);
+        */
+        leftPanel.getChildren().addAll(leftPanelTitle, textArea, processButtonsBox, dataInfo);
 
         StackPane rightPanel = new StackPane(chart);
         rightPanel.setMaxSize(windowWidth * 0.69, windowHeight * 0.69);
@@ -166,7 +180,7 @@ public final class AppUI extends UITemplate {
     private void setWorkspaceActions() {
         setTextAreaActions();
         setDisplayButtonActions();
-        setRadioButtonActions();
+        //setRadioButtonActions();
         setScrnshotButtonActions();
     }
 
@@ -216,6 +230,7 @@ public final class AppUI extends UITemplate {
         });
     }
 
+    /*
     private void setRadioButtonActions() {
         readOnlyButton.setOnAction(event -> {
           if(textArea.isDisabled()){
@@ -223,6 +238,7 @@ public final class AppUI extends UITemplate {
           } else { textArea.setDisable(true); }
         });
     }
+    */
 
     private void setScrnshotButtonActions() {
         scrnshotButton.setOnAction(event -> {
@@ -230,7 +246,7 @@ public final class AppUI extends UITemplate {
             catch (IOException ex) { ((AppActions) applicationTemplate.getActionComponent()).saveErrHandlingHelper(); }
         });
     }
-
+    /*
     private Double calculateAverageYValue(){
         Double yValue;
         Double ySum         = 0d;
@@ -313,6 +329,7 @@ public final class AppUI extends UITemplate {
                 aveYLineSeries.getData().get(1).getNode().setStyle("-fx-background-color: transparent, transparent;");
         }
     }
+    */
 
     public void checkForDuplicates(){
         AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
@@ -321,8 +338,8 @@ public final class AppUI extends UITemplate {
         set.clear();
 
         for (int i = 0; i < pointNames.size(); i++) {
-            boolean duplicateExists = set.add(pointNames.get(i)); // returns false if duplicate exists
-            if(!duplicateExists)         { duplicate = pointNames.get(i); duplicateFound = true; break; }
+            boolean notADuplicate = set.add(pointNames.get(i)); // returns false if duplicate exists
+            if(!notADuplicate)         { duplicate = pointNames.get(i); duplicateFound = true; break; }
             else                         { duplicateFound = false; }
         }
     }
@@ -382,10 +399,56 @@ public final class AppUI extends UITemplate {
         AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
         if(!duplicateFound) {
             dataComponent.displayData();
-            plotAverageYLine();
+            //plotAverageYLine();
             setChartToolTips();
         } else { ((AppActions)applicationTemplate.getActionComponent()).duplicateHandlingHelper();
         scrnshotButton.setDisable(true); }
+    }
+
+    public void generateDataInformation(){
+        AppData    dataComponent       = (AppData) applicationTemplate.getDataComponent();
+        AppActions actionComponent     = (AppActions) applicationTemplate.getActionComponent();
+
+        Integer    numOfInstances      = dataComponent.getTSDProcessor().numOfInstances;
+        Integer    numOfDistinctLabels = dataComponent.getTSDProcessor().numOfDistinctLabels;
+        String     fileName            = actionComponent.getFileName();
+        String     labelsList          = generateLabelsList();
+        String     DataInformation     = numOfInstances + " instances with " + numOfDistinctLabels +
+                " labels loaded from " + System.getProperty("line.separator") + fileName + ". the labels are: " +
+                    System.getProperty("line.separator") + labelsList;
+        showAlgorithmTypeOption();
+        dataInfo.setText(DataInformation);
+    }
+
+        //called from generateDataInformation()
+        private String generateLabelsList(){
+            AppData             dataComponent   = (AppData) applicationTemplate.getDataComponent();
+            LinkedList<String>  distinctLabels  = dataComponent.getTSDProcessor().distinctLabels;
+            StringBuilder       labelsList      = new StringBuilder();
+            distinctLabels.forEach((label) -> {
+                labelsList.append("- " + label + System.getProperty("line.separator"));
+            });
+            return labelsList.toString();
+        }
+
+    private void showAlgorithmTypeOption(){
+        hideAlgorithmTypeOption();
+        AppData dataComponent = ((AppData) applicationTemplate.getDataComponent());
+        classificationTypeBtn = new Button("Classification");
+        clusteringTypeBtn     = new Button("Clustering");
+        algorithmTypeLbl      = new Label("Algorithm Type");
+        Integer numOfDistinctLabels = dataComponent.getTSDProcessor().numOfDistinctLabels;
+
+        classificationTypeBtn.setMinWidth(100);
+        clusteringTypeBtn.setMinWidth(100);
+
+        if (numOfDistinctLabels != 2) { classificationTypeBtn.setDisable(true); }
+
+        leftPanel.getChildren().addAll(algorithmTypeLbl, classificationTypeBtn, clusteringTypeBtn);
+    }
+
+    private void hideAlgorithmTypeOption(){
+        leftPanel.getChildren().removeAll(algorithmTypeLbl, classificationTypeBtn, clusteringTypeBtn);
     }
 
 

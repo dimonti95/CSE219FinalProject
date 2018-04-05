@@ -32,9 +32,13 @@ public final class TSDProcessor {
     private Map<String, String>  dataLabels;
     private Map<String, Point2D> dataPoints;
 
-    public AtomicInteger lineOfError;
-    public ArrayList<String> pointNames;
-    public ArrayList<String> orderedPointNames;
+    public AtomicInteger        lineOfError;
+    public ArrayList<String>    pointNames;
+    public ArrayList<String>    orderedPointNames;
+    public LinkedList<String>   distinctLabels;
+    public Integer              numOfInstances;
+    public Integer              numOfDistinctLabels;
+
 
     public TSDProcessor() {
         dataLabels = new HashMap<>();
@@ -51,6 +55,7 @@ public final class TSDProcessor {
     public void processString(String tsdString) throws Exception {
         AtomicInteger currentLine = new AtomicInteger(0);
         lineOfError = new AtomicInteger(0);
+        numOfInstances = 0;
         pointNames.clear();
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
         StringBuilder errorMessage = new StringBuilder();
@@ -59,6 +64,7 @@ public final class TSDProcessor {
               .forEach(list -> {
                   try {
                       currentLine.getAndIncrement();
+                      numOfInstances++;
                       String   name  = checkedname(list.get(0));
                       String   label = list.get(1);
                       String[] pair  = list.get(2).split(",");
@@ -108,6 +114,24 @@ public final class TSDProcessor {
         return name;
     }
 
-    public Map getDataPoints(){ return dataPoints; }
+    /* called from toChartData */
+    public void generateLabelInfo(){
+        Set<String> set = new HashSet<>();
+        distinctLabels  = new LinkedList<>();
+        numOfDistinctLabels = 0;
+        set.clear();
+        dataLabels.forEach((x,y) -> {
+            boolean notADuplicate = set.add(y); // returns false if duplicate exists
+            if(notADuplicate) {
+                distinctLabels.add(y);
+                numOfDistinctLabels ++;
+            }
+        });
+    }
+
+    /*
+    * //System.out.println("Value: " + y); //Test for generateLabelInfo()
+    * //System.out.println("Distinct Labels: " + numOfDistinctLabels); //Test for generateLabelInfo()
+    * */
 
 }

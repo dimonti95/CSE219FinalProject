@@ -28,6 +28,7 @@ public class AppData implements DataComponent {
     private ApplicationTemplate applicationTemplate;
 
     private boolean dataIsValid;
+    private String  pathName; //unfinished
 
     public AppData(ApplicationTemplate applicationTemplate) {
         this.processor = new TSDProcessor();
@@ -43,9 +44,11 @@ public class AppData implements DataComponent {
         Button scrnshotButton = ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton();
         try {
             processor.processString(dataString);
+            processor.generateLabelInfo();
             scrnshotButton.setDisable(false);
             setDataIsValid(true);
-            ((AppUI) applicationTemplate.getUIComponent()).checkForDuplicates(); //test
+            ((AppUI) applicationTemplate.getUIComponent()).generateDataInformation();
+            ((AppUI) applicationTemplate.getUIComponent()).checkForDuplicates();
         } catch (Exception e) {
             scrnshotButton.setDisable(true);
             errorHandlingHelper();

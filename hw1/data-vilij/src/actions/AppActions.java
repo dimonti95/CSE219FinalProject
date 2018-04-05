@@ -45,10 +45,13 @@ public final class AppActions implements ActionComponent {
     private ApplicationTemplate applicationTemplate;
 
     /** Path to the data file currently active. */
-    Path dataFilePath;
+    Path    dataFilePath;
+
+    /** Name of the file most recently loaded **/
+    String  loadedFileName;
 
     /** Path to the screenshot file currently active. */
-    Path scrnshotFilePath;
+    Path    scrnshotFilePath;
 
     /** The boolean property marking whether or not there are any unsaved changes. */
     SimpleBooleanProperty isUnsaved;
@@ -58,12 +61,16 @@ public final class AppActions implements ActionComponent {
     public  int                 totalLinesOfData;
     public  boolean             dataWasLoaded;
 
+    /** setters */
+    public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property); }
+
+    /** getters */
+    public String getFileName() { return loadedFileName; }
+
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
         this.isUnsaved = new SimpleBooleanProperty(false);
     }
-
-    public void setIsUnsavedProperty(boolean property) { isUnsaved.set(property); }
 
     @Override
     public void handleNewRequest() {
@@ -71,7 +78,9 @@ public final class AppActions implements ActionComponent {
             if (!isUnsaved.get() || promptToSave()) {
                 applicationTemplate.getDataComponent().clear();
                 applicationTemplate.getUIComponent().clear();
+                ((AppUI)applicationTemplate.getUIComponent()).getDataInfoLabel().setText("");
                 ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(true);
+                ((AppUI) applicationTemplate.getUIComponent()).getTextArea().setDisable(false);
                 isUnsaved.set(false);
                 dataFilePath = null;
             }
@@ -80,7 +89,6 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleSaveRequest() {
-        // TODO: NOT A PART OF HW 1
         AppData dataComponent  = (AppData) applicationTemplate.getDataComponent();
         boolean duplicateFound = ((AppUI) applicationTemplate.getUIComponent()).duplicateFound;
 
@@ -109,7 +117,7 @@ public final class AppActions implements ActionComponent {
     @Override
     public void handleLoadRequest() {
         PropertyManager manager = applicationTemplate.manager;
-        AppUI   appUI             = ((AppUI) applicationTemplate.getUIComponent());
+        AppUI   appUI           = ((AppUI) applicationTemplate.getUIComponent());
         AppData dataComponent   = (AppData) applicationTemplate.getDataComponent();
 
         if(dataFilePath == null){ /* no previously saved data */  }
@@ -158,15 +166,19 @@ public final class AppActions implements ActionComponent {
                     }
                 }
 
+                loadedFileName = selected.getName(); //setting file name
                 ((AppData) applicationTemplate.getDataComponent()).loadData(data);
-                boolean duplicateFound  = appUI.duplicateFound;
+                boolean duplicateFound = appUI.duplicateFound;
+
                 if(!duplicateFound && dataComponent.getDataIsValid()) {
+                    applicationTemplate.getUIComponent().clear();
                     outputDataToTxtArea();
                     ((AppData) applicationTemplate.getDataComponent()).loadData(data);
                     ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
                     ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(false);
+                    ((AppUI) applicationTemplate.getUIComponent()).getTextArea().setDisable(true);
                     dataWasLoaded = true;
-                    isUnsaved.set(false); //test
+                    isUnsaved.set(false);
                 }
 
                 ((AppUI) applicationTemplate.getUIComponent()).setDisplayActions(); //prompts user about existing duplicates
@@ -374,6 +386,6 @@ public final class AppActions implements ActionComponent {
             save();
     }
 
-
+    //public String getFileName() { return loadedFileName; }
 
 }
