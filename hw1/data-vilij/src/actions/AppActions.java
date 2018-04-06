@@ -56,20 +56,27 @@ public final class AppActions implements ActionComponent {
     /** The boolean property marking whether or not there are any unsaved changes. */
     SimpleBooleanProperty isUnsaved;
 
+    /** The boolean property marking whether or not data has been loaded froma file. */
+    SimpleBooleanProperty wasLoaded;
+
     private ArrayList<String>   firstTenLines;
     public  LinkedList<String>  subsequentLines;
     public  int                 totalLinesOfData;
-    public  boolean             dataWasLoaded;
+    //public  boolean             dataWasLoaded;
 
     /** setters */
-    public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property); }
+    public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property);        }
+    public void   setWasLoadedProperty(boolean property) { wasLoaded.set(property);        }
+    public void   setLoadedFileName(String fileName)     { this.loadedFileName = fileName; }
 
     /** getters */
-    public String getFileName() { return loadedFileName; }
+    public String getFileName()                          { return loadedFileName; }
+    public SimpleBooleanProperty getWasLoadedProperty()  { return wasLoaded;      }
 
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
         this.isUnsaved = new SimpleBooleanProperty(false);
+        this.wasLoaded = new SimpleBooleanProperty(false);
     }
 
     @Override
@@ -78,11 +85,12 @@ public final class AppActions implements ActionComponent {
             if (!isUnsaved.get() || promptToSave()) {
                 applicationTemplate.getDataComponent().clear();
                 applicationTemplate.getUIComponent().clear();
-                ((AppUI)applicationTemplate.getUIComponent()).getDataInfoLabel().setText("");
                 ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(true);
                 ((AppUI) applicationTemplate.getUIComponent()).getTextArea().setDisable(false);
+                ((AppUI) applicationTemplate.getUIComponent()).showNewDataUI();
                 isUnsaved.set(false);
-                dataFilePath = null;
+                dataFilePath  = null;
+                wasLoaded.set(false);
             }
         } catch (IOException e) { errorHandlingHelper(); }
     }
@@ -139,7 +147,8 @@ public final class AppActions implements ActionComponent {
         fileChooser.getExtensionFilters().add(extFilter);
         File selected = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
 
-        dataWasLoaded = false;
+        //dataWasLoaded = false;
+        wasLoaded.set(false);
 
         if(selected != null) {
 
@@ -177,7 +186,9 @@ public final class AppActions implements ActionComponent {
                     ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
                     ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(false);
                     ((AppUI) applicationTemplate.getUIComponent()).getTextArea().setDisable(true);
-                    dataWasLoaded = true;
+                    ((AppUI) applicationTemplate.getUIComponent()).setLoadedDataUI();
+                    //dataWasLoaded = true;
+                    wasLoaded.set(true);
                     isUnsaved.set(false);
                 }
 
@@ -293,6 +304,7 @@ public final class AppActions implements ActionComponent {
     private void save() throws IOException {
         applicationTemplate.getDataComponent().saveData(dataFilePath);
         isUnsaved.set(false);
+        wasLoaded.set(false);
     }
 
     private void errorHandlingHelper() {

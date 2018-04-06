@@ -7,10 +7,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -40,19 +44,39 @@ public final class AppUI extends UITemplate {
     @SuppressWarnings("FieldCanBeLocal")
     private Button                       scrnshotButton; // toolbar button to take a screenshot of the data
     private LineChart<Number, Number>    chart;          // the chart where data will be displayed
-    private Button                       displayButton;  // workspace button to display data on the chart
+    //private Button                       displayButton;  // workspace button to display data on the chart
     private TextArea                     textArea;       // text area for new data input
     private boolean                      hasNewText;     // whether or not the text area has any new data since last display
-    private Label                        dataInfo;       // the label used to display data statistics     /
-    private VBox                         leftPanel;      // left panel of the workspace
 
+    /** Workspace Panes */
+    private VBox                         leftPanel;      // left panel of the workspace
+    private HBox                         processButtonsBox;
+
+    /** Data Duplicate Information */
     public  String                       duplicate;      // duplicate instance (if found)
     public  boolean                      duplicateFound; // whether or not a duplicate instance was found
 
     /** Algorithm Type UI */
+    private VBox                         algTypeOptionPane;
     private Button                       classificationTypeBtn;
     private Button                       clusteringTypeBtn;
     private Label                        algorithmTypeLbl;
+    private Label                        dataInfo;              // the label used to display data statistics
+
+    /** Classification Algorithm UI */
+    private VBox                         classificationAlgOptionPane;
+    private RadioButton                  randomClassificationBtn;
+    private Button                       classificationConfigBtn;
+    private Label                        classificationAlgorithmLbl;
+
+    /** Clustering Algorithm UI */
+    private VBox                         clusteringAlgOptionPane;
+    private RadioButton                  randomClusteringBtn;
+    private Button                       clusteringConfigBtn;
+    private Label                        clusteringAlgorithmLbl;
+
+    /** Edit/Done UI */
+    private ToggleButton                 doneDataToggle;
 
     /** getters */
     public LineChart<Number, Number> getChart()          { return chart; }
@@ -105,14 +129,15 @@ public final class AppUI extends UITemplate {
     @Override
     public void initialize() {
         hasNewText = true;
-        ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false;
+        ((AppActions) applicationTemplate.getActionComponent()).setWasLoadedProperty(false);
         layout();
         setWorkspaceActions();
+        showDoneOption();
     }
 
     @Override
     public void clear() {
-        ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded = false; //TEST
+        ((AppActions) applicationTemplate.getActionComponent()).setWasLoadedProperty(false);
         textArea.clear();
         chart.getData().clear();
         hideAlgorithmTypeOption();
@@ -147,22 +172,23 @@ public final class AppUI extends UITemplate {
 
         textArea = new TextArea();
 
-        HBox processButtonsBox = new HBox();
-        displayButton = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
+        processButtonsBox = new HBox();
+        //displayButton = new Button(manager.getPropertyValue(AppPropertyTypes.DISPLAY_BUTTON_TEXT.name()));
+        //displayButton.setMinWidth(100);
         HBox.setHgrow(processButtonsBox, Priority.ALWAYS);
-        processButtonsBox.getChildren().add(displayButton);
+        //processButtonsBox.getChildren().add(displayButton);
+        //processButtonsBox.setSpacing(10);
+        //processButtonsBox.setAlignment(Pos.CENTER);
 
         dataInfo = new Label("");
         dataInfo.setPadding(new Insets(5));
-
-        //dataInfo.setVisible();
-
 
         /*
         readOnlyButton = new RadioButton(manager.getPropertyValue(AppPropertyTypes.RADIO_BUTTON_TEXT.name()));
         processButtonsBox.getChildren().add(readOnlyButton);
         processButtonsBox.setSpacing(10);
         */
+
         leftPanel.getChildren().addAll(leftPanelTitle, textArea, processButtonsBox, dataInfo);
 
         StackPane rightPanel = new StackPane(chart);
@@ -179,7 +205,7 @@ public final class AppUI extends UITemplate {
 
     private void setWorkspaceActions() {
         setTextAreaActions();
-        setDisplayButtonActions();
+        //setDisplayButtonActions();
         //setRadioButtonActions();
         setScrnshotButtonActions();
     }
@@ -214,6 +240,7 @@ public final class AppUI extends UITemplate {
         });
     }
 
+    /*
     private void setDisplayButtonActions() {
         displayButton.setOnAction(event -> {
             if (hasNewText) {
@@ -229,6 +256,7 @@ public final class AppUI extends UITemplate {
             }
         });
     }
+    */
 
     /*
     private void setRadioButtonActions() {
@@ -346,7 +374,7 @@ public final class AppUI extends UITemplate {
 
     //called from setTextAreaActions (Listener)
     private void checkForDeletedLines(){
-        boolean dataWasLoaded    = ((AppActions) applicationTemplate.getActionComponent()).dataWasLoaded;
+        boolean dataWasLoaded    = ((AppActions) applicationTemplate.getActionComponent()).getWasLoadedProperty().getValue();
         int     totalLinesOfData = ((AppActions) applicationTemplate.getActionComponent()).totalLinesOfData;
 
         if(dataWasLoaded && totalLinesOfData > 10){
@@ -366,12 +394,12 @@ public final class AppUI extends UITemplate {
     }
 
     //called from checkForDeletedLines()
-    private int countLinesOfDataInTxtArea(){
+    private int countLinesOfDataInTxtArea() {
         return Integer.parseInt(String.valueOf(textArea.getText().split(System.getProperty("line.separator")).length));
     }
 
 
-    private void setChartToolTips(){
+    private void setChartToolTips() {
         ArrayList<String> orderedPointNames = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().orderedPointNames;
         int totalSeries     = chart.getData().size();
         int totalSeriesPoints;
@@ -395,7 +423,7 @@ public final class AppUI extends UITemplate {
         }
     }
 
-    public void setDisplayActions(){
+    public void setDisplayActions() {
         AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
         if(!duplicateFound) {
             dataComponent.displayData();
@@ -405,7 +433,25 @@ public final class AppUI extends UITemplate {
         scrnshotButton.setDisable(true); }
     }
 
-    public void generateDataInformation(){
+    /* called from new data Button */
+    public void showNewDataUI(){
+        showDoneOption();
+        dataInfo.setText("");
+        hideAlgorithmTypeOption();
+        hideClassificationAlgorithmOption();
+        hideClusteringAlgorithmOption();
+    }
+
+    /* called from load data Button */
+    public void setLoadedDataUI(){
+        hideDoneOption();
+        hideClassificationAlgorithmOption();
+        hideClusteringAlgorithmOption();
+    }
+
+
+    /* called from loadData(String dataString) */
+    public void generateDataInformation() {
         AppData    dataComponent       = (AppData) applicationTemplate.getDataComponent();
         AppActions actionComponent     = (AppActions) applicationTemplate.getActionComponent();
 
@@ -414,25 +460,29 @@ public final class AppUI extends UITemplate {
         String     fileName            = actionComponent.getFileName();
         String     labelsList          = generateLabelsList();
         String     DataInformation     = numOfInstances + " instances with " + numOfDistinctLabels +
-                " labels loaded from " + System.getProperty("line.separator") + fileName + ". the labels are: " +
+                " label(s) loaded from " + System.getProperty("line.separator") + fileName + ". the labels are: " +
                     System.getProperty("line.separator") + labelsList;
         showAlgorithmTypeOption();
         dataInfo.setText(DataInformation);
     }
 
-        //called from generateDataInformation()
-        private String generateLabelsList(){
-            AppData             dataComponent   = (AppData) applicationTemplate.getDataComponent();
-            LinkedList<String>  distinctLabels  = dataComponent.getTSDProcessor().distinctLabels;
-            StringBuilder       labelsList      = new StringBuilder();
-            distinctLabels.forEach((label) -> {
-                labelsList.append("- " + label + System.getProperty("line.separator"));
-            });
-            return labelsList.toString();
-        }
+            /* called from generateDataInformation() */
+            private String generateLabelsList() {
+                AppData             dataComponent   = (AppData) applicationTemplate.getDataComponent();
+                LinkedList<String>  distinctLabels  = dataComponent.getTSDProcessor().distinctLabels;
+                StringBuilder       labelsList      = new StringBuilder();
+                distinctLabels.forEach((label) -> {
+                    labelsList.append("- " + label + System.getProperty("line.separator"));
+                });
+                return labelsList.toString();
+            }
 
-    private void showAlgorithmTypeOption(){
+    /* called from generateDataInformation() */
+    private void showAlgorithmTypeOption() {
         hideAlgorithmTypeOption();
+
+        algTypeOptionPane = new VBox();
+
         AppData dataComponent = ((AppData) applicationTemplate.getDataComponent());
         classificationTypeBtn = new Button("Classification");
         clusteringTypeBtn     = new Button("Clustering");
@@ -442,13 +492,162 @@ public final class AppUI extends UITemplate {
         classificationTypeBtn.setMinWidth(100);
         clusteringTypeBtn.setMinWidth(100);
 
+        classificationTypeBtn.setOnAction(event -> { setClassificationBtnActions(); });
+        clusteringTypeBtn.setOnAction    (event -> { setClusteringBtnActions();     });
+
         if (numOfDistinctLabels != 2) { classificationTypeBtn.setDisable(true); }
 
-        leftPanel.getChildren().addAll(algorithmTypeLbl, classificationTypeBtn, clusteringTypeBtn);
+        algTypeOptionPane.getChildren().addAll(algorithmTypeLbl, classificationTypeBtn, clusteringTypeBtn);
+        algTypeOptionPane.setAlignment(Pos.BASELINE_LEFT);
+        leftPanel.getChildren().add(algTypeOptionPane);
     }
 
-    private void hideAlgorithmTypeOption(){
-        leftPanel.getChildren().removeAll(algorithmTypeLbl, classificationTypeBtn, clusteringTypeBtn);
+            private void setClassificationBtnActions() {
+                hideAlgorithmTypeOption();
+                showClassificationAlgorithmOption();
+            }
+
+            private void setClusteringBtnActions() {
+                hideAlgorithmTypeOption();
+                showClusteringAlgorithmOption();
+            }
+
+
+    /* called from new data button */
+    private void hideAlgorithmTypeOption() {
+        leftPanel.getChildren().remove(algTypeOptionPane);
+
+    }
+
+    /* called from new data */
+    private void showDoneOption() {
+        hideDoneOption();
+        doneDataToggle = new ToggleButton("Done");
+        doneDataToggle.setMinWidth(100);
+        processButtonsBox.getChildren().add(doneDataToggle);
+
+        doneDataToggle.setOnAction(event -> {
+            if(textArea.getText().isEmpty()) { doneDataToggle.setSelected(false); }
+            else {
+                if (doneDataToggle.isSelected()) {
+                    doneDataToggle.setText("Edit");
+                    textArea.setDisable(true);
+                    setDoneOptionActions();
+                } else {
+                    doneDataToggle.setText("Done");
+                    textArea.setDisable(false);
+                    hideAlgorithmTypeOption();
+                    dataInfo.setText("");
+                }
+            }
+        });
+
+    }
+
+            /* called from showDoneOption -> dataDataToggle.setOnAction() */
+            private void setDoneOptionActions() {
+                try {
+                    ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().processString(textArea.getText());
+                    ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().generateLabelInfo();
+                    ((AppActions) applicationTemplate.getActionComponent()).setLoadedFileName("the text box");
+                    generateDataInformation();
+                } catch (Exception e) { /* do nothing if data is invalid */ }
+            }
+
+    /* called from showDoneOption and load data button */
+    private void hideDoneOption() {
+        processButtonsBox.getChildren().remove(doneDataToggle);
+    }
+
+    /* called from setClassificationBtnActions() */
+    private void showClassificationAlgorithmOption() {
+        classificationAlgOptionPane = new VBox();
+        classificationAlgorithmLbl  = new Label("Classification");
+        randomClassificationBtn     = new RadioButton("Random Classification");
+
+        randomClassificationBtn.setMinHeight(35);
+
+        classificationConfigBtn = setConfigurationButton(classificationConfigBtn);
+        classificationConfigBtn.setDisable(true);
+
+        HBox algorithmOption = new HBox();
+        algorithmOption.setSpacing(10);
+        algorithmOption.setPadding(new Insets(10));
+        algorithmOption.getChildren().addAll(randomClassificationBtn, classificationConfigBtn);
+
+        randomClassificationBtn.setOnAction(event -> { setRandomClassificationBtnActions(); });
+        classificationConfigBtn.setOnAction(event -> { showClassificationConfigUI();        });
+
+        classificationAlgOptionPane.getChildren().addAll(classificationAlgorithmLbl, algorithmOption);
+        classificationAlgOptionPane.setAlignment(Pos.BASELINE_LEFT);
+
+        leftPanel.getChildren().addAll(classificationAlgOptionPane);
+    }
+            private void setRandomClassificationBtnActions(){
+                if(randomClassificationBtn.isSelected()) { classificationConfigBtn.setDisable(false); }
+                else                                     { classificationConfigBtn.setDisable(true);  }
+            }
+
+    private void hideClassificationAlgorithmOption() {
+        leftPanel.getChildren().remove(classificationAlgOptionPane);
+    }
+
+    private void showClusteringAlgorithmOption() {
+        clusteringAlgOptionPane = new VBox();
+        clusteringAlgorithmLbl  = new Label("Clustering");
+        randomClusteringBtn     = new RadioButton("Random Clustering");
+
+        randomClusteringBtn.setMinHeight(35);
+
+        clusteringConfigBtn = setConfigurationButton(clusteringConfigBtn);
+        clusteringConfigBtn.setDisable(true);
+
+        HBox algorithmOption = new HBox();
+        algorithmOption.setSpacing(10);
+        algorithmOption.setPadding(new Insets(10));
+        algorithmOption.getChildren().addAll(randomClusteringBtn, clusteringConfigBtn);
+
+        randomClusteringBtn.setOnAction(event -> { setRandomClusteringBtnActions(); });
+
+        clusteringAlgOptionPane.getChildren().addAll(clusteringAlgorithmLbl, algorithmOption);
+        clusteringAlgOptionPane.setAlignment(Pos.BASELINE_LEFT);
+
+        leftPanel.getChildren().add(clusteringAlgOptionPane);
+    }
+            private void setRandomClusteringBtnActions(){
+                if(randomClusteringBtn.isSelected())     { clusteringConfigBtn.setDisable(false); }
+                else                                     { clusteringConfigBtn.setDisable(true);  }
+            }
+
+    private void hideClusteringAlgorithmOption() {
+        leftPanel.getChildren().remove(clusteringAlgOptionPane);
+    }
+
+    private Button setConfigurationButton(Button configButton){
+        PropertyManager manager = applicationTemplate.manager;
+        String iconsPath = SEPARATOR + String.join(SEPARATOR,
+                manager.getPropertyValue(GUI_RESOURCE_PATH.name()),
+                manager.getPropertyValue(ICONS_RESOURCE_PATH.name()));
+        String configurationPath = String.join(SEPARATOR,
+                iconsPath,
+                manager.getPropertyValue(AppPropertyTypes.CONFIGURATION_ICON.name()));
+        configButton = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configurationPath))));
+        return configButton;
+    }
+
+
+    private void showClassificationConfigUI(){
+        /*
+        //Parent root = applicationTemplate.getUIComponent().getPrimaryWindow();
+        Stage configUIStage = new Stage();
+        configUIStage.setTitle("My New Stage Title");
+        configUIStage.setScene(new Scene(null,450, 450));
+        configUIStage.show();
+        */
+    }
+
+    private void showClusteringConfigUI(){
+
     }
 
 
