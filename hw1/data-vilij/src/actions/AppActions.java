@@ -175,7 +175,9 @@ public final class AppActions implements ActionComponent {
                     }
                 }
 
-                loadedFileName = selected.getName(); //setting file name
+                loadedFileName = selected.getPath(); //setting path name
+                //System.out.println(java.util.Arrays.toString(loadedFileName.split("(?<=\\G.........................)")));
+
                 ((AppData) applicationTemplate.getDataComponent()).loadData(data);
                 boolean duplicateFound = appUI.duplicateFound;
 
