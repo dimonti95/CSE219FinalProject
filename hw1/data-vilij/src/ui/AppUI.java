@@ -20,6 +20,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
+import vilij.components.Dialog;
+import vilij.components.ErrorDialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.settings.PropertyTypes;
 import vilij.templates.ApplicationTemplate;
@@ -672,13 +674,13 @@ public final class AppUI extends UITemplate {
 
     /** Show Run Configuration UI Actions */
     private void showClassificationConfigUI(){
-        ClassificationConfigUI classificationConfigUI = new ClassificationConfigUI();
+        ClassificationConfigUI classificationConfigUI = new ClassificationConfigUI(applicationTemplate);
         classificationConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
         classificationConfigUI.show();
     }
 
     private void showClusteringConfigUI(){
-        ClusteringConfigUI clusteringConfigUI = new ClusteringConfigUI();
+        ClusteringConfigUI clusteringConfigUI = new ClusteringConfigUI(applicationTemplate);
         clusteringConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
         clusteringConfigUI.show();
     }
@@ -697,6 +699,25 @@ public final class AppUI extends UITemplate {
 
     private void hideRunButton(){
         leftPanel.getChildren().remove(runButtonPane);
+    }
+
+    /** Run Configuration Error dialogs */
+    protected void emptyFieldError(){
+        ErrorDialog dialog   = (ErrorDialog) applicationTemplate.getDialog(vilij.components.Dialog.DialogType.ERROR);
+        PropertyManager manager  = applicationTemplate.manager;
+        String          errTitle = "Error";
+        String          errMsg   = "Empty Fields\n\n";
+        String          errInput = "All data fields must be completed.";
+        dialog.show(errTitle, errMsg + errInput);
+    }
+
+    protected void inputError(){
+        ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
+        PropertyManager manager  = applicationTemplate.manager;
+        String          errTitle = "Error";
+        String          errMsg   = "Input Error\n\n";
+        String          errInput = "Input must be a postative integer.";
+        dialog.show(errTitle, errMsg + errInput);
     }
 
 }

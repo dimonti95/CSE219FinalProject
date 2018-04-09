@@ -1,5 +1,6 @@
 package ui;
 
+import dataprocessors.AppData;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,14 +13,24 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import vilij.components.Dialog;
+import vilij.components.ErrorDialog;
+import vilij.propertymanager.PropertyManager;
+import vilij.templates.ApplicationTemplate;
 
 public class ClusteringConfigUI extends ConfigUI{
+
+    ApplicationTemplate applicationTemplate;
 
     /** back end components */
     Integer totalDistinctLabels;
 
     /** front end components */
     TextField totalDistinctLblsFeild;
+
+    public ClusteringConfigUI(ApplicationTemplate applicationTemplate){
+        this.applicationTemplate = applicationTemplate;
+    }
 
     @Override
     public void show() {
@@ -67,17 +78,17 @@ public class ClusteringConfigUI extends ConfigUI{
         Label totalLabelsLbl   = new Label("Distinct Labels: ");
         Label continuousRunLbl = new Label("Continuous Run? ");
 
-        iterationsTextArea     = new TextField();
-        intervalTextArea       = new TextField();
+        iterationsField        = new TextField();
+        intervalField          = new TextField();
         totalDistinctLblsFeild = new TextField();
         continuousRunBtn       = new RadioButton();
         setConfigButton        = new Button("Ok");
 
-        iterationsTextArea.setMaxWidth(30);
-        iterationsTextArea.setMaxHeight(10);
+        iterationsField.setMaxWidth(30);
+        iterationsField.setMaxHeight(10);
 
-        intervalTextArea.setMaxWidth(30);
-        intervalTextArea.setMaxHeight(10);
+        intervalField.setMaxWidth(30);
+        intervalField.setMaxHeight(10);
 
         totalDistinctLblsFeild.setMaxWidth(30);
         totalDistinctLblsFeild.setMaxHeight(10);
@@ -86,8 +97,8 @@ public class ClusteringConfigUI extends ConfigUI{
         intervalPane.setPadding(new Insets(5));
         continuousPane.setPadding(new Insets(5));
 
-        iterationsPane.getChildren().addAll(maxIterationsLbl, iterationsTextArea);
-        intervalPane.getChildren().addAll(intervalLbl, intervalTextArea);
+        iterationsPane.getChildren().addAll(maxIterationsLbl, iterationsField);
+        intervalPane.getChildren().addAll(intervalLbl, intervalField);
         totalLabelsPane.getChildren().addAll(totalLabelsLbl, totalDistinctLblsFeild);
         continuousPane.getChildren().addAll(continuousRunLbl, continuousRunBtn);
 
@@ -98,15 +109,39 @@ public class ClusteringConfigUI extends ConfigUI{
 
     @Override
     void setButtonActions() {
-        continuousRunBtn.setOnAction(event -> { setContinuousRunBtnActions(); });
-        setConfigButton.setOnAction(event ->  { setConfigBtnActions();        });
-    }
-
-    private void setContinuousRunBtnActions() {
-        //TODO in future hw
+        continuousRunBtn.setOnAction(event -> { getContinuousRunValue(); });
+        setConfigButton.setOnAction(event ->  { setConfigBtnActions();   });
     }
 
     private void setConfigBtnActions() {
-        //TODO in future hw
+        if(allFieldsValid()) {
+            maxIterations  = Integer.parseInt(iterationsField.getText());
+            updateInterval = Integer.parseInt(intervalField.getText());
+            continuousRun  = getContinuousRunValue();
+        }
     }
+
+    /* called from setConfigBtnActions() */
+    private boolean getContinuousRunValue() {
+        if(continuousRunBtn.isSelected()){ return true; }
+        else                             { return false; }
+    }
+
+    /* called from setConfigBtnActions() */
+    private boolean allFieldsValid(){
+        if(iterationsField.getText().isEmpty() || intervalField.getText().isEmpty()) {
+            ((AppUI)applicationTemplate.getUIComponent()).emptyFieldError(); return false; }
+        try {
+            if(Integer.parseInt(iterationsField.getText()) < 0) {
+                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
+
+            if(Integer.parseInt(intervalField.getText()) < 0) {
+                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
+
+            if(Integer.parseInt(totalDistinctLblsFeild.getText()) < 0) {
+                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
+        } catch (Exception e) { ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
+        return true;
+    }
+
 }

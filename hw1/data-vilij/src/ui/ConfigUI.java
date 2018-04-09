@@ -22,8 +22,8 @@ public abstract class ConfigUI {
 
     /** front end components */
     Stage       configWindow;
-    TextField   iterationsTextArea;
-    TextField   intervalTextArea;
+    TextField   iterationsField;
+    TextField   intervalField;
     RadioButton continuousRunBtn;
     Button      setConfigButton;
 
