@@ -16,6 +16,7 @@ public enum AppPropertyTypes {
     /* user interface icon file names */
     SCREENSHOT_ICON,
     CONFIGURATION_ICON,
+    RUN_BUTTON,
 
     /* tooltips for user interface buttons */
     SCREENSHOT_TOOLTIP,
@@ -47,9 +48,14 @@ public enum AppPropertyTypes {
     LEFT_PANE_TITLEFONT,
     LEFT_PANE_TITLESIZE,
     CHART_TITLE,
-    DISPLAY_BUTTON_TEXT,
-    RADIO_BUTTON_TEXT,
-    AVERAGE_SERIES_NAME,
-    LINES
+    LINES,
+    TEXT_AREA_LOADNAME,
 
+    /* application-specific button names */
+    CLUSTERING_RADIOBUTTON,
+    CLASSIFICATION_RADIOBUTTON,
+
+    /* application-specific label */
+    CLUSTERING_LABEL,
+    CLASSIFICATION_LABEL
 }

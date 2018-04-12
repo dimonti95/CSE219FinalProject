@@ -21,21 +21,24 @@ public class ClassificationConfigUI extends ConfigUI {
 
     public ClassificationConfigUI(ApplicationTemplate applicationTemplate){
         this.applicationTemplate = applicationTemplate;
+        this.configurationIsSet  = new SimpleBooleanProperty(false);
+        this.maxIterations       = 0;
+        this.updateInterval      = 0;
+        this.continuousRun       = false;
     }
 
     @Override
     public void show() {
+        if(configurationIsSet.get()){
+            iterationsField.setText(String.valueOf(maxIterations));
+            intervalField.setText(String.valueOf(updateInterval));
+            if(continuousRun) { continuousRunBtn.fire(); }
+        }
         configWindow.show();
     }
 
     @Override
     public void init(Stage owner) {
-        /* initializing configuration values */
-        configurationIsSet = new SimpleBooleanProperty(false);
-        maxIterations      = 0;
-        updateInterval     = 0;
-        continuousRun      = false;
-
         Label secondLabel = new Label("Classification Run Configuration");
 
         VBox mainPane = new VBox(10);
@@ -101,7 +104,9 @@ public class ClassificationConfigUI extends ConfigUI {
             maxIterations  = Integer.parseInt(iterationsField.getText());
             updateInterval = Integer.parseInt(intervalField.getText());
             continuousRun  = getContinuousRunValue();
-        }
+            setConfigIsSetTrue();
+            configWindow.close();
+        } else { setConfigIsSetFalse(); }
     }
 
     /* called from setConfigBtnActions() */
@@ -122,6 +127,16 @@ public class ClassificationConfigUI extends ConfigUI {
                 ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
         } catch (Exception e) { ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
         return true;
+    }
+
+    private void setConfigIsSetTrue(){
+        configurationIsSet.set(true);
+        ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(false);
+    }
+
+    private void setConfigIsSetFalse(){
+        configurationIsSet.set(false);
+        ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(true);
     }
 
 }

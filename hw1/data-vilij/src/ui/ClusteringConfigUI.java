@@ -30,21 +30,27 @@ public class ClusteringConfigUI extends ConfigUI{
 
     public ClusteringConfigUI(ApplicationTemplate applicationTemplate){
         this.applicationTemplate = applicationTemplate;
+        this.configurationIsSet  = new SimpleBooleanProperty(false);
+        this.maxIterations       = 0;
+        this.updateInterval      = 0;
+        this.totalDistinctLabels = 0;
+        this.continuousRun       = false;
     }
 
     @Override
     public void show() {
         configWindow.show();
+        if(configurationIsSet.get()){
+            iterationsField.setText(String.valueOf(maxIterations));
+            intervalField.setText(String.valueOf(updateInterval));
+            totalDistinctLblsFeild.setText(String.valueOf(totalDistinctLabels));
+            if(continuousRun) { continuousRunBtn.fire(); }
+        }
+        configWindow.show();
     }
 
     @Override
     public void init(Stage owner) {
-        /* initializing configuration values */
-        configurationIsSet = new SimpleBooleanProperty(false);
-        maxIterations      = 0;
-        updateInterval     = 0;
-        continuousRun      = false;
-
         Label secondLabel = new Label("Classification Run Configuration");
 
         VBox mainPane = new VBox(10);
@@ -115,10 +121,13 @@ public class ClusteringConfigUI extends ConfigUI{
 
     private void setConfigBtnActions() {
         if(allFieldsValid()) {
-            maxIterations  = Integer.parseInt(iterationsField.getText());
-            updateInterval = Integer.parseInt(intervalField.getText());
-            continuousRun  = getContinuousRunValue();
-        }
+            maxIterations       = Integer.parseInt(iterationsField.getText());
+            updateInterval      = Integer.parseInt(intervalField.getText());
+            totalDistinctLabels = Integer.parseInt(totalDistinctLblsFeild.getText());
+            continuousRun       = getContinuousRunValue();
+            setConfigIsSetTrue();
+            configWindow.close();
+        } else { setConfigIsSetFalse(); }
     }
 
     /* called from setConfigBtnActions() */
@@ -142,6 +151,16 @@ public class ClusteringConfigUI extends ConfigUI{
                 ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
         } catch (Exception e) { ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
         return true;
+    }
+
+    private void setConfigIsSetTrue(){
+        configurationIsSet.set(true);
+        ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(false);
+    }
+
+    private void setConfigIsSetFalse(){
+        configurationIsSet.set(false);
+        ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(true);
     }
 
 }

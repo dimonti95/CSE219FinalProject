@@ -11,6 +11,7 @@ functionality within the main workspace. -->
         <!-- USER INTERFACE ICON FILES -->
         <property name="SCREENSHOT_ICON" value="screenshot.png"/>
         <property name="CONFIGURATION_ICON" value="configuration.png"/>
+        <property name="RUN_BUTTON" value="Run"/>
 
         <!-- TOOLTIPS FOR BUTTONS -->
         <property name="SCREENSHOT_TOOLTIP" value="Screenshot"/> <!-- will print current view of image to a file -->
@@ -46,10 +47,16 @@ functionality within the main workspace. -->
         <property name="LEFT_PANE_TITLEFONT" value="SansSerif"/>
         <property name="LEFT_PANE_TITLESIZE" value="18"/>
         <property name="CHART_TITLE" value="Data Visualization"/>
-        <property name="DISPLAY_BUTTON_TEXT" value="Display Data"/>
-        <property name="RADIO_BUTTON_TEXT" value="Read Only"/>
-        <property name="AVERAGE_SERIES_NAME" value="Average"/>
         <property name="LINES" value=" lines."/>
+        <property name="TEXT_AREA_LOADNAME" value="the text box"/>
+
+        <!-- APPLICATION-SPECIFIC BUTTON NAMES -->
+        <property name="CLUSTERING_RADIOBUTTON" value="Random Clustering"/>
+        <property name="CLASSIFICATION_RADIOBUTTON" value="Random Classification"/>
+
+        <!-- APPLICATION-SPECIFIC LABEL NAMES -->
+        <property name="CLUSTERING_LABEL" value="Clustering"/>
+        <property name="CLASSIFICATION_LABEL" value="Classification"/>
 
 
     </property_list>
