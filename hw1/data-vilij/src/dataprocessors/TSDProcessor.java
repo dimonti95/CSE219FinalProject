@@ -57,6 +57,7 @@ public final class TSDProcessor {
         lineOfError = new AtomicInteger(0);
         numOfInstances = 0;
         pointNames.clear();
+        clear();
         AtomicBoolean hadAnError   = new AtomicBoolean(false);
         StringBuilder errorMessage = new StringBuilder();
         Stream.of(tsdString.split("\n"))
@@ -119,7 +120,6 @@ public final class TSDProcessor {
         Set<String> set = new HashSet<>();
         distinctLabels  = new LinkedList<>();
         numOfDistinctLabels = 0;
-        set.clear();
         dataLabels.forEach((x,y) -> {
             boolean notADuplicate = set.add(y); // returns false if duplicate exists
             if(notADuplicate) {
@@ -128,10 +128,5 @@ public final class TSDProcessor {
             }
         });
     }
-
-    /*
-    * //System.out.println("Value: " + y); //Test for generateLabelInfo()
-    * //System.out.println("Distinct Labels: " + numOfDistinctLabels); //Test for generateLabelInfo()
-    * */
 
 }

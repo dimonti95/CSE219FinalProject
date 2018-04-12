@@ -1,5 +1,6 @@
 package dataprocessors;
 
+import actions.AppActions;
 import javafx.scene.control.Button;
 import settings.AppPropertyTypes;
 import ui.AppUI;
@@ -28,7 +29,6 @@ public class AppData implements DataComponent {
     private ApplicationTemplate applicationTemplate;
 
     private boolean dataIsValid;
-    private String  pathName; //unfinished
 
     public AppData(ApplicationTemplate applicationTemplate) {
         this.processor = new TSDProcessor();
@@ -41,14 +41,19 @@ public class AppData implements DataComponent {
     }
 
     public void loadData(String dataString) {
-        Button scrnshotButton = ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton();
+        AppActions actionComponent = ((AppActions) applicationTemplate.getActionComponent());
+        AppUI      uiComponent     = ((AppUI) applicationTemplate.getUIComponent());
+        Button     scrnshotButton  = ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton();
         try {
             processor.processString(dataString);
-            processor.generateLabelInfo();
-            scrnshotButton.setDisable(false);
-            setDataIsValid(true);
-            ((AppUI) applicationTemplate.getUIComponent()).generateDataInformation();
             ((AppUI) applicationTemplate.getUIComponent()).checkForDuplicates();
+            if(uiComponent.duplicateFound) { actionComponent.duplicateHandlingHelper(); }
+            else {
+                processor.generateLabelInfo();
+                scrnshotButton.setDisable(false);
+                setDataIsValid(true);
+                ((AppUI) applicationTemplate.getUIComponent()).generateDataInformation();
+            }
         } catch (Exception e) {
             scrnshotButton.setDisable(true);
             errorHandlingHelper();
@@ -103,6 +108,7 @@ public class AppData implements DataComponent {
         AtomicInteger   errLine  = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().lineOfError;
         dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine);
     }
+
 
 
 }

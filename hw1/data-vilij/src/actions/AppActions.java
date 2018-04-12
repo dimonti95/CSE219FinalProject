@@ -88,7 +88,6 @@ public final class AppActions implements ActionComponent {
                 applicationTemplate.getDataComponent().clear();
                 applicationTemplate.getUIComponent().clear();
                 ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(true);
-                ((AppUI) applicationTemplate.getUIComponent()).getTextArea().setDisable(false);
                 ((AppUI) applicationTemplate.getUIComponent()).showNewDataUI();
                 isUnsaved.set(false);
                 dataFilePath  = null;
@@ -149,7 +148,6 @@ public final class AppActions implements ActionComponent {
         fileChooser.getExtensionFilters().add(extFilter);
         File selected = fileChooser.showOpenDialog(applicationTemplate.getUIComponent().getPrimaryWindow());
 
-        //dataWasLoaded = false;
         wasLoaded.set(false);
 
         if(selected != null) {
@@ -177,26 +175,21 @@ public final class AppActions implements ActionComponent {
                     }
                 }
 
-                loadedFileName = selected.getPath(); //setting path name
+                loadedFileName = selected.getName(); //setting path name
                 //System.out.println(java.util.Arrays.toString(loadedFileName.split("(?<=\\G.........................)")));
 
                 ((AppData) applicationTemplate.getDataComponent()).loadData(data);
                 boolean duplicateFound = appUI.duplicateFound;
 
                 if(!duplicateFound && dataComponent.getDataIsValid()) {
+                    ((AppUI) applicationTemplate.getUIComponent()).setLoadedDataUI();
                     applicationTemplate.getUIComponent().clear();
-                    outputDataToTxtArea();
-                    ((AppData) applicationTemplate.getDataComponent()).loadData(data);
                     ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
                     ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(false);
-                    ((AppUI) applicationTemplate.getUIComponent()).getTextArea().setDisable(true);
-                    ((AppUI) applicationTemplate.getUIComponent()).setLoadedDataUI();
-                    //dataWasLoaded = true;
+                    outputDataToTxtArea();
                     wasLoaded.set(true);
                     isUnsaved.set(false);
                 }
-
-                ((AppUI) applicationTemplate.getUIComponent()).setDisplayActions(); //prompts user about existing duplicates
 
             } catch (FileNotFoundException e) {
                 loadErrHandlingHelper();
@@ -278,7 +271,6 @@ public final class AppActions implements ActionComponent {
         if (dialog.getSelectedOption().equals(ConfirmationDialog.Option.YES)) {
             if (dataFilePath == null) {
                 FileChooser fileChooser = new FileChooser();
-                //String      dataDirPath = separator + manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
                 String      dataDirPath = SEPARATOR + manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
                 URL         dataDirURL  = getClass().getResource(dataDirPath);
 
@@ -402,7 +394,5 @@ public final class AppActions implements ActionComponent {
         } else
             save();
     }
-
-    //public String getFileName() { return loadedFileName; }
 
 }
