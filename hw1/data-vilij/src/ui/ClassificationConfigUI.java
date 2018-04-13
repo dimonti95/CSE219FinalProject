@@ -10,8 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import settings.AppPropertyTypes;
-import vilij.components.Dialog;
-import vilij.components.ErrorDialog;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
@@ -39,7 +37,8 @@ public class ClassificationConfigUI extends ConfigUI {
 
     @Override
     public void init(Stage owner) {
-        Label secondLabel = new Label("Classification Run Configuration");
+        PropertyManager manager = applicationTemplate.manager;
+        Label secondLabel = new Label(manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_RUN_CONFIG_LABEL.name()));
 
         VBox mainPane = new VBox(10);
         mainPane.setPadding(new Insets(15));
@@ -49,7 +48,7 @@ public class ClassificationConfigUI extends ConfigUI {
         Scene secondScene = new Scene(mainPane, 230, 100);
 
         configWindow =  new Stage();
-        configWindow.setTitle("Run Configuration");
+        configWindow.setTitle(manager.getPropertyValue(AppPropertyTypes.RUN_CONFIG_WINDOW_LABEL.name()));
         configWindow.setScene(secondScene);
 
         /* Specifies the modality for new window */
@@ -66,19 +65,19 @@ public class ClassificationConfigUI extends ConfigUI {
         HBox  intervalPane     = new HBox();
         HBox  continuousPane   = new HBox();
 
-        Label maxIterationsLbl = new Label("Max. Iterations: ");
-        Label intervalLbl      = new Label("Update Interval: ");
-        Label continuousRunLbl = new Label("Continuous Run? ");
+        Label maxIterationsLbl = new Label(manager.getPropertyValue(AppPropertyTypes.MAX_ITERATIONS_LABEL.name()));
+        Label intervalLbl      = new Label(manager.getPropertyValue(AppPropertyTypes.UPDATE_INTERVAL_LABEL.name()));
+        Label continuousRunLbl = new Label(manager.getPropertyValue(AppPropertyTypes.CONTINUOUS_RUN_LABEL.name()));
 
         iterationsField        = new TextField();
         intervalField          = new TextField();
         continuousRunBtn       = new RadioButton();
-        setConfigButton        = new Button("Ok");
+        setConfigButton        = new Button(manager.getPropertyValue(AppPropertyTypes.SAVE_BUTTON.name()));
 
-        iterationsField.setMaxWidth(30);
+        iterationsField.setMaxWidth(35);
         iterationsField.setMaxHeight(10);
 
-        intervalField.setMaxWidth(30);
+        intervalField.setMaxWidth(35);
         intervalField.setMaxHeight(10);
 
         iterationsPane.setPadding(new Insets(5));
@@ -117,15 +116,14 @@ public class ClassificationConfigUI extends ConfigUI {
 
     /* called from setConfigBtnActions() */
     private boolean allFieldsValid(){
-        if(iterationsField.getText().isEmpty() || intervalField.getText().isEmpty()) {
-            ((AppUI)applicationTemplate.getUIComponent()).emptyFieldError(); return false; }
+        if(iterationsField.getText().isEmpty()) { iterationsField.setText("10"); }
+        if(intervalField.getText().isEmpty())   { intervalField.setText("5");    }
         try {
-            if(Integer.parseInt(iterationsField.getText()) < 0) {
-                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
-
-            if(Integer.parseInt(intervalField.getText()) < 0) {
-                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
-        } catch (Exception e) { ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
+            if(Integer.parseInt(iterationsField.getText()) <= 0) { iterationsField.setText("1"); }
+            if(Integer.parseInt(intervalField.getText()) <= 0)   { intervalField.setText("1");
+                                                                 return true; }
+        } catch (Exception e) { setDefaultFeildValues();
+                                return true; }
         return true;
     }
 
@@ -138,5 +136,12 @@ public class ClassificationConfigUI extends ConfigUI {
         configurationIsSet.set(false);
         ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(true);
     }
+
+    private void setDefaultFeildValues(){
+        iterationsField.setText("10");
+        intervalField.setText("5");
+        continuousRun = false;
+    }
+
 
 }

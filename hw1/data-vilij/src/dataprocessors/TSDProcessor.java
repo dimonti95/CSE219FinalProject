@@ -120,9 +120,9 @@ public final class TSDProcessor {
         Set<String> set = new HashSet<>();
         distinctLabels  = new LinkedList<>();
         numOfDistinctLabels = 0;
+
         dataLabels.forEach((x,y) -> {
-            boolean notADuplicate = set.add(y); // returns false if duplicate exists
-            if(notADuplicate) {
+            if(set.add(y) && !y.equalsIgnoreCase("null")) {
                 distinctLabels.add(y);
                 numOfDistinctLabels ++;
             }

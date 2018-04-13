@@ -50,7 +50,6 @@ public class AppData implements DataComponent {
             if(uiComponent.duplicateFound) { actionComponent.duplicateHandlingHelper(); }
             else {
                 processor.generateLabelInfo();
-                scrnshotButton.setDisable(false);
                 setDataIsValid(true);
                 ((AppUI) applicationTemplate.getUIComponent()).generateDataInformation();
             }

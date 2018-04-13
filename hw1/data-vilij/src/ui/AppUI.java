@@ -29,6 +29,7 @@ import vilij.templates.UITemplate;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static vilij.settings.PropertyTypes.GUI_RESOURCE_PATH;
 import static vilij.settings.PropertyTypes.ICONS_RESOURCE_PATH;
@@ -80,8 +81,8 @@ public final class AppUI extends UITemplate {
     private ToggleButton                 doneDataToggle;
 
     /** Algoirthm Configuration Objects */
-    private                              ClassificationConfigUI classificationConfigUI;
-    private                              ClusteringConfigUI clusteringConfigUI;
+    private ClassificationConfigUI       classificationConfigUI;
+    private ClusteringConfigUI           clusteringConfigUI;
 
     /** Run Button */
     private VBox                         runButtonPane;
@@ -92,7 +93,6 @@ public final class AppUI extends UITemplate {
     public Button                    getScrnshotButton() { return scrnshotButton; }
     public Button                    getSaveButton()     { return saveButton; }
     public Button                    getRunButton()      { return runButton; }
-    //public Label                     getDataInfoLabel()  { return dataInfo; }
     public TextArea                  getTextArea()       { return textArea; }
 
 
@@ -144,6 +144,7 @@ public final class AppUI extends UITemplate {
         ((AppActions) applicationTemplate.getActionComponent()).setWasLoadedProperty(false);
         layout();
         setWorkspaceActions();
+        runButton = new Button(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RUN_BUTTON.name()));
         classificationConfigUI = new ClassificationConfigUI(applicationTemplate);
         clusteringConfigUI     = new ClusteringConfigUI(applicationTemplate);
     }
@@ -244,7 +245,6 @@ public final class AppUI extends UITemplate {
     private void displayToChart(){
         if (hasNewText) {
             try {
-                chart.setVisible(true);
                 chart.getData().clear();
                 AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
                 dataComponent.clear();
@@ -351,6 +351,7 @@ public final class AppUI extends UITemplate {
         clearMainWindow();
         showTextArea();
         showDoneOption();
+        scrnshotButton.setDisable(true);
     }
 
     /* called from load data Button */
@@ -358,6 +359,7 @@ public final class AppUI extends UITemplate {
         hideDoneOption();
         showTextArea();
         textArea.setDisable(true);
+        scrnshotButton.setDisable(true);
     }
 
     public void clearMainWindow(){
@@ -385,16 +387,21 @@ public final class AppUI extends UITemplate {
     /** Data Information Generation Actions(ie: number of instances, total distinct labels, file/path name) */
     /* called from load data button and setDoneOptionActions() */
     public void generateDataInformation() {
+        PropertyManager manager = applicationTemplate.manager;
         AppData    dataComponent       = (AppData) applicationTemplate.getDataComponent();
         AppActions actionComponent     = (AppActions) applicationTemplate.getActionComponent();
+        String     instanceMessage     = manager.getPropertyValue(AppPropertyTypes.INSTANCES_MESSAGE.name());
+        String     pathMessage         = manager.getPropertyValue(AppPropertyTypes.PATH_MESSAGE.name());
+        String     labelMessage        = manager.getPropertyValue(AppPropertyTypes.LABEL_MESSAGE.name());
 
         Integer    numOfInstances      = dataComponent.getTSDProcessor().numOfInstances;
         Integer    numOfDistinctLabels = dataComponent.getTSDProcessor().numOfDistinctLabels;
         String     fileName            = actionComponent.getFileName();
         String     labelsList          = generateLabelsList();
-        String     DataInformation     = numOfInstances + " instances with " + numOfDistinctLabels +
-                " label(s) loaded from " + System.getProperty("line.separator") + fileName + ". the labels are: " +
-                    System.getProperty("line.separator") + labelsList;
+        String     DataInformation     = numOfInstances + instanceMessage + numOfDistinctLabels +
+                pathMessage + System.getProperty("line.separator") + fileName +  System.getProperty("line.separator") +
+                labelMessage + System.getProperty("line.separator") + labelsList;
+
         dataInfo.setText(DataInformation);
         showAlgorithmTypeOption();
     }
@@ -413,6 +420,7 @@ public final class AppUI extends UITemplate {
     /** Algorithm Type Option UI and Actions */
     /* called from generateDataInformation() */
     private void showAlgorithmTypeOption() {
+        PropertyManager manager = applicationTemplate.manager;
         hideAlgorithmTypeOption();
         hideRunButton();
         hideClassificationAlgorithmOption();
@@ -421,9 +429,9 @@ public final class AppUI extends UITemplate {
         algTypeOptionPane = new VBox();
 
         AppData dataComponent = ((AppData) applicationTemplate.getDataComponent());
-        classificationTypeBtn = new Button("Classification");
-        clusteringTypeBtn     = new Button("Clustering");
-        algorithmTypeLbl      = new Label("Algorithm Type");
+        classificationTypeBtn = new Button(manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_BUTTON.name()));
+        clusteringTypeBtn     = new Button(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_BUTTON.name()));
+        algorithmTypeLbl      = new Label(manager.getPropertyValue(AppPropertyTypes.ALGORITHM_TYPE_LABEL.name()));
         Integer numOfDistinctLabels = dataComponent.getTSDProcessor().numOfDistinctLabels;
 
         classificationTypeBtn.setMinWidth(100);
@@ -449,18 +457,17 @@ public final class AppUI extends UITemplate {
                 showClusteringAlgorithmOption();
             }
 
-
     /* called from new data button */
     private void hideAlgorithmTypeOption() {
         leftPanel.getChildren().remove(algTypeOptionPane);
-        //dataInfo.setText("");
     }
 
     /** Done/Edit Button UI and Actions */
     /* called from new data */
     private void showDoneOption() {
+        PropertyManager manager = applicationTemplate.manager;
         hideDoneOption();
-        doneDataToggle = new ToggleButton("Done");
+        doneDataToggle = new ToggleButton(manager.getPropertyValue(AppPropertyTypes.DONE_BUTTON.name()));
         doneDataToggle.setMinWidth(100);
         processButtonsBox.getChildren().add(doneDataToggle);
 
@@ -468,11 +475,11 @@ public final class AppUI extends UITemplate {
             if(textArea.getText().isEmpty()) { doneDataToggle.setSelected(false); }
             else {
                 if (doneDataToggle.isSelected()) {
-                    doneDataToggle.setText("Edit");
+                    doneDataToggle.setText(manager.getPropertyValue(AppPropertyTypes.EDIT_BUTTON.name()));
                     textArea.setDisable(true);
                     setDoneOptionActions();
                 } else {
-                    doneDataToggle.setText("Done");
+                    doneDataToggle.setText(manager.getPropertyValue(AppPropertyTypes.DONE_BUTTON.name()));
                     textArea.setDisable(false);
                     hideAlgorithmTypeOption();
                     hideClassificationAlgorithmOption();
@@ -597,7 +604,6 @@ public final class AppUI extends UITemplate {
 
     /** Run Button Actions */
     private void showRunButton(){
-        runButton     = new Button(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RUN_BUTTON.name()));
         runButtonPane = new VBox();
 
         runButtonPane.getChildren().add(runButton);
@@ -608,25 +614,6 @@ public final class AppUI extends UITemplate {
 
     private void hideRunButton(){
         leftPanel.getChildren().remove(runButtonPane);
-    }
-
-    /** Run Configuration Error dialogs */
-    protected void emptyFieldError(){
-        ErrorDialog dialog   = (ErrorDialog) applicationTemplate.getDialog(vilij.components.Dialog.DialogType.ERROR);
-        PropertyManager manager  = applicationTemplate.manager;
-        String          errTitle = "Error";
-        String          errMsg   = "Empty Fields\n\n";
-        String          errInput = "All data fields must be completed.";
-        dialog.show(errTitle, errMsg + errInput);
-    }
-
-    protected void inputError(){
-        ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-        PropertyManager manager  = applicationTemplate.manager;
-        String          errTitle = "Error";
-        String          errMsg   = "Input Error\n\n";
-        String          errInput = "Input must be a postative integer.";
-        dialog.show(errTitle, errMsg + errInput);
     }
 
 }

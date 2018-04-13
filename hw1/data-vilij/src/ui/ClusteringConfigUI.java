@@ -1,6 +1,5 @@
 package ui;
 
-import dataprocessors.AppData;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,8 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import vilij.components.Dialog;
-import vilij.components.ErrorDialog;
+import settings.AppPropertyTypes;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
@@ -51,7 +49,8 @@ public class ClusteringConfigUI extends ConfigUI{
 
     @Override
     public void init(Stage owner) {
-        Label secondLabel = new Label("Classification Run Configuration");
+        PropertyManager manager = applicationTemplate.manager;
+        Label secondLabel = new Label(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_RUN_CONFIG_LABEL.name()));
 
         VBox mainPane = new VBox(10);
         mainPane.setPadding(new Insets(15));
@@ -61,7 +60,7 @@ public class ClusteringConfigUI extends ConfigUI{
         Scene secondScene = new Scene(mainPane, 230, 100);
 
         configWindow =  new Stage();
-        configWindow.setTitle("Run Configuration");
+        configWindow.setTitle(manager.getPropertyValue(AppPropertyTypes.RUN_CONFIG_WINDOW_LABEL.name()));
         configWindow.setScene(secondScene);
 
         /* Specifies the modality for new window */
@@ -79,21 +78,21 @@ public class ClusteringConfigUI extends ConfigUI{
         HBox continuousPane   = new HBox();
         HBox totalLabelsPane  = new HBox();
 
-        Label maxIterationsLbl = new Label("Max. Iterations: ");
-        Label intervalLbl      = new Label("Update Interval: ");
-        Label totalLabelsLbl   = new Label("Distinct Labels: ");
-        Label continuousRunLbl = new Label("Continuous Run? ");
+        Label maxIterationsLbl = new Label(manager.getPropertyValue(AppPropertyTypes.MAX_ITERATIONS_LABEL.name()));
+        Label intervalLbl      = new Label(manager.getPropertyValue(AppPropertyTypes.UPDATE_INTERVAL_LABEL.name()));
+        Label totalLabelsLbl   = new Label(manager.getPropertyValue(AppPropertyTypes.DISTINCT_LABELS_LABEL.name()));
+        Label continuousRunLbl = new Label(manager.getPropertyValue(AppPropertyTypes.CONTINUOUS_RUN_LABEL.name()));
 
         iterationsField        = new TextField();
         intervalField          = new TextField();
         totalDistinctLblsFeild = new TextField();
         continuousRunBtn       = new RadioButton();
-        setConfigButton        = new Button("Ok");
+        setConfigButton        = new Button(manager.getPropertyValue(AppPropertyTypes.SAVE_BUTTON.name()));
 
-        iterationsField.setMaxWidth(30);
+        iterationsField.setMaxWidth(35);
         iterationsField.setMaxHeight(10);
 
-        intervalField.setMaxWidth(30);
+        intervalField.setMaxWidth(35);
         intervalField.setMaxHeight(10);
 
         totalDistinctLblsFeild.setMaxWidth(30);
@@ -138,18 +137,15 @@ public class ClusteringConfigUI extends ConfigUI{
 
     /* called from setConfigBtnActions() */
     private boolean allFieldsValid(){
-        if(iterationsField.getText().isEmpty() || intervalField.getText().isEmpty()) {
-            ((AppUI)applicationTemplate.getUIComponent()).emptyFieldError(); return false; }
+        if(intervalField.getText().isEmpty())          { intervalField.setText("5");          }
+        if(iterationsField.getText().isEmpty())        { iterationsField.setText("10");       }
+        if(totalDistinctLblsFeild.getText().isEmpty()) { totalDistinctLblsFeild.setText("2"); }
         try {
-            if(Integer.parseInt(iterationsField.getText()) < 0) {
-                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
-
-            if(Integer.parseInt(intervalField.getText()) < 0) {
-                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
-
-            if(Integer.parseInt(totalDistinctLblsFeild.getText()) < 0) {
-                ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
-        } catch (Exception e) { ((AppUI)applicationTemplate.getUIComponent()).inputError(); return false; }
+            if(Integer.parseInt(iterationsField.getText()) <= 0) { iterationsField.setText("1"); }
+            if(Integer.parseInt(intervalField.getText()) <= 0)   { intervalField.setText("1"); }
+            if(Integer.parseInt(totalDistinctLblsFeild.getText()) <= 0) { totalDistinctLblsFeild.setText("1"); return true; }
+        } catch (Exception e) { setDefaultFeildValues();
+                                return true; }
         return true;
     }
 
@@ -161,6 +157,13 @@ public class ClusteringConfigUI extends ConfigUI{
     private void setConfigIsSetFalse(){
         configurationIsSet.set(false);
         ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(true);
+    }
+
+    private void setDefaultFeildValues(){
+        iterationsField.setText("10");
+        intervalField.setText("5");
+        totalDistinctLblsFeild.setText("2");
+        continuousRun = false;
     }
 
 }

@@ -51,12 +51,33 @@ functionality within the main workspace. -->
         <property name="TEXT_AREA_LOADNAME" value="the text box"/>
 
         <!-- APPLICATION-SPECIFIC BUTTON NAMES -->
+        <property name="CLUSTERING_BUTTON" value="Clustering"/>
+        <property name="CLASSIFICATION_BUTTON" value="Classification"/>
         <property name="CLUSTERING_RADIOBUTTON" value="Random Clustering"/>
         <property name="CLASSIFICATION_RADIOBUTTON" value="Random Classification"/>
+        <property name="DONE_BUTTON" value="Done"/>
+        <property name="EDIT_BUTTON" value="Edit"/>
 
         <!-- APPLICATION-SPECIFIC LABEL NAMES -->
         <property name="CLUSTERING_LABEL" value="Clustering"/>
         <property name="CLASSIFICATION_LABEL" value="Classification"/>
+        <property name="ALGORITHM_TYPE_LABEL" value="Algorithm Type"/>
+
+        <!-- APPLICATION-SPECIFIC META-DATA MESSAGE -->
+        <property name="INSTANCES_MESSAGE" value=" instances with "/>
+        <property name="PATH_MESSAGE" value=" label(s) loaded from: "/>
+        <property name="LABEL_MESSAGE" value="the labels are: "/>
+
+        <!-- APPLICATION-SPECIFIC CONFIGURATION WINDOW -->
+        <property name="RUN_CONFIG_WINDOW_LABEL" value="Run Configuration"/>
+        <property name="CLASSIFICATION_RUN_CONFIG_LABEL" value="Classification Run Configuration"/>
+        <property name="CLUSTERING_RUN_CONFIG_LABEL" value="Clustering Run Configuration"/>
+        <property name="CLUSTERING_RUN_CONFIG_LABEL" value="Clustering Run Configuration"/>
+        <property name="MAX_ITERATIONS_LABEL" value="Max. Iterations: "/>
+        <property name="UPDATE_INTERVAL_LABEL" value="Update Interval: "/>
+        <property name="CONTINUOUS_RUN_LABEL" value="Continuous Run? "/>
+        <property name="DISTINCT_LABELS_LABEL" value="Distinct Labels: "/>
+        <property name="SAVE_BUTTON" value="Save"/>
 
 
     </property_list>

@@ -52,10 +52,31 @@ public enum AppPropertyTypes {
     TEXT_AREA_LOADNAME,
 
     /* application-specific button names */
+    CLUSTERING_BUTTON,
+    CLASSIFICATION_BUTTON,
     CLUSTERING_RADIOBUTTON,
     CLASSIFICATION_RADIOBUTTON,
+    DONE_BUTTON,
+    EDIT_BUTTON,
 
     /* application-specific label */
     CLUSTERING_LABEL,
-    CLASSIFICATION_LABEL
-}
+    CLASSIFICATION_LABEL,
+    ALGORITHM_TYPE_LABEL,
+
+    /* application-specific meta-data message */
+    INSTANCES_MESSAGE,
+    PATH_MESSAGE,
+    LABEL_MESSAGE,
+
+    /* application-specific classification run config */
+    RUN_CONFIG_WINDOW_LABEL,
+    CLASSIFICATION_RUN_CONFIG_LABEL,
+    CLUSTERING_RUN_CONFIG_LABEL,
+    MAX_ITERATIONS_LABEL,
+    UPDATE_INTERVAL_LABEL,
+    CONTINUOUS_RUN_LABEL,
+    DISTINCT_LABELS_LABEL,
+    SAVE_BUTTON
+
+    }

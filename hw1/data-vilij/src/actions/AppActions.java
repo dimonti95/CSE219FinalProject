@@ -64,7 +64,6 @@ public final class AppActions implements ActionComponent {
     private ArrayList<String>   firstTenLines;
     public  LinkedList<String>  subsequentLines;
     public  int                 totalLinesOfData;
-    //public  boolean             dataWasLoaded;
 
     /** setters */
     public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property);        }
@@ -87,7 +86,6 @@ public final class AppActions implements ActionComponent {
             if (!isUnsaved.get() || promptToSave()) {
                 applicationTemplate.getDataComponent().clear();
                 applicationTemplate.getUIComponent().clear();
-                ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(true);
                 ((AppUI) applicationTemplate.getUIComponent()).showNewDataUI();
                 isUnsaved.set(false);
                 dataFilePath  = null;
@@ -175,18 +173,15 @@ public final class AppActions implements ActionComponent {
                     }
                 }
 
-                loadedFileName = selected.getName(); //setting path name
-                //System.out.println(java.util.Arrays.toString(loadedFileName.split("(?<=\\G.........................)")));
+                loadedFileName = formatPathString(selected.getPath());
 
                 ((AppData) applicationTemplate.getDataComponent()).loadData(data);
                 boolean duplicateFound = appUI.duplicateFound;
 
                 if(!duplicateFound && dataComponent.getDataIsValid()) {
                     ((AppUI) applicationTemplate.getUIComponent()).setLoadedDataUI();
-                    applicationTemplate.getUIComponent().clear();
-                    ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
-                    ((AppUI) applicationTemplate.getUIComponent()).getScrnshotButton().setDisable(false);
                     outputDataToTxtArea();
+                    ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
                     wasLoaded.set(true);
                     isUnsaved.set(false);
                 }
@@ -194,8 +189,17 @@ public final class AppActions implements ActionComponent {
             } catch (FileNotFoundException e) {
                 loadErrHandlingHelper();
             }
-        }   else { /* no file selected */ }
+        }
     }
+
+    private String formatPathString(String path){
+        StringBuilder sb = new StringBuilder();
+        String[] parts = { path.substring(0, path.length()/3), path.substring(path.length()/3,
+                        (path.length()/3)*2), path.substring((path.length()/3)*2) };
+        sb.append(parts[0]);
+        sb.append("\n" + parts[1]);
+        sb.append("\n" + parts[2]);
+        return sb.toString(); }
 
     @Override
     public void handleExitRequest() {
@@ -353,18 +357,6 @@ public final class AppActions implements ActionComponent {
                 else                              { textArea.appendText(firstTenLines.get(i) +
                                                         System.getProperty("line.separator")); }
             }
-        if(totalLinesOfData > 10) { promptUserAboutTotalData(); }
-    }
-
-    private void promptUserAboutTotalData() {
-        ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
-        PropertyManager manager  = applicationTemplate.manager;
-        String          loadMsgTitle = manager.getPropertyValue(AppPropertyTypes.TOTAL_DATA_LOADED_TITLE.name());
-        String          loadMsg      = manager.getPropertyValue(AppPropertyTypes.TOTAL_DATA_LOADED_MSG.name());
-        String          newLine      = System.getProperty("line.separator") + System.getProperty("line.separator");
-        String          totalDataMsg = manager.getPropertyValue(AppPropertyTypes.TOTAL_DATA_MSG.name());
-        String          lines        = manager.getPropertyValue(AppPropertyTypes.LINES.name());
-        dialog.show(loadMsgTitle,  totalDataMsg + totalLinesOfData + lines + newLine + loadMsg);
     }
 
     private void saveRequestHandler() throws IOException {
@@ -390,7 +382,7 @@ public final class AppActions implements ActionComponent {
             if (selected != null) {
                 dataFilePath = selected.toPath();
                 save();
-            } //else return false; // if user presses escape after initially selecting 'yes'
+            }
         } else
             save();
     }
