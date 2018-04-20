@@ -13,8 +13,12 @@ import settings.AppPropertyTypes;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
+import static settings.AppPropertyTypes.DEFAULT_INTERVAL_VAL;
+import static settings.AppPropertyTypes.DEFAULT_ITERATIONS_VAL;
+
 public class ClassificationConfigUI extends ConfigUI {
 
+    /** The application to which this class of actions belongs. */
     ApplicationTemplate applicationTemplate;
 
     public ClassificationConfigUI(ApplicationTemplate applicationTemplate){
@@ -116,8 +120,9 @@ public class ClassificationConfigUI extends ConfigUI {
 
     /* called from setConfigBtnActions() */
     private boolean allFieldsValid(){
-        if(iterationsField.getText().isEmpty()) { iterationsField.setText("10"); }
-        if(intervalField.getText().isEmpty())   { intervalField.setText("5");    }
+        PropertyManager manager = applicationTemplate.manager;
+        if(iterationsField.getText().isEmpty()) { iterationsField.setText(manager.getPropertyValue(DEFAULT_ITERATIONS_VAL.name())); }
+        if(intervalField.getText().isEmpty())   { intervalField.setText(manager.getPropertyValue(DEFAULT_INTERVAL_VAL.name())); }
         try {
             if(Integer.parseInt(iterationsField.getText()) <= 0) { iterationsField.setText("1"); }
             if(Integer.parseInt(intervalField.getText()) <= 0)   { intervalField.setText("1");
@@ -138,8 +143,9 @@ public class ClassificationConfigUI extends ConfigUI {
     }
 
     private void setDefaultFeildValues(){
-        iterationsField.setText("10");
-        intervalField.setText("5");
+        PropertyManager manager = applicationTemplate.manager;
+        iterationsField.setText(manager.getPropertyValue(DEFAULT_ITERATIONS_VAL.name()));
+        intervalField.setText(manager.getPropertyValue(DEFAULT_INTERVAL_VAL.name()));
         continuousRun = false;
     }
 

@@ -4,7 +4,6 @@ import dataprocessors.AppData;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
@@ -148,6 +147,8 @@ public final class AppActions implements ActionComponent {
 
         wasLoaded.set(false);
 
+        //((AppData) applicationTemplate.getDataComponent()).loadData(selected.toPath());
+
         if(selected != null) {
 
             String data = "";
@@ -175,6 +176,7 @@ public final class AppActions implements ActionComponent {
 
                 loadedFileName = formatPathString(selected.getPath());
 
+                applicationTemplate.getUIComponent().clear();
                 ((AppData) applicationTemplate.getDataComponent()).loadData(data);
                 boolean duplicateFound = appUI.duplicateFound;
 
@@ -184,7 +186,7 @@ public final class AppActions implements ActionComponent {
                     ((AppUI) applicationTemplate.getUIComponent()).getSaveButton().setDisable(true);
                     wasLoaded.set(true);
                     isUnsaved.set(false);
-                }
+                } else if(duplicateFound || !dataComponent.getDataIsValid()) { appUI.showNewDataUI(); }
 
             } catch (FileNotFoundException e) {
                 loadErrHandlingHelper();

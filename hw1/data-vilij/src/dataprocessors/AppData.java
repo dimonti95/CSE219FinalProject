@@ -37,7 +37,7 @@ public class AppData implements DataComponent {
 
     @Override
     public void loadData(Path dataFilePath) {
-        // TODO: NOT A PART OF HW 1
+
     }
 
     public void loadData(String dataString) {
@@ -47,7 +47,8 @@ public class AppData implements DataComponent {
         try {
             processor.processString(dataString);
             ((AppUI) applicationTemplate.getUIComponent()).checkForDuplicates();
-            if(uiComponent.duplicateFound) { actionComponent.duplicateHandlingHelper(); }
+            if(uiComponent.duplicateFound) { uiComponent.clear();
+                                             actionComponent.duplicateHandlingHelper(); }
             else {
                 processor.generateLabelInfo();
                 setDataIsValid(true);
@@ -55,6 +56,7 @@ public class AppData implements DataComponent {
             }
         } catch (Exception e) {
             scrnshotButton.setDisable(true);
+            uiComponent.clear();
             errorHandlingHelper();
             setDataIsValid(false);
         }
@@ -84,6 +86,7 @@ public class AppData implements DataComponent {
 
     public TSDProcessor getTSDProcessor(){ return processor; }
 
+    /*
     public void checkDataFormat(String dataString){
         try {
             processor.processString(dataString);
@@ -94,6 +97,7 @@ public class AppData implements DataComponent {
             processor.clear();
         }
     }
+    */
 
     private void errorHandlingHelper() {
         clear();

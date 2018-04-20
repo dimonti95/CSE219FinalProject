@@ -16,8 +16,12 @@ import settings.AppPropertyTypes;
 import vilij.propertymanager.PropertyManager;
 import vilij.templates.ApplicationTemplate;
 
+import static settings.AppPropertyTypes.DEFAULT_INTERVAL_VAL;
+import static settings.AppPropertyTypes.DEFAULT_ITERATIONS_VAL;
+
 public class ClusteringConfigUI extends ConfigUI{
 
+    /** The application to which this class of actions belongs. */
     ApplicationTemplate applicationTemplate;
 
     /** back end components */
@@ -137,8 +141,9 @@ public class ClusteringConfigUI extends ConfigUI{
 
     /* called from setConfigBtnActions() */
     private boolean allFieldsValid(){
-        if(intervalField.getText().isEmpty())          { intervalField.setText("5");          }
-        if(iterationsField.getText().isEmpty())        { iterationsField.setText("10");       }
+        PropertyManager manager = applicationTemplate.manager;
+        if(iterationsField.getText().isEmpty())        { iterationsField.setText(manager.getPropertyValue(DEFAULT_ITERATIONS_VAL.name())); }
+        if(intervalField.getText().isEmpty())          { intervalField.setText(manager.getPropertyValue(DEFAULT_INTERVAL_VAL.name())); }
         if(totalDistinctLblsFeild.getText().isEmpty()) { totalDistinctLblsFeild.setText("2"); }
         try {
             if(Integer.parseInt(iterationsField.getText()) <= 0) { iterationsField.setText("1"); }
@@ -160,8 +165,9 @@ public class ClusteringConfigUI extends ConfigUI{
     }
 
     private void setDefaultFeildValues(){
-        iterationsField.setText("10");
-        intervalField.setText("5");
+        PropertyManager manager = applicationTemplate.manager;
+        iterationsField.setText(manager.getPropertyValue(DEFAULT_ITERATIONS_VAL.name()));
+        intervalField.setText(manager.getPropertyValue(DEFAULT_INTERVAL_VAL.name()));
         totalDistinctLblsFeild.setText("2");
         continuousRun = false;
     }

@@ -78,6 +78,8 @@ functionality within the main workspace. -->
         <property name="CONTINUOUS_RUN_LABEL" value="Continuous Run? "/>
         <property name="DISTINCT_LABELS_LABEL" value="Distinct Labels: "/>
         <property name="SAVE_BUTTON" value="Save"/>
+        <property name="DEFAULT_ITERATIONS_VAL" value="10"/>
+        <property name="DEFAULT_INTERVAL_VAL" value="5"/>
 
 
     </property_list>
