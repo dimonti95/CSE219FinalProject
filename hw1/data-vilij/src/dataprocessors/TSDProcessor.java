@@ -46,6 +46,9 @@ public final class TSDProcessor {
         pointNames = new ArrayList<>();
     }
 
+    /** getters */
+    public Map getDataPoints(){ return dataPoints; }
+
     /**
      * Processes the data and populated two {@link Map} objects with the data.
      *
