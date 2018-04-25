@@ -59,8 +59,22 @@ public class RandomClassifier extends Classifier {
 
     @Override
     public void run() {
-        if      (tocontinue())  { runAlgorithmContinuously(); }
-        else if (!tocontinue()) { runAlgorithmInIntervals();  }
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+
+        if      (tocontinue())  { Platform.runLater(uiComponent::disableToolbar);
+                                  runAlgorithmContinuously();
+                                  Platform.runLater(uiComponent::enableToolbar); }
+
+        else if (!tocontinue()) { Platform.runLater(uiComponent::showIntervalButton);
+                                  uiComponent.enableToolbar();
+                                  uiComponent.getNewButton().setDisable(true);
+                                  uiComponent.getLoadButton().setDisable(true);
+                                  uiComponent.getSaveButton().setDisable(true);
+                                  runAlgorithmInIntervals();
+                                  uiComponent.enableToolbar();}
+
+        uiComponent.getRunButton().setDisable(false);
+        Platform.runLater(uiComponent::generateDataInformation); // back to Algorithm Type menu
     }
 
     private void runAlgorithmContinuously(){
@@ -102,11 +116,11 @@ public class RandomClassifier extends Classifier {
                 break;
             }
         }
-        ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(false);
     }
 
     private void runAlgorithmInIntervals() {
-        for(; intervalCounter <= updateInterval && intervalCounter <= maxIterations; intervalCounter++){
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+        for(int i = 1; i <= maxIterations; i++){
             int xCoefficient = new Double(RAND.nextDouble() * 100).intValue();
             int yCoefficient = new Double(RAND.nextDouble() * 100).intValue();
             int constant     = new Double(RAND.nextDouble() * 100).intValue();
@@ -114,18 +128,40 @@ public class RandomClassifier extends Classifier {
             // this is the real output of the classifier
             output = Arrays.asList(xCoefficient, yCoefficient, constant);
 
-            Platform.runLater(
-                    () -> ((AppUI) applicationTemplate.getUIComponent()).displayIntervalIteration(output.get(0), output.get(1), output.get(2))
-            );
+            intervalCounter++;
+
+            if(intervalCounter == updateInterval) {
+                intervalCounter = 0;
+
+                synchronized (this) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    uiComponent.getScrnshotButton().setDisable(true); // simulating running algorithm
+                    Thread.sleep(1000);
+                    uiComponent.getScrnshotButton().setDisable(false); //simulating running algorithm
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Platform.runLater(
+                        () -> ((AppUI) applicationTemplate.getUIComponent()).displayIntervalIteration(output.get(0), output.get(1), output.get(2))
+                );
+            }
 
             // everything below is just for internal viewing of how the output is changing
             // in the final project, such changes will be dynamically visible in the UI
             if (intervalCounter % updateInterval == 0) {
-                System.out.printf("Iteration number %d: ", intervalCounter);
+                System.out.printf("Iteration number %d: ", i);
                 flush();
             }
             if (intervalCounter > maxIterations * .6 && RAND.nextDouble() < 0.05) {
-                System.out.printf("Iteration number %d: ", intervalCounter);
+                System.out.printf("Iteration number %d: ", i);
                 flush();
                 break;
             }
@@ -134,8 +170,14 @@ public class RandomClassifier extends Classifier {
     }
 
     // for internal viewing only
-    protected void flush() {
+    private void flush() {
         System.out.printf("%d\t%d\t%d%n", output.get(0), output.get(1), output.get(2));
+    }
+
+    public void notifyThread(){
+        synchronized (this) {
+            notify();
+        }
     }
 
     /**

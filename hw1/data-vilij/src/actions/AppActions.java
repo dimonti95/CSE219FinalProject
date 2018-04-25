@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.io.File.separator;
 import static settings.AppPropertyTypes.LOAD_WORK_TITLE;
 import static settings.AppPropertyTypes.SAVE_SCRNSHOT_TITLE;
 import static vilij.settings.PropertyTypes.SAVE_WORK_TITLE;
@@ -46,23 +45,23 @@ public final class AppActions implements ActionComponent {
     private ApplicationTemplate applicationTemplate;
 
     /** Path to the data file currently active. */
-    Path    dataFilePath;
+    private Path dataFilePath;
 
     /** Name of the file most recently loaded **/
-    String  loadedFileName;
+    private String loadedFileName;
 
     /** Path to the screenshot file currently active. */
-    Path    scrnshotFilePath;
+    private Path scrnshotFilePath;
 
     /** The boolean property marking whether or not there are any unsaved changes. */
-    SimpleBooleanProperty isUnsaved;
+    private SimpleBooleanProperty isUnsaved;
 
     /** The boolean property marking whether or not data has been loaded froma file. */
-    SimpleBooleanProperty wasLoaded;
+    private SimpleBooleanProperty wasLoaded;
 
     private ArrayList<String>   firstTenLines;
-    public  LinkedList<String>  subsequentLines;
-    public  int                 totalLinesOfData;
+    //private LinkedList<String>  subsequentLines;
+    //private int                 totalLinesOfData;
 
     /** setters */
     public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property);        }
@@ -71,7 +70,6 @@ public final class AppActions implements ActionComponent {
 
     /** getters */
     public String getFileName()                          { return loadedFileName; }
-    public SimpleBooleanProperty getWasLoadedProperty()  { return wasLoaded;      }
 
     public AppActions(ApplicationTemplate applicationTemplate) {
         this.applicationTemplate = applicationTemplate;
@@ -153,9 +151,9 @@ public final class AppActions implements ActionComponent {
 
             String data = "";
             int i = 0;
-            totalLinesOfData = 0;
+            int totalLinesOfData = 0;
             firstTenLines   = new ArrayList<>(10);
-            subsequentLines = new LinkedList<>();
+            LinkedList<String> subsequentLines = new LinkedList<>();
 
             try {
                 Scanner scanner = new Scanner(selected);
@@ -205,10 +203,14 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleExitRequest() {
-        try {
-            if (!isUnsaved.get() || promptToSave())
-                System.exit(0);
-        } catch (IOException e) { errorHandlingHelper(); }
+        if(promptToTerminateAlgorithm()) {
+            try {
+                if (!isUnsaved.get() || promptToSave())
+                    System.exit(0);
+            } catch (IOException e) {
+                errorHandlingHelper();
+            }
+        }
     }
 
     @Override
@@ -322,7 +324,7 @@ public final class AppActions implements ActionComponent {
         dialog.show(errTitle, errMsg + errInput + newLine + lineMsg + errLine.get());
     }
 
-    public void loadErrHandlingHelper() {
+    private void loadErrHandlingHelper() {
         ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager  = applicationTemplate.manager;
         String          errTitle = manager.getPropertyValue(PropertyTypes.LOAD_ERROR_TITLE.name());
@@ -387,6 +389,28 @@ public final class AppActions implements ActionComponent {
             }
         } else
             save();
+    }
+
+    private boolean promptToTerminateAlgorithm(){
+        PropertyManager    manager     = applicationTemplate.manager;
+        AppUI              uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+        ConfirmationDialog dialog      = ConfirmationDialog.getDialog();
+
+        /* checking if an algorithm is running */
+        if(uiComponent.getAlgorithmThread() == null || !uiComponent.getAlgorithmThread().isAlive()) { return true; }
+
+        dialog.show("Warning",
+                manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
+
+        if(dialog.getSelectedOption() == null) return false;
+
+        /* exit without finishing the current algorithm run */
+        if (dialog.getSelectedOption().equals(ConfirmationDialog.Option.YES)) return true;
+
+        /* finish running algorithm */
+        if (dialog.getSelectedOption().equals(ConfirmationDialog.Option.NO))  return false;
+
+        return !dialog.getSelectedOption().equals(ConfirmationDialog.Option.CANCEL);
     }
 
 }

@@ -26,6 +26,9 @@ public enum AppPropertyTypes {
     LINE_OF_ERROR,
     DUPLICATE_ERROR,
 
+    /* warning messages */
+    EXIT_WHILE_RUNNING_WARNING,
+
     /* application-specific message titles */
     SAVE_UNSAVED_WORK_TITLE,
     LOAD_WORK_TITLE,
@@ -58,6 +61,7 @@ public enum AppPropertyTypes {
     CLASSIFICATION_RADIOBUTTON,
     DONE_BUTTON,
     EDIT_BUTTON,
+    NEXT_INTERVAL_BUTTON,
 
     /* application-specific label */
     CLUSTERING_LABEL,
@@ -80,5 +84,8 @@ public enum AppPropertyTypes {
     SAVE_BUTTON,
     DEFAULT_ITERATIONS_VAL,
     DEFAULT_INTERVAL_VAL,
+
+    /* application-specific series names */
+    CLASSIFIER_SERIES,
 
     }

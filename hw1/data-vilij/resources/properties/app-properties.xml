@@ -57,6 +57,7 @@ functionality within the main workspace. -->
         <property name="CLASSIFICATION_RADIOBUTTON" value="Random Classification"/>
         <property name="DONE_BUTTON" value="Done"/>
         <property name="EDIT_BUTTON" value="Edit"/>
+        <property name="NEXT_INTERVAL_BUTTON" value="Next Interval"/>
 
         <!-- APPLICATION-SPECIFIC LABEL NAMES -->
         <property name="CLUSTERING_LABEL" value="Clustering"/>
@@ -81,6 +82,8 @@ functionality within the main workspace. -->
         <property name="DEFAULT_ITERATIONS_VAL" value="10"/>
         <property name="DEFAULT_INTERVAL_VAL" value="5"/>
 
+        <!-- APPLICATION-SPECIFIC SERIES NAMES -->
+        <property name="CLASSIFIER_SERIES" value="Classifier"/>
 
     </property_list>
     <property_options_list/>

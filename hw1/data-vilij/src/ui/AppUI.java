@@ -75,6 +75,10 @@ public final class AppUI extends UITemplate {
     private RadioButton                  randomClusteringBtn;
     private Button                       clusteringConfigBtn;
 
+    /** Algorithms */
+    private RandomClassifier             randomClassifier;
+    private Thread                       algorithmThread;
+
     /** Edit/Done UI */
     private ToggleButton                 doneDataToggle;
 
@@ -88,11 +92,13 @@ public final class AppUI extends UITemplate {
 
     /** getters */
     public LineChart<Number, Number> getChart()          { return chart; }
+    public Button                    getNewButton()      { return newButton; }
+    public Button                    getLoadButton()     { return loadButton; }
     public Button                    getScrnshotButton() { return scrnshotButton; }
     public Button                    getSaveButton()     { return saveButton; }
     public Button                    getRunButton()      { return runButton; }
     public TextArea                  getTextArea()       { return textArea; }
-
+    public Thread                    getAlgorithmThread(){ return algorithmThread; }
 
     public AppUI(Stage primaryStage, ApplicationTemplate applicationTemplate) {
         super(primaryStage, applicationTemplate);
@@ -222,7 +228,7 @@ public final class AppUI extends UITemplate {
                     if (!newValue.isEmpty()) {
                         ((AppActions) applicationTemplate.getActionComponent()).setIsUnsavedProperty(true);
                         if (newValue.charAt(newValue.length() - 1) == '\n')
-                            hasNewText = true;
+                        hasNewText = true;
                         newButton.setDisable(false);
                         saveButton.setDisable(false);
                     } else {
@@ -266,38 +272,6 @@ public final class AppUI extends UITemplate {
             else                       { duplicateFound = false; }
         }
     }
-
-
-    /* called from setTextAreaActions (Listener) */
-    /*
-    private void checkForDeletedLines(){
-        boolean dataWasLoaded    = ((AppActions) applicationTemplate.getActionComponent()).getWasLoadedProperty().getValue();
-        int     totalLinesOfData = ((AppActions) applicationTemplate.getActionComponent()).totalLinesOfData;
-
-        if(dataWasLoaded && totalLinesOfData > 10){
-            LinkedList<String> subsequentLines = ((AppActions) applicationTemplate.getActionComponent()).subsequentLines;
-            int totalLinesInTxtArea = countLinesOfDataInTxtArea();
-
-            if(totalLinesInTxtArea < 10){
-
-                int numOfLinesToFeed = 10 - totalLinesInTxtArea;
-
-                for(int i = 0; i < numOfLinesToFeed; i++){
-                    if(subsequentLines.peekFirst() == null){ break; }
-                    textArea.appendText(subsequentLines.removeFirst() + System.getProperty("line.separator"));
-                }
-            }
-        }
-    }
-    */
-
-    /*
-    //called from checkForDeletedLines()
-    private int countLinesOfDataInTxtArea() {
-        return Integer.parseInt(String.valueOf(textArea.getText().split(System.getProperty("line.separator")).length));
-    }
-    */
-
 
     private void setChartToolTips() {
         ArrayList<String> orderedPointNames = ((AppData) applicationTemplate.getDataComponent()).getTSDProcessor().orderedPointNames;
@@ -608,22 +582,22 @@ public final class AppUI extends UITemplate {
         leftPanel.getChildren().add(runButtonPane);
     }
 
-    private void setRunClassificationActions() {    System.out.println("Classify");
-        DataSet dataSet         = new DataSet();
-        int     maxIterations   = classificationConfigUI.maxIterations;
-        int     updateInterval  = classificationConfigUI.updateInterval;
-        boolean continuousRun   = classificationConfigUI.continuousRun;
+    private void setRunClassificationActions() {
+        DataSet dataSet        = new DataSet();
+        int     maxIterations  = classificationConfigUI.maxIterations;
+        int     updateInterval = classificationConfigUI.updateInterval;
+        boolean continuousRun  = classificationConfigUI.continuousRun;
 
-        RandomClassifier randomClassifier = new RandomClassifier
+        randomClassifier = new RandomClassifier
                 (dataSet, maxIterations, updateInterval, continuousRun, applicationTemplate);
 
-        Thread algorithmThread = new Thread(randomClassifier); //starting the task in a background thread
+        algorithmThread = new Thread(randomClassifier); //starting the task in a background thread
         runButton.setDisable(true);
         displayToChart();
         algorithmThread.start();
     }
 
-    private void setRunClusteringActions() { System.out.println("clustering"); }
+    private void setRunClusteringActions() { /*System.out.println("clustering");*/ }
 
     private void hideRunButton(){
         leftPanel.getChildren().remove(runButtonPane);
@@ -646,9 +620,10 @@ public final class AppUI extends UITemplate {
     }
 
     public void displayIntervalIteration(int xCoefficient, int yCoefficient, int constant){
-        AppData dataComponent = ((AppData) applicationTemplate.getDataComponent());
+        AppData         dataComponent = ((AppData) applicationTemplate.getDataComponent());
+        PropertyManager manager       = applicationTemplate.manager;
 
-        if(yCoefficient == 0) { yCoefficient = 1; } //to avoid dividing by zero
+        if(yCoefficient == 0) { yCoefficient = 1; } // to avoid dividing by zero
 
         int     y1         = (constant-xCoefficient*generateXMin()) / yCoefficient;
         int     y2         = (constant-xCoefficient*generateXMax()) / yCoefficient;
@@ -660,7 +635,7 @@ public final class AppUI extends UITemplate {
         XYChart.Data algorithmPoint1 = new XYChart.Data<>(generateXMin(), y1);
         XYChart.Data algorithmPoint2 = new XYChart.Data<>(generateXMax(), y2);
         randomSeries.getData().addAll(algorithmPoint1, algorithmPoint2);
-        randomSeries.setName("Classifier");
+        randomSeries.setName(manager.getPropertyValue(AppPropertyTypes.CLASSIFIER_SERIES.name()));
         chart.getData().add(randomSeries);
         randomSeries.getNode().setStyle("-fx-stroke-width: 2px");
         randomSeries.getData().get(0).getNode().setStyle("-fx-background-color: transparent, transparent;");
@@ -669,7 +644,7 @@ public final class AppUI extends UITemplate {
 
     private int generateXMax(){
         AppData              dataComponent = ((AppData) applicationTemplate.getDataComponent());
-        Map<String, Point2D> dataPoints    =  dataComponent.getTSDProcessor().getDataPoints();
+        Map<String, Point2D> dataPoints    = dataComponent.getTSDProcessor().getDataPoints();
         int                  max           = Integer.MIN_VALUE;
         for (Map.Entry<String, Point2D> entry : dataPoints.entrySet()) {
             if(entry.getValue().getX() > max) { max = (int) entry.getValue().getX(); }
@@ -685,6 +660,33 @@ public final class AppUI extends UITemplate {
             if(entry.getValue().getX() < min) { min = (int) entry.getValue().getX(); }
         }
         return min;
+    }
+
+    /** Shows the 'Next Interval' Button */
+    public void showIntervalButton(){
+        PropertyManager manager = applicationTemplate.manager;
+        runButtonPane.getChildren().remove(runButton);
+
+        Button nextIntervalButton = new Button(manager.getPropertyValue(AppPropertyTypes.NEXT_INTERVAL_BUTTON.name()));
+
+        runButtonPane.getChildren().add(nextIntervalButton);
+
+        nextIntervalButton.setOnAction(event -> randomClassifier.notifyThread());
+    }
+
+    public void disableToolbar(){
+        newButton.setDisable(true);
+        saveButton.setDisable(true);
+        loadButton.setDisable(true);
+        printButton.setDisable(true);
+        scrnshotButton.setDisable(true);
+    }
+
+    public void enableToolbar(){
+        newButton.setDisable(false);
+        loadButton.setDisable(false);
+        scrnshotButton.setDisable(false);
+        randomClassificationBtn.setDisable(true);  // required for 'Next Interval' Button functionality
     }
 
 }
