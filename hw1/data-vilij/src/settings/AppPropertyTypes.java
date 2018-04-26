@@ -33,25 +33,21 @@ public enum AppPropertyTypes {
     SAVE_UNSAVED_WORK_TITLE,
     LOAD_WORK_TITLE,
     SAVE_SCRNSHOT_TITLE,
-    TOTAL_DATA_LOADED_TITLE,
+    RUNNING_ALGORITHM_TITLE,
 
     /* application-specific messages */
     SAVE_UNSAVED_WORK,
-    TOTAL_DATA_LOADED_MSG,
-    TOTAL_DATA_MSG,
 
     /* application-specific parameters */
     DATA_FILE_EXT,
     DATA_FILE_EXT_DESC,
     SCRNSHOT_FILE_EXT,
     SCRNSHOT_FILE_EXT_DESC,
-    TEXT_AREA,
     SPECIFIED_FILE,
     LEFT_PANE_TITLE,
     LEFT_PANE_TITLEFONT,
     LEFT_PANE_TITLESIZE,
     CHART_TITLE,
-    LINES,
     TEXT_AREA_LOADNAME,
 
     /* application-specific button names */

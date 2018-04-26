@@ -78,30 +78,63 @@ public class RandomClassifier extends Classifier {
     }
 
     private void runAlgorithmContinuously(){
-        for (int i = 1; i <= maxIterations;  /*&& tocontinue();*/ i++) {
-            int xCoefficient = new Double(RAND.nextDouble() * 100).intValue();
-            int yCoefficient = new Double(RAND.nextDouble() * 100).intValue();
-            int constant     = new Double(RAND.nextDouble() * 100).intValue();
+        for (int i = 1; i <= maxIterations; i++) {
+            int xCoefficient =  new Long(-1 * Math.round((2 * RAND.nextDouble() - 1) * 10)).intValue();
+            int yCoefficient = 10;
+            int constant     = RAND.nextInt(11);
+
 
             // this is the real output of the classifier
             output = Arrays.asList(xCoefficient, yCoefficient, constant);
-            // the question for me is how do I take these 3 integers as output of this mock algorithm and
-            // translate it into a 2D line each iteration?.....
 
             intervalCounter++;
 
             if(intervalCounter == updateInterval) {
                 intervalCounter = 0;
+                showContinuousInterval();
+            }
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                Platform.runLater(
-                        () -> ((AppUI) applicationTemplate.getUIComponent()).displayIntervalIteration(output.get(0), output.get(1), output.get(2))
-                );
+            // everything below is just for internal viewing of how the output is changing
+            // in the final project, such changes will be dynamically visible in the UI
+            if (i % updateInterval == 0) {
+                System.out.printf("Iteration number %d: ", i);
+                flush();
+            }
+            if (i > maxIterations * .6 && RAND.nextDouble() < 0.05) {
+                System.out.printf("Iteration number %d: ", i);
+                flush();
+                showContinuousInterval();
+                break;
+            }
+        }
+    }
+
+    private void showContinuousInterval(){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Platform.runLater(
+                () -> ((AppUI) applicationTemplate.getUIComponent()).displayIntervalIteration(output.get(0), output.get(1), output.get(2))
+        );
+    }
+
+    private void runAlgorithmInIntervals() {
+        for(int i = 1; i <= maxIterations; i++){
+            int xCoefficient =  new Long(-1 * Math.round((2 * RAND.nextDouble() - 1) * 10)).intValue();
+            int yCoefficient = 10;
+            int constant     = RAND.nextInt(11);
+
+            // this is the real output of the classifier
+            output = Arrays.asList(xCoefficient, yCoefficient, constant);
+
+            intervalCounter++;
+
+            if(intervalCounter == updateInterval) {
+                intervalCounter = 0;
+                showInterval();
             }
 
             // everything below is just for internal viewing of how the output is changing
@@ -113,60 +146,33 @@ public class RandomClassifier extends Classifier {
             if (i > maxIterations * .6 && RAND.nextDouble() < 0.05) {
                 System.out.printf("Iteration number %d: ", i);
                 flush();
-                break;
-            }
-        }
-    }
-
-    private void runAlgorithmInIntervals() {
-        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
-        for(int i = 1; i <= maxIterations; i++){
-            int xCoefficient = new Double(RAND.nextDouble() * 100).intValue();
-            int yCoefficient = new Double(RAND.nextDouble() * 100).intValue();
-            int constant     = new Double(RAND.nextDouble() * 100).intValue();
-
-            // this is the real output of the classifier
-            output = Arrays.asList(xCoefficient, yCoefficient, constant);
-
-            intervalCounter++;
-
-            if(intervalCounter == updateInterval) {
-                intervalCounter = 0;
-
-                synchronized (this) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    uiComponent.getScrnshotButton().setDisable(true); // simulating running algorithm
-                    Thread.sleep(1000);
-                    uiComponent.getScrnshotButton().setDisable(false); //simulating running algorithm
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Platform.runLater(
-                        () -> ((AppUI) applicationTemplate.getUIComponent()).displayIntervalIteration(output.get(0), output.get(1), output.get(2))
-                );
-            }
-
-            // everything below is just for internal viewing of how the output is changing
-            // in the final project, such changes will be dynamically visible in the UI
-            if (intervalCounter % updateInterval == 0) {
-                System.out.printf("Iteration number %d: ", i);
-                flush();
-            }
-            if (intervalCounter > maxIterations * .6 && RAND.nextDouble() < 0.05) {
-                System.out.printf("Iteration number %d: ", i);
-                flush();
+                showInterval();
                 break;
             }
         }
         ((AppUI) applicationTemplate.getUIComponent()).getRunButton().setDisable(false);
+    }
+
+    private void showInterval(){
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+        synchronized (this) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            uiComponent.getScrnshotButton().setDisable(true); // simulating running algorithm
+            Thread.sleep(1000);
+            uiComponent.getScrnshotButton().setDisable(false); // simulating running algorithm
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Platform.runLater(
+                () -> ((AppUI) applicationTemplate.getUIComponent()).displayIntervalIteration(output.get(0), output.get(1), output.get(2))
+        );
     }
 
     // for internal viewing only

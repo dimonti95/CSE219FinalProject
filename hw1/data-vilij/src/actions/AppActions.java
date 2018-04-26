@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -60,12 +59,10 @@ public final class AppActions implements ActionComponent {
     private SimpleBooleanProperty wasLoaded;
 
     private ArrayList<String>   firstTenLines;
-    //private LinkedList<String>  subsequentLines;
-    //private int                 totalLinesOfData;
 
     /** setters */
-    public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property);        }
-    public void   setWasLoadedProperty(boolean property) { wasLoaded.set(property);        }
+    public void   setIsUnsavedProperty(boolean property) { isUnsaved.set(property); }
+    public void   setWasLoadedProperty(boolean property) { wasLoaded.set(property); }
     public void   setLoadedFileName(String fileName)     { this.loadedFileName = fileName; }
 
     /** getters */
@@ -124,13 +121,9 @@ public final class AppActions implements ActionComponent {
         AppUI   appUI           = ((AppUI) applicationTemplate.getUIComponent());
         AppData dataComponent   = (AppData) applicationTemplate.getDataComponent();
 
-        if(dataFilePath == null){ /* no previously saved data */  }
-
         FileChooser fileChooser = new FileChooser();
         String      dataDirPath = SEPARATOR + manager.getPropertyValue(AppPropertyTypes.DATA_RESOURCE_PATH.name());
         URL         dataDirURL  = getClass().getResource(dataDirPath);
-
-        if (dataDirURL == null) { /* file not found exception */ }
 
         fileChooser.setInitialDirectory(new File(dataDirURL.getFile()));
         fileChooser.setTitle(manager.getPropertyValue(LOAD_WORK_TITLE.name()));
@@ -145,29 +138,20 @@ public final class AppActions implements ActionComponent {
 
         wasLoaded.set(false);
 
-        //((AppData) applicationTemplate.getDataComponent()).loadData(selected.toPath());
-
         if(selected != null) {
 
-            String data = "";
+            StringBuilder data = new StringBuilder();
+            firstTenLines = new ArrayList<>(10);
             int i = 0;
-            int totalLinesOfData = 0;
-            firstTenLines   = new ArrayList<>(10);
-            LinkedList<String> subsequentLines = new LinkedList<>();
 
             try {
                 Scanner scanner = new Scanner(selected);
 
                 while (scanner.hasNextLine()) {
-                    totalLinesOfData++;
                     String lineOfData = scanner.nextLine();
-                    data = data + lineOfData + System.getProperty("line.separator");
+                    data.append(lineOfData).append(System.getProperty("line.separator"));
                     if (i < 10) {
                         firstTenLines.add(lineOfData);
-                        i++;
-                    }
-                    if(i >= 10 && i < totalLinesOfData){
-                        subsequentLines.add(lineOfData);
                         i++;
                     }
                 }
@@ -175,7 +159,7 @@ public final class AppActions implements ActionComponent {
                 loadedFileName = formatPathString(selected.getPath());
 
                 applicationTemplate.getUIComponent().clear();
-                ((AppData) applicationTemplate.getDataComponent()).loadData(data);
+                ((AppData) applicationTemplate.getDataComponent()).loadData(data.toString());
                 boolean duplicateFound = appUI.duplicateFound;
 
                 if(!duplicateFound && dataComponent.getDataIsValid()) {
@@ -196,9 +180,7 @@ public final class AppActions implements ActionComponent {
         StringBuilder sb = new StringBuilder();
         String[] parts = { path.substring(0, path.length()/3), path.substring(path.length()/3,
                         (path.length()/3)*2), path.substring((path.length()/3)*2) };
-        sb.append(parts[0]);
-        sb.append("\n" + parts[1]);
-        sb.append("\n" + parts[2]);
+        sb.append(parts[0]).append("\n").append(parts[1]).append("\n").append(parts[2]);
         return sb.toString(); }
 
     @Override
@@ -214,9 +196,7 @@ public final class AppActions implements ActionComponent {
     }
 
     @Override
-    public void handlePrintRequest() {
-        // TODO: NOT A PART OF HW 1
-    }
+    public void handlePrintRequest() { }
 
     public void handleScreenshotRequest() throws IOException {
         PropertyManager    manager = applicationTemplate.manager;
@@ -249,10 +229,8 @@ public final class AppActions implements ActionComponent {
                 ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", selected);
 
             } else {
-                IOException ex
-                        = new IOException(manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name()));
-                throw ex;
-                }
+                throw new IOException(manager.getPropertyValue(AppPropertyTypes.RESOURCE_SUBDIR_NOT_FOUND.name()));
+            }
         }
     }
 
@@ -312,6 +290,7 @@ public final class AppActions implements ActionComponent {
         wasLoaded.set(false);
     }
 
+    /** Application Confirmation Dialogs/Error Dialogs */
     private void errorHandlingHelper() {
         ErrorDialog     dialog   = (ErrorDialog) applicationTemplate.getDialog(Dialog.DialogType.ERROR);
         PropertyManager manager  = applicationTemplate.manager;
@@ -356,11 +335,10 @@ public final class AppActions implements ActionComponent {
 
     private void outputDataToTxtArea(){
         TextArea textArea = ((AppUI) applicationTemplate.getUIComponent()).getTextArea();
-            for (int i = 0; i < firstTenLines.size(); i++) {
-                if (firstTenLines.get(i) == null) { break; }
-                else                              { textArea.appendText(firstTenLines.get(i) +
-                                                        System.getProperty("line.separator")); }
-            }
+        for (String firstTenLine : firstTenLines) {
+            if (firstTenLine == null) { break; }
+            else { textArea.appendText(firstTenLine + System.getProperty("line.separator")); }
+        }
     }
 
     private void saveRequestHandler() throws IOException {
@@ -391,26 +369,27 @@ public final class AppActions implements ActionComponent {
             save();
     }
 
-    private boolean promptToTerminateAlgorithm(){
-        PropertyManager    manager     = applicationTemplate.manager;
-        AppUI              uiComponent = ((AppUI) applicationTemplate.getUIComponent());
-        ConfirmationDialog dialog      = ConfirmationDialog.getDialog();
+    private boolean promptToTerminateAlgorithm() {
+        PropertyManager manager = applicationTemplate.manager;
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+        ConfirmationDialog dialog = ConfirmationDialog.getDialog();
 
         /* checking if an algorithm is running */
-        if(uiComponent.getAlgorithmThread() == null || !uiComponent.getAlgorithmThread().isAlive()) { return true; }
+        if (uiComponent.getAlgorithmThread() == null || !uiComponent.getAlgorithmThread().isAlive()) {
+            return true;
+        }
 
-        dialog.show("Warning",
+        dialog.show(manager.getPropertyValue(AppPropertyTypes.RUNNING_ALGORITHM_TITLE.name()),
                 manager.getPropertyValue(AppPropertyTypes.EXIT_WHILE_RUNNING_WARNING.name()));
 
-        if(dialog.getSelectedOption() == null) return false;
+        if (dialog.getSelectedOption() == null) return false;
 
         /* exit without finishing the current algorithm run */
         if (dialog.getSelectedOption().equals(ConfirmationDialog.Option.YES)) return true;
 
         /* finish running algorithm */
-        if (dialog.getSelectedOption().equals(ConfirmationDialog.Option.NO))  return false;
-
-        return !dialog.getSelectedOption().equals(ConfirmationDialog.Option.CANCEL);
+        return !dialog.getSelectedOption().equals(ConfirmationDialog.Option.NO) &&
+                !dialog.getSelectedOption().equals(ConfirmationDialog.Option.CANCEL);
     }
 
 }

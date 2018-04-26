@@ -29,25 +29,21 @@ functionality within the main workspace. -->
         <property name="SAVE_UNSAVED_WORK_TITLE" value="Save Current Work"/>
         <property name="LOAD_WORK_TITLE" value="Load Previous Work"/>
         <property name="SAVE_SCRNSHOT_TITLE" value="Save Data Screenshot"/>
-        <property name="TOTAL_DATA_LOADED_TITLE" value="Loaded Data"/>
+        <property name="RUNNING_ALGORITHM_TITLE" value="Warning"/>
 
         <!-- APPLICATION-SPECIFIC MESSAGES -->
         <property name="SAVE_UNSAVED_WORK" value="Would you like to save current work?"/>
-        <property name="TOTAL_DATA_LOADED_MSG" value="Loading the first 10 lines."/>
-        <property name="TOTAL_DATA_MSG" value="Loaded Data Consists of: "/>
 
         <!-- APPLICATION-SPECIFIC PARAMETERS -->
         <property name="DATA_FILE_EXT" value=".tsd"/>
         <property name="DATA_FILE_EXT_DESC" value="Tab-Separated Data File"/>
         <property name="SCRNSHOT_FILE_EXT" value=".png"/>
         <property name="SCRNSHOT_FILE_EXT_DESC" value="Portable Network Graphics File"/>
-        <property name="TEXT_AREA" value="text area"/>
         <property name="SPECIFIED_FILE" value=" specified file"/>
         <property name="LEFT_PANE_TITLE" value="Data File"/>
         <property name="LEFT_PANE_TITLEFONT" value="SansSerif"/>
         <property name="LEFT_PANE_TITLESIZE" value="18"/>
         <property name="CHART_TITLE" value="Data Visualization"/>
-        <property name="LINES" value=" lines."/>
         <property name="TEXT_AREA_LOADNAME" value="the text box"/>
 
         <!-- APPLICATION-SPECIFIC BUTTON NAMES -->

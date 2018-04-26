@@ -43,7 +43,7 @@ import static vilij.settings.PropertyTypes.ICONS_RESOURCE_PATH;
 public final class AppUI extends UITemplate {
 
     /** The application to which this class of actions belongs. */
-    ApplicationTemplate applicationTemplate;
+    private ApplicationTemplate applicationTemplate;
 
     @SuppressWarnings("FieldCanBeLocal")
     private Button                       scrnshotButton; // toolbar button to take a screenshot of the data
@@ -68,12 +68,10 @@ public final class AppUI extends UITemplate {
     /** Classification Algorithm UI */
     private VBox                         classificationAlgOptionPane;
     private RadioButton                  randomClassificationBtn;
-    private Button                       classificationConfigBtn;
 
     /** Clustering Algorithm UI */
     private VBox                         clusteringAlgOptionPane;
     private RadioButton                  randomClusteringBtn;
-    private Button                       clusteringConfigBtn;
 
     /** Algorithms */
     private RandomClassifier             randomClassifier;
@@ -245,7 +243,6 @@ public final class AppUI extends UITemplate {
 
     private void displayToChart(){
         try {
-            //AppData dataComponent = (AppData) applicationTemplate.getDataComponent();
             chart.getData().clear();
             setDisplayActions();
         } catch (Exception e) {
@@ -482,7 +479,7 @@ public final class AppUI extends UITemplate {
 
         randomClassificationBtn.setMinHeight(35);
 
-        classificationConfigBtn = setConfigurationButton(classificationConfigBtn);
+        Button classificationConfigBtn = setConfigurationButton();
 
         HBox algorithmOption = new HBox();
         algorithmOption.setSpacing(10);
@@ -515,7 +512,7 @@ public final class AppUI extends UITemplate {
 
         randomClusteringBtn.setMinHeight(35);
 
-        clusteringConfigBtn = setConfigurationButton(clusteringConfigBtn);
+        Button clusteringConfigBtn = setConfigurationButton();
 
         HBox algorithmOption = new HBox();
         algorithmOption.setSpacing(10);
@@ -540,8 +537,8 @@ public final class AppUI extends UITemplate {
         leftPanel.getChildren().remove(clusteringAlgOptionPane);
     }
 
-    /* called from showClassificationAlgorithmOption() and showClusteringAlgorithmOption()*/
-    private Button setConfigurationButton(Button configButton){
+    /* called from showClassificationAlgorithmOption() and showClusteringAlgorithmOption() */
+    private Button setConfigurationButton(){
         PropertyManager manager = applicationTemplate.manager;
         String iconsPath = SEPARATOR + String.join(SEPARATOR,
                 manager.getPropertyValue(GUI_RESOURCE_PATH.name()),
@@ -549,8 +546,7 @@ public final class AppUI extends UITemplate {
         String configurationPath = String.join(SEPARATOR,
                 iconsPath,
                 manager.getPropertyValue(AppPropertyTypes.CONFIGURATION_ICON.name()));
-        configButton = new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configurationPath))));
-        return configButton;
+        return new Button(null, new ImageView(new Image(getClass().getResourceAsStream(configurationPath))));
     }
 
     /** Show Run Configuration UI Actions */
@@ -591,7 +587,7 @@ public final class AppUI extends UITemplate {
         randomClassifier = new RandomClassifier
                 (dataSet, maxIterations, updateInterval, continuousRun, applicationTemplate);
 
-        algorithmThread = new Thread(randomClassifier); //starting the task in a background thread
+        algorithmThread = new Thread(randomClassifier); // starting the task in another thread
         runButton.setDisable(true);
         displayToChart();
         algorithmThread.start();
@@ -654,7 +650,7 @@ public final class AppUI extends UITemplate {
 
     private int generateXMin(){
         AppData              dataComponent = ((AppData) applicationTemplate.getDataComponent());
-        Map<String, Point2D> dataPoints    =  dataComponent.getTSDProcessor().getDataPoints();
+        Map<String, Point2D> dataPoints    = dataComponent.getTSDProcessor().getDataPoints();
         int                  min           = Integer.MAX_VALUE;
         for (Map.Entry<String, Point2D> entry : dataPoints.entrySet()) {
             if(entry.getValue().getX() < min) { min = (int) entry.getValue().getX(); }
