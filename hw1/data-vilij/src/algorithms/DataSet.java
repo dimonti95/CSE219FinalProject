@@ -79,4 +79,10 @@ public class DataSet {
         });
         return dataset;
     }
+
+    /** Sets all labels to "null" for clustering algorithms */
+    protected void setLabelsNull(){ labels.forEach((x,y) -> labels.put(x, "null")); }
+
+
+
 }

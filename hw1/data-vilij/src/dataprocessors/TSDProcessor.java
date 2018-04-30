@@ -48,6 +48,7 @@ public final class TSDProcessor {
 
     /** getters */
     public Map getDataPoints(){ return dataPoints; }
+    public Map getDataLabels(){ return dataLabels; }
 
     /**
      * Processes the data and populated two {@link Map} objects with the data.

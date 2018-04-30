@@ -21,12 +21,11 @@ public class RandomClassifier extends Classifier {
     // this mock classifier doesn't actually use the data, but a real classifier will
     private DataSet dataset;
     private ApplicationTemplate applicationTemplate;
-    private int intervalCounter; //test
+    private int intervalCounter;
 
     private final int maxIterations;
     private final int updateInterval;
 
-    // currently, this value does not change after instantiation
     private final AtomicBoolean tocontinue;
 
     @Override

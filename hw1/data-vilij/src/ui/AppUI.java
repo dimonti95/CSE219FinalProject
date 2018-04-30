@@ -4,6 +4,7 @@ import actions.AppActions;
 
 import algorithms.DataSet;
 import algorithms.RandomClassifier;
+import algorithms.RandomClusterer;
 import dataprocessors.AppData;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -593,7 +594,25 @@ public final class AppUI extends UITemplate {
         algorithmThread.start();
     }
 
-    private void setRunClusteringActions() { /*System.out.println("clustering");*/ }
+    private void setRunClusteringActions() {
+        DataSet dataSet        = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
+        int     maxIterations  = clusteringConfigUI.maxIterations;
+        int     updateInterval = clusteringConfigUI.updateInterval;
+        int     numOfLabels    = clusteringConfigUI.totalDistinctLabels;
+        boolean continuousRun  = clusteringConfigUI.continuousRun;
+
+        RandomClusterer randomClusterer = new RandomClusterer(dataSet,
+                                                              maxIterations,
+                                                              updateInterval,
+                                                              numOfLabels,
+                                                              continuousRun,
+                                                              applicationTemplate);
+
+        algorithmThread = new Thread(randomClusterer);
+        runButton.setDisable(true);
+        displayToChart();
+        algorithmThread.start();
+    }
 
     private void hideRunButton(){
         leftPanel.getChildren().remove(runButtonPane);
@@ -685,4 +704,8 @@ public final class AppUI extends UITemplate {
         randomClassificationBtn.setDisable(true);  // required for 'Next Interval' Button functionality
     }
 
+
+
+
 }
+

@@ -1,8 +1,10 @@
 package actions;
 
+import algorithms.DataSet;
 import dataprocessors.AppData;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Point2D;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -391,5 +394,17 @@ public final class AppActions implements ActionComponent {
         return !dialog.getSelectedOption().equals(ConfirmationDialog.Option.NO) &&
                 !dialog.getSelectedOption().equals(ConfirmationDialog.Option.CANCEL);
     }
+
+    /** Loads Tab Separated Data into the DataSet */
+    public DataSet getLoadedDataSet(){
+        DataSet dataSet        = new DataSet();
+        AppData dataComponent  = (AppData) applicationTemplate.getDataComponent();
+        Map<String, String>  dataLabels = dataComponent.getTSDProcessor().getDataLabels();
+        Map<String, Point2D> dataPoints = dataComponent.getTSDProcessor().getDataPoints();
+        dataLabels.forEach((x,y) -> dataSet.getLabels().put(x, y));
+        dataPoints.forEach((x,y) -> dataSet.getLocations().put(x, y));
+        return dataSet;
+    }
+
 
 }

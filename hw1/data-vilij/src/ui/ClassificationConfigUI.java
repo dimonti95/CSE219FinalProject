@@ -19,7 +19,7 @@ import static settings.AppPropertyTypes.DEFAULT_ITERATIONS_VAL;
 public class ClassificationConfigUI extends ConfigUI {
 
     /** The application to which this class of actions belongs. */
-    ApplicationTemplate applicationTemplate;
+    private ApplicationTemplate applicationTemplate;
 
     public ClassificationConfigUI(ApplicationTemplate applicationTemplate){
         this.applicationTemplate = applicationTemplate;

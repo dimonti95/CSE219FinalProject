@@ -22,13 +22,13 @@ import static settings.AppPropertyTypes.DEFAULT_ITERATIONS_VAL;
 public class ClusteringConfigUI extends ConfigUI{
 
     /** The application to which this class of actions belongs. */
-    ApplicationTemplate applicationTemplate;
+    private ApplicationTemplate applicationTemplate;
 
     /** back end components */
     Integer totalDistinctLabels;
 
     /** front end components */
-    TextField totalDistinctLblsFeild;
+    private TextField totalDistinctLblsFeild;
 
     public ClusteringConfigUI(ApplicationTemplate applicationTemplate){
         this.applicationTemplate = applicationTemplate;
