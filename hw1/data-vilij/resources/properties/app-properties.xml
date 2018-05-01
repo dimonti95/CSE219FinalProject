@@ -81,6 +81,10 @@ functionality within the main workspace. -->
         <!-- APPLICATION-SPECIFIC SERIES NAMES -->
         <property name="CLASSIFIER_SERIES" value="Classifier"/>
 
+        <!-- ALGORITHM NAMES -->
+        <property name="ALGORITHM_1" value="KMeansClusterer"/>
+
+
     </property_list>
     <property_options_list/>
 </properties>

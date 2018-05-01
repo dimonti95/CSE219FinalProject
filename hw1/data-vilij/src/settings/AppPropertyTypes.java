@@ -84,4 +84,7 @@ public enum AppPropertyTypes {
     /* application-specific series names */
     CLASSIFIER_SERIES,
 
+    /* algorithm names */
+    ALGORITHM_1,
+
     }

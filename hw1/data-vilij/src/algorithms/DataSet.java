@@ -1,13 +1,15 @@
 package algorithms;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.scene.chart.XYChart;
+import ui.AppUI;
+import vilij.templates.ApplicationTemplate;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * This class specifies how an algorithm will expect the dataset to be. It is
@@ -16,7 +18,7 @@ import java.util.NoSuchElementException;
  * completely write your own class to represent a set of data instances as long
  * as the algorithm can read from and write into two {@link java.util.Map}
  * objects representing the name-to-label map and the name-to-location (i.e.,
- * the x,y values) map. These two are the {@link DataSet#labels} and
+ * the x,y values) map. These two are the {@link DataSet#dataLabels} and
  * {@link DataSet#locations} maps in this class.
  *
  * @author Ritwik Banerjee
@@ -27,7 +29,7 @@ public class DataSet {
 
         private static final String NAME_ERROR_MSG = "All data instance names must start with the @ character.";
 
-        public InvalidDataNameException(String name) {
+        InvalidDataNameException(String name) {
             super(String.format("Invalid name '%s'." + NAME_ERROR_MSG, name));
         }
     }
@@ -43,28 +45,28 @@ public class DataSet {
         return new Point2D(Double.parseDouble(coordinateStrings[0]), Double.parseDouble(coordinateStrings[1]));
     }
 
-    private Map<String, String>  labels;
+    private Map<String, String>  dataLabels;
     private Map<String, Point2D> locations;
 
     /** Creates an empty dataset. */
     public DataSet() {
-        labels = new HashMap<>();
-        locations = new HashMap<>();
+        dataLabels = new HashMap<>();
+        locations  = new HashMap<>();
     }
 
-    public Map<String, String> getLabels()     { return labels; }
+    public Map<String, String> getLabels()     { return dataLabels; }
 
     public Map<String, Point2D> getLocations() { return locations; }
 
     public void updateLabel(String instanceName, String newlabel) {
-        if (labels.get(instanceName) == null)
+        if (dataLabels.get(instanceName) == null)
             throw new NoSuchElementException();
-        labels.put(instanceName, newlabel);
+        dataLabels.put(instanceName, newlabel);
     }
 
     private void addInstance(String tsdLine) throws InvalidDataNameException {
         String[] arr = tsdLine.split("\t");
-        labels.put(nameFormatCheck(arr[0]), arr[1]);
+        dataLabels.put(nameFormatCheck(arr[0]), arr[1]);
         locations.put(arr[0], locationOf(arr[2]));
     }
 
@@ -80,9 +82,20 @@ public class DataSet {
         return dataset;
     }
 
-    /** Sets all labels to "null" for clustering algorithms */
-    protected void setLabelsNull(){ labels.forEach((x,y) -> labels.put(x, "null")); }
-
-
+    /** Displays DataSet to the chart in the main UI window */
+    void toChartData(XYChart<Number, Number> chart, ApplicationTemplate applicationTemplate) {
+        Platform.runLater(() -> chart.getData().clear()); // clearing data from previously displayed interval
+        Set<String> labels = new HashSet<>(dataLabels.values());
+        for (String label : labels) {
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
+            series.setName(label);
+            dataLabels.entrySet().stream().filter(entry -> entry.getValue().equals(label)).forEach(entry -> {
+                Point2D point = locations.get(entry.getKey());
+                series.getData().add(new XYChart.Data<>(point.getX(), point.getY()));
+            });
+            /* displaying data from the main thread */
+            Platform.runLater(() -> ((AppUI) applicationTemplate.getUIComponent()).displayClusteredData(series));
+        }
+    }
 
 }

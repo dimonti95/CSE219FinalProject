@@ -4,10 +4,12 @@ import javafx.application.Platform;
 import ui.AppUI;
 import vilij.templates.ApplicationTemplate;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RandomClusterer extends Clusterer{
 
+    private static final Random RAND = new Random();
     private DataSet dataSet;
     private ApplicationTemplate applicationTemplate;
     private int intervalCounter;
@@ -26,33 +28,6 @@ public class RandomClusterer extends Clusterer{
     @Override
     public boolean tocontinue() { return tocontinue.get(); }
 
-    @Override
-    public void run() {
-        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
-        dataSet.setLabelsNull();
-        dataSet.getLabels().forEach((x,y) -> System.out.println(y)); //test
-
-        if      (tocontinue())  { Platform.runLater(uiComponent::disableToolbar);
-                                  runAlgorithmContinuously();
-                                  Platform.runLater(uiComponent::enableToolbar); }
-
-        else if (!tocontinue()) { Platform.runLater(uiComponent::showIntervalButton);
-            uiComponent.enableToolbar();
-            uiComponent.getNewButton().setDisable(true);
-            uiComponent.getLoadButton().setDisable(true);
-            uiComponent.getSaveButton().setDisable(true);
-            //runAlgorithmInIntervals();
-            uiComponent.enableToolbar();}
-    }
-
-    private void runAlgorithmContinuously(){
-        for (int i = 1; i <= maxIterations; i++) {
-
-
-        }
-    }
-
-
     public RandomClusterer(DataSet dataSet,
                            int maxIterations,
                            int updateInterval,
@@ -68,9 +43,91 @@ public class RandomClusterer extends Clusterer{
         this.intervalCounter = 0;
     }
 
-    //for testing purposes
-    public static void main(String[] args){
+    @Override
+    public void run() {
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
 
+        if      (tocontinue())  { Platform.runLater(uiComponent::disableToolbar);
+                                  runAlgorithmContinuously();
+                                  Platform.runLater(uiComponent::enableToolbar); }
+
+        else if (!tocontinue()) { Platform.runLater(uiComponent::showIntervalButton);
+                                  uiComponent.disableToolbar();
+                                  uiComponent.getScrnshotButton().setDisable(false);
+                                  runAlgorithmInIntervals();
+                                  uiComponent.enableToolbar(); }
+
+        uiComponent.getRunButton().setDisable(false);
+        Platform.runLater(uiComponent::generateDataInformation); // back to Algorithm Type menu
     }
 
+    /** Displaying each interval continuously */
+    private void runAlgorithmContinuously(){
+        for (int i = 1; i <= maxIterations; i++) {
+
+            dataSet.getLabels().forEach((x,y) -> dataSet.updateLabel(x, String.valueOf(RAND.nextInt(numberOfClusters) + 1)));
+
+            intervalCounter++;
+
+            if(intervalCounter == updateInterval) {
+                intervalCounter = 0;
+                showContinuousInterval();
+                System.out.println("Iteration: " + i); // for internal viewing
+            }
+        }
+    }
+
+    private void showContinuousInterval(){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        dataSet.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart(), applicationTemplate);
+    }
+
+    /**  Displaying each interval in stages */
+    private void runAlgorithmInIntervals() {
+        for (int i = 1; i <= maxIterations; i++) {
+
+            dataSet.getLabels().forEach((x,y) -> dataSet.updateLabel(x, String.valueOf(RAND.nextInt(numberOfClusters) + 1)));
+
+            intervalCounter++;
+
+            if(intervalCounter == updateInterval) {
+                intervalCounter = 0;
+                showInterval();
+                System.out.println("Iteration: " + i); // for internal viewing
+            }
+        }
+    }
+
+    private void showInterval(){
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+
+        synchronized (this) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            uiComponent.getScrnshotButton().setDisable(true); // simulating running algorithm
+            Thread.sleep(1000);
+            uiComponent.getScrnshotButton().setDisable(false); // simulating running algorithm
+        } catch (InterruptedException e) {
+            System.out.println("InterruptedException");
+        }
+
+        dataSet.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart(), applicationTemplate);
+    }
+
+    public void notifyThread(){
+        synchronized (this) {
+            notify();
+        }
+    }
+    
 }

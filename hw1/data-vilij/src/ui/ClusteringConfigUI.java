@@ -168,7 +168,7 @@ public class ClusteringConfigUI extends ConfigUI{
         PropertyManager manager = applicationTemplate.manager;
         iterationsField.setText(manager.getPropertyValue(DEFAULT_ITERATIONS_VAL.name()));
         intervalField.setText(manager.getPropertyValue(DEFAULT_INTERVAL_VAL.name()));
-        totalDistinctLblsFeild.setText("2");
+        totalDistinctLblsFeild.setText("4");
         continuousRun = false;
     }
 
