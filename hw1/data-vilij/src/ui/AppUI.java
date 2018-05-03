@@ -2,10 +2,7 @@ package ui;
 
 import actions.AppActions;
 
-import algorithms.DataSet;
-import algorithms.KMeansClusterer;
-import algorithms.RandomClassifier;
-import algorithms.RandomClusterer;
+import algorithms.*;
 import dataprocessors.AppData;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -32,6 +29,7 @@ import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -71,27 +69,33 @@ public final class AppUI extends UITemplate {
     /** Classification Algorithm UI */
     private VBox                       classificationAlgOptionPane;
     private RadioButton                randomClassificationBtn;
-    private RadioButton                clusteringAlg1Btn;
 
     /** Clustering Algorithm UI */
     private VBox                       clusteringAlgOptionPane;
     private RadioButton                randomClusteringBtn;
+    private RadioButton                algorithm1Btn;
+    private boolean                    algorithm1IsSelected;
 
     /** Algorithms */
     private RandomClassifier           randomClassifier;
     private RandomClusterer            randomClusterer;
+    private Algorithm                  algorithm;
     private Thread                     algorithmThread;
 
     /** Edit/Done UI */
     private ToggleButton               doneDataToggle;
 
     /** Algoirthm Configuration Objects */
-    private ClassificationConfigUI     classificationConfigUI;
-    private ClusteringConfigUI         clusteringConfigUI;
+    private ClassificationConfigUI     randClassificationConfigUI;
+    private ClusteringConfigUI         randClusteringConfigUI;
+    private ClusteringConfigUI         algorithm1ConfigUI;
 
     /** Run Button */
     private VBox                       runButtonPane;
     private Button                     runButton;
+
+    /** Next Interval Button */
+    private Button                     nextIntervalButton;
 
     /** getters */
     public LineChart<Number, Number> getChart()          { return chart; }
@@ -100,6 +104,7 @@ public final class AppUI extends UITemplate {
     public Button                    getScrnshotButton() { return scrnshotButton; }
     public Button                    getSaveButton()     { return saveButton; }
     public Button                    getRunButton()      { return runButton; }
+    public Button                    getNextIntervalBtn(){ return nextIntervalButton; }
     public TextArea                  getTextArea()       { return textArea; }
     public Thread                    getAlgorithmThread(){ return algorithmThread; }
 
@@ -152,8 +157,9 @@ public final class AppUI extends UITemplate {
         layout();
         setWorkspaceActions();
         runButton = new Button(applicationTemplate.manager.getPropertyValue(AppPropertyTypes.RUN_BUTTON.name()));
-        classificationConfigUI = new ClassificationConfigUI(applicationTemplate);
-        clusteringConfigUI     = new ClusteringConfigUI(applicationTemplate);
+        randClassificationConfigUI = new ClassificationConfigUI(applicationTemplate);
+        randClusteringConfigUI = new ClusteringConfigUI(applicationTemplate);
+        algorithm1ConfigUI     = new ClusteringConfigUI(applicationTemplate);
         initializeAlgorithmTypeOptions();
     }
 
@@ -497,9 +503,11 @@ public final class AppUI extends UITemplate {
         leftPanel.getChildren().addAll(classificationAlgOptionPane);
     }
             private void setRandomClassificationBtnActions(){
-                if(randomClassificationBtn.isSelected()) { showRunButton(); }
+                if(randomClassificationBtn.isSelected()) {  algorithm1IsSelected = false;
+                                                            showRunButton(); }
                 else { hideRunButton(); }
-                if(!classificationConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
+                if(!randClassificationConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
+                else { runButton.setDisable(false); } // if configuration has been set then enable run option
             }
 
     private void hideClassificationAlgorithmOption() {
@@ -511,30 +519,52 @@ public final class AppUI extends UITemplate {
         Label clusteringAlgorithmLbl  = new Label(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_LABEL.name()));
         clusteringAlgOptionPane = new VBox();
         randomClusteringBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_RADIOBUTTON.name()));
-        clusteringAlg1Btn       = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_RADIOBUTTON.name())); //TODO
+        algorithm1Btn = new RadioButton(manager.getPropertyValue(AppPropertyTypes.ALGORITHM_1.name()));
 
         randomClusteringBtn.setMinHeight(35);
-        clusteringAlg1Btn.setMinHeight(35); //TODO
+        algorithm1Btn.setMinHeight(35);
 
         Button clusteringConfigBtn = setConfigurationButton();
+        Button algorithm1ConfigBtn = setConfigurationButton();
 
-        HBox algorithmOption = new HBox();
-        algorithmOption.setSpacing(10);
-        algorithmOption.setPadding(new Insets(10));
-        algorithmOption.getChildren().addAll(randomClusteringBtn, clusteringConfigBtn);
+        HBox randomClustererOptionPane = new HBox();
+        randomClustererOptionPane.setSpacing(10);
+        randomClustererOptionPane.setPadding(new Insets(10));
+        randomClustererOptionPane.getChildren().addAll(randomClusteringBtn, clusteringConfigBtn);
+
+        HBox algorithm1OptionPane = new HBox();
+        algorithm1OptionPane.setSpacing(10);
+        algorithm1OptionPane.setPadding(new Insets(10));
+        algorithm1OptionPane.getChildren().addAll(algorithm1Btn, algorithm1ConfigBtn);
 
         randomClusteringBtn.setOnAction(event -> setRandomClusteringBtnActions());
         clusteringConfigBtn.setOnAction(event -> showClusteringConfigUI());
 
-        clusteringAlgOptionPane.getChildren().addAll(clusteringAlgorithmLbl, algorithmOption);
+        algorithm1Btn.setOnAction(event -> setAlgorithm1BtnActions());
+        algorithm1ConfigBtn.setOnAction(event -> showAlgorithm1ConfigUI());
+
+        clusteringAlgOptionPane.getChildren().addAll(clusteringAlgorithmLbl, randomClustererOptionPane, algorithm1OptionPane);
         clusteringAlgOptionPane.setAlignment(Pos.BASELINE_LEFT);
 
-        leftPanel.getChildren().add(clusteringAlgOptionPane);
+        leftPanel.getChildren().addAll(clusteringAlgOptionPane);
     }
             private void setRandomClusteringBtnActions(){
-                if(randomClusteringBtn.isSelected()) { showRunButton(); }
+                if(randomClusteringBtn.isSelected()) {  algorithm1Btn.setSelected(false);
+                                                        algorithm1IsSelected = false;
+                                                        showRunButton(); }
                 else { hideRunButton(); }
-                if(!clusteringConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
+                if(!randClusteringConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
+                else { runButton.setDisable(false); } // if configuration has been set then enable run option
+            }
+
+            private void setAlgorithm1BtnActions(){
+                if(algorithm1Btn.isSelected()) { algorithm1IsSelected = true;
+                                                 randomClusteringBtn.setSelected(false);
+                                                 showRunButton(); }
+                else { hideRunButton();
+                       algorithm1IsSelected = false; }
+                if(!algorithm1ConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
+                else { runButton.setDisable(false); } // if configuration has been set then enable run option
             }
 
     private void hideClusteringAlgorithmOption() {
@@ -555,28 +585,41 @@ public final class AppUI extends UITemplate {
 
     /** Show Run Configuration UI Actions */
     private void showClassificationConfigUI(){
-        classificationConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
-        classificationConfigUI.show();
+        randClassificationConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
+        randClassificationConfigUI.show();
     }
 
     private void showClusteringConfigUI(){
-        clusteringConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
-        clusteringConfigUI.show();
+        randClusteringConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
+        randClusteringConfigUI.show();
+    }
+
+    private void showAlgorithm1ConfigUI(){
+        algorithm1ConfigUI.init(applicationTemplate.getUIComponent().getPrimaryWindow());
+        algorithm1ConfigUI.show();
     }
 
     /** Run Button Actions */
     private void showRunButton(){
+        hideRunButton(); //removes any previously added run button
+
         runButtonPane = new VBox();
 
         runButtonPane.getChildren().add(runButton);
         runButtonPane.setAlignment(Pos.BOTTOM_LEFT);
 
-        if(classificationIsSelected) {
-            runButton.setOnAction(event -> setRunClassificationActions());
-        }
+        if(algorithm1IsSelected) {
+            runButton.setOnAction(event -> setAlgorithm1Actions());
+        } else {
 
-        if(clusteringIsSelected) {
-            runButton.setOnAction(event -> setRunClusteringActions());
+            if (classificationIsSelected) {
+                runButton.setOnAction(event -> setRunClassificationActions());
+            }
+
+            if (clusteringIsSelected) {
+                runButton.setOnAction(event -> setRunClusteringActions());
+            }
+
         }
 
         leftPanel.getChildren().add(runButtonPane);
@@ -584,9 +627,9 @@ public final class AppUI extends UITemplate {
 
     private void setRunClassificationActions() {
         DataSet dataSet        = new DataSet();
-        int     maxIterations  = classificationConfigUI.maxIterations;
-        int     updateInterval = classificationConfigUI.updateInterval;
-        boolean continuousRun  = classificationConfigUI.continuousRun;
+        int     maxIterations  = randClassificationConfigUI.maxIterations;
+        int     updateInterval = randClassificationConfigUI.updateInterval;
+        boolean continuousRun  = randClassificationConfigUI.continuousRun;
 
         randomClassifier = new RandomClassifier
                 (dataSet, maxIterations, updateInterval, continuousRun, applicationTemplate);
@@ -599,10 +642,10 @@ public final class AppUI extends UITemplate {
 
     private void setRunClusteringActions() {
         DataSet dataSet        = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
-        int     maxIterations  = clusteringConfigUI.maxIterations;
-        int     updateInterval = clusteringConfigUI.updateInterval;
-        int     numOfLabels    = clusteringConfigUI.totalDistinctLabels;
-        boolean continuousRun  = clusteringConfigUI.continuousRun;
+        int     maxIterations  = randClusteringConfigUI.maxIterations;
+        int     updateInterval = randClusteringConfigUI.updateInterval;
+        int     numOfLabels    = randClusteringConfigUI.totalDistinctLabels;
+        boolean continuousRun  = randClusteringConfigUI.continuousRun;
 
         randomClusterer = new RandomClusterer(dataSet,
                 maxIterations, updateInterval, numOfLabels, continuousRun, applicationTemplate);
@@ -681,15 +724,21 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
         runButtonPane.getChildren().remove(runButton);
 
-        Button nextIntervalButton = new Button(manager.getPropertyValue(AppPropertyTypes.NEXT_INTERVAL_BUTTON.name()));
+        nextIntervalButton = new Button(manager.getPropertyValue(AppPropertyTypes.NEXT_INTERVAL_BUTTON.name()));
 
         runButtonPane.getChildren().add(nextIntervalButton);
 
-        if(classificationIsSelected) { nextIntervalButton.setOnAction(event -> randomClassifier.notifyThread()); }
+        if(algorithm1IsSelected) { nextIntervalButton.setOnAction(event -> algorithm.notifyThread()); }
+        else {
+            if (classificationIsSelected) {
+                nextIntervalButton.setOnAction(event -> randomClassifier.notifyThread());
+            }
 
-        if(clusteringIsSelected) { nextIntervalButton.setOnAction(event -> randomClusterer.notifyThread()); }
+            if (clusteringIsSelected) {
+                nextIntervalButton.setOnAction(event -> randomClusterer.notifyThread());
+            }
+        }
     }
-
 
     public void disableToolbar(){
         newButton.setDisable(true);
@@ -706,38 +755,35 @@ public final class AppUI extends UITemplate {
         if(classificationIsSelected) randomClassificationBtn.setDisable(true); // required for 'Next Interval' Button functionality
     }
 
-    private void setRunAlgorithmActions(){
+    private void setAlgorithm1Actions(){
         PropertyManager manager = applicationTemplate.manager;
-        DataSet dataSet        = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
-        int     maxIterations  = clusteringConfigUI.maxIterations;
-        int     updateInterval = clusteringConfigUI.updateInterval;
-        int     numOfLabels    = clusteringConfigUI.totalDistinctLabels;
-        //boolean continuousRun  = clusteringConfigUI.continuousRun;
-        //String algorithmClass = manager.getPropertyValue(AppPropertyTypes.ALGORITHM_1.name()); // string name of
+        DataSet dataSet         = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
+        int     maxIterations   = algorithm1ConfigUI.maxIterations;
+        int     updateInterval  = algorithm1ConfigUI.updateInterval;
+        int     numOfLabels     = algorithm1ConfigUI.totalDistinctLabels;
+        boolean continuousRun   = algorithm1ConfigUI.continuousRun;
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.ALGORITHM_1_LOCATION.name()); // algorithm class path
 
-        Class algorithmKlass = KMeansClusterer.class;
-        KMeansClusterer kMeansClusterer = null;
+        algorithm = null;
 
         try {
-            java.lang.reflect.Constructor constructor = algorithmKlass.getConstructor(DataSet.class,
-                    int.class,
-                    int.class,
-                    int.class);
-            //Object konstructor = algorithmKlass.getConstructor(DataSet.class, int.class, int.class, int.class)
-            //        .newInstance(new DataSet(), 10, 5, 4);
-            kMeansClusterer = (KMeansClusterer) constructor.newInstance(dataSet,
-                                                                                  maxIterations,
-                                                                                  updateInterval,
-                                                                                  numOfLabels);
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+
+            algorithm = (Algorithm) Class.forName(algorithmClassPath)
+                             .getConstructor(DataSet.class, int.class, int.class, int.class, boolean.class, ApplicationTemplate.class)
+                             .newInstance(dataSet, maxIterations, updateInterval, numOfLabels, continuousRun, applicationTemplate);
+
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
-        algorithmThread = new Thread(kMeansClusterer);
+        algorithmThread = new Thread(algorithm);
+        runButton.setDisable(true);
+        displayToChart();
         algorithmThread.start();
     }
 
-    /** Called from the DataSet instance field of an algorithm object */
+    /** Called from the DataSet instance field of an algorithm object from the algorithms thread */
     public void displayClusteredData(XYChart.Series<Number, Number> series){
         chart.getData().add(series);
     }

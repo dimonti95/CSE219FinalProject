@@ -82,7 +82,6 @@ public class RandomClassifier extends Classifier {
             int yCoefficient = 10;
             int constant     = RAND.nextInt(11);
 
-
             // this is the real output of the classifier
             output = Arrays.asList(xCoefficient, yCoefficient, constant);
 
@@ -92,7 +91,6 @@ public class RandomClassifier extends Classifier {
                 intervalCounter = 0;
                 showContinuousInterval();
             }
-
 
             // everything below is just for internal viewing of how the output is changing
             // in the final project, such changes will be dynamically visible in the UI
@@ -162,8 +160,10 @@ public class RandomClassifier extends Classifier {
             }
         }
         try {
+            uiComponent.getNextIntervalBtn().setDisable(true);
             uiComponent.getScrnshotButton().setDisable(true); // simulating running algorithm
             Thread.sleep(1000);
+            uiComponent.getNextIntervalBtn().setDisable(false);
             uiComponent.getScrnshotButton().setDisable(false); // simulating running algorithm
         } catch (InterruptedException e) {
             e.printStackTrace();

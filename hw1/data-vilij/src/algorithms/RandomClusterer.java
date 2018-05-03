@@ -115,8 +115,10 @@ public class RandomClusterer extends Clusterer{
 
         try {
             uiComponent.getScrnshotButton().setDisable(true); // simulating running algorithm
+            uiComponent.getNextIntervalBtn().setDisable(true);
             Thread.sleep(1000);
             uiComponent.getScrnshotButton().setDisable(false); // simulating running algorithm
+            uiComponent.getNextIntervalBtn().setDisable(false);
         } catch (InterruptedException e) {
             System.out.println("InterruptedException");
         }

@@ -86,5 +86,6 @@ public enum AppPropertyTypes {
 
     /* algorithm names */
     ALGORITHM_1,
+    ALGORITHM_1_LOCATION,
 
     }

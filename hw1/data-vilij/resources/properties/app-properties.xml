@@ -83,6 +83,7 @@ functionality within the main workspace. -->
 
         <!-- ALGORITHM NAMES -->
         <property name="ALGORITHM_1" value="KMeansClusterer"/>
+        <property name="ALGORITHM_1_LOCATION" value="algorithms.KMeansClusterer"/>
 
 
     </property_list>

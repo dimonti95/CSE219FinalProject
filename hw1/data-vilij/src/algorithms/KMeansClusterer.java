@@ -1,6 +1,9 @@
 package algorithms;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import ui.AppUI;
+import vilij.templates.ApplicationTemplate;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,13 +23,24 @@ public class KMeansClusterer extends Clusterer {
     private final int           updateInterval;
     private final AtomicBoolean tocontinue;
 
+    /** added */
+    private final boolean       isContinuous;
+    private int                 intervalCounter;
+    private ApplicationTemplate applicationTemplate;
 
-    public KMeansClusterer(DataSet dataset, int maxIterations, int updateInterval, int numberOfClusters) {
+    public KMeansClusterer(DataSet dataset,
+                           int maxIterations,
+                           int updateInterval,
+                           int numberOfClusters,
+                           boolean isContinuous,
+                           ApplicationTemplate applicationTemplate) {
         super(numberOfClusters);
         this.dataset = dataset;
         this.maxIterations = maxIterations;
         this.updateInterval = updateInterval;
+        this.isContinuous = isContinuous;
         this.tocontinue = new AtomicBoolean(false);
+        this.applicationTemplate = applicationTemplate;
     }
 
     @Override
@@ -40,12 +54,93 @@ public class KMeansClusterer extends Clusterer {
 
     @Override
     public void run() {
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+
+        if      (isContinuous)  { Platform.runLater(uiComponent::disableToolbar);
+                                  runAlgorithmContinuously();
+                                  Platform.runLater(uiComponent::enableToolbar); }
+
+        else                    { uiComponent.disableToolbar();
+                                  Platform.runLater(uiComponent::showIntervalButton);
+                                  uiComponent.getScrnshotButton().setDisable(false);
+                                  runAlgorithmInIntervals();
+                                  uiComponent.enableToolbar(); }
+
+        uiComponent.getRunButton().setDisable(false);
+        Platform.runLater(uiComponent::generateDataInformation); // back to Algorithm Type menu
+    }
+
+    /** Continuous Run methods */
+    private void runAlgorithmContinuously(){
         initializeCentroids();
         int iteration = 0;
         while (iteration++ < maxIterations & tocontinue.get()) {
             assignLabels();
             recomputeCentroids();
-            System.out.println("iteration " + iteration); //test code
+            if(!tocontinue.get()) { showContinuousInterval(); System.out.println("Iteration: " + iteration); return; } // display final iteration if algorithm stops
+            intervalCounter++;
+            if(intervalCounter == updateInterval) {
+                intervalCounter = 0;
+                showContinuousInterval();
+                System.out.println("Iteration: " + iteration); // for internal viewing
+            }
+        }
+    }
+
+    /* called from runAlgorithmContinuously() */
+    private void showContinuousInterval(){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        dataset.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart(), applicationTemplate);
+    }
+
+    /**  Displaying each interval in stages */
+    private void runAlgorithmInIntervals() {
+        initializeCentroids();
+        int iteration = 0;
+        while (iteration++ < maxIterations & tocontinue.get()) {
+            assignLabels();
+            recomputeCentroids();
+            if(!tocontinue.get()) { showInterval(); System.out.println("Iteration: " + iteration); return; } // display final iteration if algorithm stops
+            intervalCounter++;
+            if(intervalCounter == updateInterval) {
+                intervalCounter = 0;
+                showInterval();
+                System.out.println("Iteration: " + iteration); // for internal viewing
+            }
+        }
+    }
+
+    private void showInterval(){
+        AppUI uiComponent = ((AppUI) applicationTemplate.getUIComponent());
+
+        synchronized (this) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            uiComponent.getScrnshotButton().setDisable(true); // running algorithm
+            uiComponent.getNextIntervalBtn().setDisable(true);
+            Thread.sleep(1000);
+            uiComponent.getNextIntervalBtn().setDisable(false);
+            uiComponent.getScrnshotButton().setDisable(false); // running algorithm
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted Exception");
+        }
+
+        dataset.toChartData(((AppUI) applicationTemplate.getUIComponent()).getChart(), applicationTemplate);
+    }
+
+    public void notifyThread(){
+        synchronized (this) {
+            notify();
         }
     }
 
@@ -102,5 +197,8 @@ public class KMeansClusterer extends Clusterer {
     private static double computeDistance(Point2D p, Point2D q) {
         return Math.sqrt(Math.pow(p.getX() - q.getX(), 2) + Math.pow(p.getY() - q.getY(), 2));
     }
+
+
+
 
 }

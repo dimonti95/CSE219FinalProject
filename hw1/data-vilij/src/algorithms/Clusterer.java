@@ -16,4 +16,6 @@ public abstract class Clusterer implements Algorithm {
             k = 4;
         numberOfClusters = k;
     }
+
+
 }
