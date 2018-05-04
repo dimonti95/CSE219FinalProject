@@ -53,8 +53,6 @@ public enum AppPropertyTypes {
     /* application-specific button names */
     CLUSTERING_BUTTON,
     CLASSIFICATION_BUTTON,
-    CLUSTERING_RADIOBUTTON,
-    CLASSIFICATION_RADIOBUTTON,
     DONE_BUTTON,
     EDIT_BUTTON,
     NEXT_INTERVAL_BUTTON,
@@ -84,8 +82,14 @@ public enum AppPropertyTypes {
     /* application-specific series names */
     CLASSIFIER_SERIES,
 
-    /* algorithm names */
-    ALGORITHM_1,
-    ALGORITHM_1_LOCATION,
+    /* clustering algorithm names */
+    CLUST_ALGORITHM_1,
+    CLUST_ALGORITHM_1_LOCATION,
+    CLUST_ALGORITHM_2,
+    CLUST_ALGORITHM_2_LOCATION,
+
+    /* classification algorithm names */
+    CLASS_ALGORITHM_1,
+    CLASS_ALGORITHM_1_LOCATION,
 
     }

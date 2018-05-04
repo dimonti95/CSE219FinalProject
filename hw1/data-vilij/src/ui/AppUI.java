@@ -29,7 +29,6 @@ import vilij.templates.ApplicationTemplate;
 import vilij.templates.UITemplate;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -74,12 +73,12 @@ public final class AppUI extends UITemplate {
     private VBox                       clusteringAlgOptionPane;
     private RadioButton                randomClusteringBtn;
     private RadioButton                algorithm1Btn;
-    private boolean                    algorithm1IsSelected;
+    private boolean                    algorithm2IsSelected;
 
     /** Algorithms */
-    private RandomClassifier           randomClassifier;
-    private RandomClusterer            randomClusterer;
-    private Algorithm                  algorithm;
+    private Algorithm                  classifAlgorithm1;
+    private Algorithm                  clustAlgorithm1;
+    private Algorithm                  clustAlgorithm2;
     private Thread                     algorithmThread;
 
     /** Edit/Done UI */
@@ -406,6 +405,7 @@ public final class AppUI extends UITemplate {
         clusteringTypeBtn.setOnAction    (event -> setClusteringBtnActions());
 
         if (numOfDistinctLabels != 2) { classificationTypeBtn.setDisable(true); }
+        if (dataComponent.getTSDProcessor().numOfInstances == 1) { clusteringTypeBtn.setDisable(true); }
 
         algTypeOptionPane.getChildren().addAll(algorithmTypeLbl, classificationTypeBtn, clusteringTypeBtn);
         algTypeOptionPane.setAlignment(Pos.BASELINE_LEFT);
@@ -483,7 +483,7 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
         Label classificationAlgorithmLbl = new Label(manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_LABEL.name()));
         classificationAlgOptionPane = new VBox();
-        randomClassificationBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_RADIOBUTTON.name()));
+        randomClassificationBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLASS_ALGORITHM_1.name()));
 
         randomClassificationBtn.setMinHeight(35);
 
@@ -503,7 +503,7 @@ public final class AppUI extends UITemplate {
         leftPanel.getChildren().addAll(classificationAlgOptionPane);
     }
             private void setRandomClassificationBtnActions(){
-                if(randomClassificationBtn.isSelected()) {  algorithm1IsSelected = false;
+                if(randomClassificationBtn.isSelected()) {  algorithm2IsSelected = false;
                                                             showRunButton(); }
                 else { hideRunButton(); }
                 if(!randClassificationConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
@@ -518,8 +518,8 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
         Label clusteringAlgorithmLbl  = new Label(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_LABEL.name()));
         clusteringAlgOptionPane = new VBox();
-        randomClusteringBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_RADIOBUTTON.name()));
-        algorithm1Btn = new RadioButton(manager.getPropertyValue(AppPropertyTypes.ALGORITHM_1.name()));
+        randomClusteringBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_1.name()));
+        algorithm1Btn = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_2.name()));
 
         randomClusteringBtn.setMinHeight(35);
         algorithm1Btn.setMinHeight(35);
@@ -550,7 +550,7 @@ public final class AppUI extends UITemplate {
     }
             private void setRandomClusteringBtnActions(){
                 if(randomClusteringBtn.isSelected()) {  algorithm1Btn.setSelected(false);
-                                                        algorithm1IsSelected = false;
+                                                        algorithm2IsSelected = false;
                                                         showRunButton(); }
                 else { hideRunButton(); }
                 if(!randClusteringConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
@@ -558,11 +558,11 @@ public final class AppUI extends UITemplate {
             }
 
             private void setAlgorithm1BtnActions(){
-                if(algorithm1Btn.isSelected()) { algorithm1IsSelected = true;
+                if(algorithm1Btn.isSelected()) { algorithm2IsSelected = true;
                                                  randomClusteringBtn.setSelected(false);
                                                  showRunButton(); }
                 else { hideRunButton();
-                       algorithm1IsSelected = false; }
+                       algorithm2IsSelected = false; }
                 if(!algorithm1ConfigUI.configurationIsSet.get()) { runButton.setDisable(true); }
                 else { runButton.setDisable(false); } // if configuration has been set then enable run option
             }
@@ -608,16 +608,16 @@ public final class AppUI extends UITemplate {
         runButtonPane.getChildren().add(runButton);
         runButtonPane.setAlignment(Pos.BOTTOM_LEFT);
 
-        if(algorithm1IsSelected) {
-            runButton.setOnAction(event -> setAlgorithm1Actions());
+        if(algorithm2IsSelected) {
+            runButton.setOnAction(event -> setRunClustAlg2Actions());
         } else {
 
             if (classificationIsSelected) {
-                runButton.setOnAction(event -> setRunClassificationActions());
+                runButton.setOnAction(event -> setRunClassifAlg1Actions());
             }
 
             if (clusteringIsSelected) {
-                runButton.setOnAction(event -> setRunClusteringActions());
+                runButton.setOnAction(event -> setRunClustAlg1Actions());
             }
 
         }
@@ -625,36 +625,62 @@ public final class AppUI extends UITemplate {
         leftPanel.getChildren().add(runButtonPane);
     }
 
-    private void setRunClassificationActions() {
+    private void setRunClassifAlg1Actions() {
+        PropertyManager manager = applicationTemplate.manager;
         DataSet dataSet        = new DataSet();
         int     maxIterations  = randClassificationConfigUI.maxIterations;
         int     updateInterval = randClassificationConfigUI.updateInterval;
         boolean continuousRun  = randClassificationConfigUI.continuousRun;
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.CLASS_ALGORITHM_1_LOCATION.name()); // algorithm class path
 
-        randomClassifier = new RandomClassifier
-                (dataSet, maxIterations, updateInterval, continuousRun, applicationTemplate);
+        classifAlgorithm1 = null;
 
-        algorithmThread = new Thread(randomClassifier); // starting the task in another thread
+        try {
+
+            classifAlgorithm1 = (Algorithm) Class.forName(algorithmClassPath)
+                    .getConstructor(DataSet.class, int.class, int.class, boolean.class, ApplicationTemplate.class)
+                    .newInstance(dataSet, maxIterations, updateInterval, continuousRun, applicationTemplate);
+
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        algorithmThread = new Thread(classifAlgorithm1);
         runButton.setDisable(true);
         displayToChart();
         algorithmThread.start();
     }
 
-    private void setRunClusteringActions() {
-        DataSet dataSet        = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
-        int     maxIterations  = randClusteringConfigUI.maxIterations;
-        int     updateInterval = randClusteringConfigUI.updateInterval;
-        int     numOfLabels    = randClusteringConfigUI.totalDistinctLabels;
-        boolean continuousRun  = randClusteringConfigUI.continuousRun;
+    private void setRunClustAlg1Actions() {
+        PropertyManager manager = applicationTemplate.manager;
+        DataSet dataSet         = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
+        int     maxIterations   = randClusteringConfigUI.maxIterations;
+        int     updateInterval  = randClusteringConfigUI.updateInterval;
+        int     numOfLabels     = randClusteringConfigUI.totalDistinctLabels;
+        int     numOfInstances  = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet().getLocations().size();
+        boolean continuousRun   = randClusteringConfigUI.continuousRun;
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_1_LOCATION.name()); // algorithm class path
 
-        randomClusterer = new RandomClusterer(dataSet,
-                maxIterations, updateInterval, numOfLabels, continuousRun, applicationTemplate);
+        clustAlgorithm1 = null;
 
-        algorithmThread = new Thread(randomClusterer);
+        try {
+
+            clustAlgorithm1 = (Algorithm) Class.forName(algorithmClassPath)
+                    .getConstructor(DataSet.class, int.class, int.class, int.class, int.class, boolean.class, ApplicationTemplate.class)
+                    .newInstance(dataSet, maxIterations, updateInterval, numOfLabels, numOfInstances, continuousRun, applicationTemplate);
+
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        algorithmThread = new Thread(clustAlgorithm1);
         runButton.setDisable(true);
         displayToChart();
         algorithmThread.start();
     }
+
 
     private void hideRunButton(){
         leftPanel.getChildren().remove(runButtonPane);
@@ -728,14 +754,14 @@ public final class AppUI extends UITemplate {
 
         runButtonPane.getChildren().add(nextIntervalButton);
 
-        if(algorithm1IsSelected) { nextIntervalButton.setOnAction(event -> algorithm.notifyThread()); }
+        if(algorithm2IsSelected) { nextIntervalButton.setOnAction(event -> clustAlgorithm2.notifyThread()); }
         else {
             if (classificationIsSelected) {
-                nextIntervalButton.setOnAction(event -> randomClassifier.notifyThread());
+                nextIntervalButton.setOnAction(event -> classifAlgorithm1.notifyThread());
             }
 
             if (clusteringIsSelected) {
-                nextIntervalButton.setOnAction(event -> randomClusterer.notifyThread());
+                nextIntervalButton.setOnAction(event -> clustAlgorithm1.notifyThread());
             }
         }
     }
@@ -755,29 +781,30 @@ public final class AppUI extends UITemplate {
         if(classificationIsSelected) randomClassificationBtn.setDisable(true); // required for 'Next Interval' Button functionality
     }
 
-    private void setAlgorithm1Actions(){
+    private void setRunClustAlg2Actions(){
         PropertyManager manager = applicationTemplate.manager;
         DataSet dataSet         = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet();
         int     maxIterations   = algorithm1ConfigUI.maxIterations;
         int     updateInterval  = algorithm1ConfigUI.updateInterval;
         int     numOfLabels     = algorithm1ConfigUI.totalDistinctLabels;
+        int     numOfInstances  = ((AppActions) applicationTemplate.getActionComponent()).getLoadedDataSet().getLocations().size();
         boolean continuousRun   = algorithm1ConfigUI.continuousRun;
-        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.ALGORITHM_1_LOCATION.name()); // algorithm class path
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_2_LOCATION.name()); // algorithm class path
 
-        algorithm = null;
+        clustAlgorithm2 = null;
 
         try {
 
-            algorithm = (Algorithm) Class.forName(algorithmClassPath)
-                             .getConstructor(DataSet.class, int.class, int.class, int.class, boolean.class, ApplicationTemplate.class)
-                             .newInstance(dataSet, maxIterations, updateInterval, numOfLabels, continuousRun, applicationTemplate);
+            clustAlgorithm2 = (Algorithm) Class.forName(algorithmClassPath)
+                .getConstructor(DataSet.class, int.class, int.class, int.class, int.class, boolean.class, ApplicationTemplate.class)
+                .newInstance(dataSet, maxIterations, updateInterval, numOfLabels, numOfInstances, continuousRun, applicationTemplate);
 
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
                 IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
-        algorithmThread = new Thread(algorithm);
+        algorithmThread = new Thread(clustAlgorithm2);
         runButton.setDisable(true);
         displayToChart();
         algorithmThread.start();

@@ -32,9 +32,10 @@ public class KMeansClusterer extends Clusterer {
                            int maxIterations,
                            int updateInterval,
                            int numberOfClusters,
+                           int numberOfInstances,
                            boolean isContinuous,
                            ApplicationTemplate applicationTemplate) {
-        super(numberOfClusters);
+        super(numberOfClusters, numberOfInstances);
         this.dataset = dataset;
         this.maxIterations = maxIterations;
         this.updateInterval = updateInterval;

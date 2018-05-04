@@ -32,9 +32,10 @@ public class RandomClusterer extends Clusterer{
                            int maxIterations,
                            int updateInterval,
                            int numberOfClusters,
+                           int numberOfInstances,
                            boolean tocontinue,
                            ApplicationTemplate applicationTemplate) {
-        super(numberOfClusters);
+        super(numberOfClusters, numberOfInstances);
         this.dataSet = dataSet;
         this.maxIterations = maxIterations;
         this.updateInterval = updateInterval;

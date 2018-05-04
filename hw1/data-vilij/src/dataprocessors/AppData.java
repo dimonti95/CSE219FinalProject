@@ -64,8 +64,6 @@ public class AppData implements DataComponent {
 
     @Override
     public void saveData(Path dataFilePath) {
-        // NOTE: completing this method was not a part of HW 1. You may have implemented file saving from the
-        // confirmation dialog elsewhere in a different way.
         try (PrintWriter writer = new PrintWriter(Files.newOutputStream(dataFilePath))) {
             writer.write(((AppUI) applicationTemplate.getUIComponent()).getCurrentText());
         } catch (IOException e) {
@@ -85,19 +83,6 @@ public class AppData implements DataComponent {
     public void setDataIsValid(boolean isValid){ dataIsValid = isValid; }
 
     public TSDProcessor getTSDProcessor(){ return processor; }
-
-    /*
-    public void checkDataFormat(String dataString){
-        try {
-            processor.processString(dataString);
-            dataIsValid = true;
-            processor.clear();
-        } catch (Exception e) {
-            dataIsValid = false;
-            processor.clear();
-        }
-    }
-    */
 
     private void errorHandlingHelper() {
         clear();

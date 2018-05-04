@@ -49,8 +49,6 @@ functionality within the main workspace. -->
         <!-- APPLICATION-SPECIFIC BUTTON NAMES -->
         <property name="CLUSTERING_BUTTON" value="Clustering"/>
         <property name="CLASSIFICATION_BUTTON" value="Classification"/>
-        <property name="CLUSTERING_RADIOBUTTON" value="Random Clustering"/>
-        <property name="CLASSIFICATION_RADIOBUTTON" value="Random Classification"/>
         <property name="DONE_BUTTON" value="Done"/>
         <property name="EDIT_BUTTON" value="Edit"/>
         <property name="NEXT_INTERVAL_BUTTON" value="Next Interval"/>
@@ -81,9 +79,15 @@ functionality within the main workspace. -->
         <!-- APPLICATION-SPECIFIC SERIES NAMES -->
         <property name="CLASSIFIER_SERIES" value="Classifier"/>
 
-        <!-- ALGORITHM NAMES -->
-        <property name="ALGORITHM_1" value="KMeansClusterer"/>
-        <property name="ALGORITHM_1_LOCATION" value="algorithms.KMeansClusterer"/>
+        <!-- CLUSTERING ALGORITHM NAMES -->
+        <property name="CLUST_ALGORITHM_1" value="Random Clusterer"/>
+        <property name="CLUST_ALGORITHM_1_LOCATION" value="algorithms.RandomClusterer"/>
+        <property name="CLUST_ALGORITHM_2" value="KMeans Clusterer"/>
+        <property name="CLUST_ALGORITHM_2_LOCATION" value="algorithms.KMeansClusterer"/>
+
+        <!-- CLASSIFICATION ALGORITHM NAMES -->
+        <property name="CLASS_ALGORITHM_1" value="Random Classifier"/>
+        <property name="CLASS_ALGORITHM_1_LOCATION" value="algorithms.RandomClassifier"/>
 
 
     </property_list>
