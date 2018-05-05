@@ -80,13 +80,10 @@ functionality within the main workspace. -->
         <property name="CLASSIFIER_SERIES" value="Classifier"/>
 
         <!-- CLUSTERING ALGORITHM NAMES -->
-        <property name="CLUST_ALGORITHM_1" value="Random Clusterer"/>
         <property name="CLUST_ALGORITHM_1_LOCATION" value="algorithms.RandomClusterer"/>
-        <property name="CLUST_ALGORITHM_2" value="KMeans Clusterer"/>
         <property name="CLUST_ALGORITHM_2_LOCATION" value="algorithms.KMeansClusterer"/>
 
         <!-- CLASSIFICATION ALGORITHM NAMES -->
-        <property name="CLASS_ALGORITHM_1" value="Random Classifier"/>
         <property name="CLASS_ALGORITHM_1_LOCATION" value="algorithms.RandomClassifier"/>
 
 

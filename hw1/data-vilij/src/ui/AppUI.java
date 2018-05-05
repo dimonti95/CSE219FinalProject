@@ -71,8 +71,8 @@ public final class AppUI extends UITemplate {
 
     /** Clustering Algorithm UI */
     private VBox                       clusteringAlgOptionPane;
-    private RadioButton                randomClusteringBtn;
-    private RadioButton                algorithm1Btn;
+    private RadioButton                clustAlg1Btn;
+    private RadioButton                clustAlg2Btn;
     private boolean                    algorithm2IsSelected;
 
     /** Algorithms */
@@ -483,7 +483,7 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
         Label classificationAlgorithmLbl = new Label(manager.getPropertyValue(AppPropertyTypes.CLASSIFICATION_LABEL.name()));
         classificationAlgOptionPane = new VBox();
-        randomClassificationBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLASS_ALGORITHM_1.name()));
+        randomClassificationBtn     = new RadioButton(getClassifAlg1Name());
 
         randomClassificationBtn.setMinHeight(35);
 
@@ -518,11 +518,11 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
         Label clusteringAlgorithmLbl  = new Label(manager.getPropertyValue(AppPropertyTypes.CLUSTERING_LABEL.name()));
         clusteringAlgOptionPane = new VBox();
-        randomClusteringBtn     = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_1.name()));
-        algorithm1Btn = new RadioButton(manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_2.name()));
+        clustAlg1Btn = new RadioButton(getClustAlg1Name());
+        clustAlg2Btn = new RadioButton(getClustAlg2Name());
 
-        randomClusteringBtn.setMinHeight(35);
-        algorithm1Btn.setMinHeight(35);
+        clustAlg1Btn.setMinHeight(35);
+        clustAlg2Btn.setMinHeight(35);
 
         Button clusteringConfigBtn = setConfigurationButton();
         Button algorithm1ConfigBtn = setConfigurationButton();
@@ -530,17 +530,17 @@ public final class AppUI extends UITemplate {
         HBox randomClustererOptionPane = new HBox();
         randomClustererOptionPane.setSpacing(10);
         randomClustererOptionPane.setPadding(new Insets(10));
-        randomClustererOptionPane.getChildren().addAll(randomClusteringBtn, clusteringConfigBtn);
+        randomClustererOptionPane.getChildren().addAll(clustAlg1Btn, clusteringConfigBtn);
 
         HBox algorithm1OptionPane = new HBox();
         algorithm1OptionPane.setSpacing(10);
         algorithm1OptionPane.setPadding(new Insets(10));
-        algorithm1OptionPane.getChildren().addAll(algorithm1Btn, algorithm1ConfigBtn);
+        algorithm1OptionPane.getChildren().addAll(clustAlg2Btn, algorithm1ConfigBtn);
 
-        randomClusteringBtn.setOnAction(event -> setRandomClusteringBtnActions());
+        clustAlg1Btn.setOnAction(event -> setRandomClusteringBtnActions());
         clusteringConfigBtn.setOnAction(event -> showClusteringConfigUI());
 
-        algorithm1Btn.setOnAction(event -> setAlgorithm1BtnActions());
+        clustAlg2Btn.setOnAction(event -> setAlgorithm1BtnActions());
         algorithm1ConfigBtn.setOnAction(event -> showAlgorithm1ConfigUI());
 
         clusteringAlgOptionPane.getChildren().addAll(clusteringAlgorithmLbl, randomClustererOptionPane, algorithm1OptionPane);
@@ -549,7 +549,7 @@ public final class AppUI extends UITemplate {
         leftPanel.getChildren().addAll(clusteringAlgOptionPane);
     }
             private void setRandomClusteringBtnActions(){
-                if(randomClusteringBtn.isSelected()) {  algorithm1Btn.setSelected(false);
+                if(clustAlg1Btn.isSelected()) {  clustAlg2Btn.setSelected(false);
                                                         algorithm2IsSelected = false;
                                                         showRunButton(); }
                 else { hideRunButton(); }
@@ -558,8 +558,8 @@ public final class AppUI extends UITemplate {
             }
 
             private void setAlgorithm1BtnActions(){
-                if(algorithm1Btn.isSelected()) { algorithm2IsSelected = true;
-                                                 randomClusteringBtn.setSelected(false);
+                if(clustAlg2Btn.isSelected()) { algorithm2IsSelected = true;
+                                                 clustAlg1Btn.setSelected(false);
                                                  showRunButton(); }
                 else { hideRunButton();
                        algorithm2IsSelected = false; }
@@ -814,6 +814,33 @@ public final class AppUI extends UITemplate {
     public void displayClusteredData(XYChart.Series<Number, Number> series){
         chart.getData().add(series);
     }
+
+    /** Dynamically Load Algorithm Names at runtime */
+    private String getClassifAlg1Name(){
+        PropertyManager manager = applicationTemplate.manager;
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.CLASS_ALGORITHM_1_LOCATION.name()); // algorithm class path
+        try { return Class.forName(algorithmClassPath).getSimpleName(); }
+        catch (ClassNotFoundException e) { e.printStackTrace(); }
+        return "null"; //return null if class not found
+    }
+
+    private String getClustAlg1Name(){
+        PropertyManager manager = applicationTemplate.manager;
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_1_LOCATION.name()); // algorithm class path
+        try { return Class.forName(algorithmClassPath).getSimpleName(); }
+        catch (ClassNotFoundException e) { e.printStackTrace(); }
+        return "null"; //return null if class not found
+    }
+
+    private String getClustAlg2Name(){
+        PropertyManager manager = applicationTemplate.manager;
+        String  algorithmClassPath = manager.getPropertyValue(AppPropertyTypes.CLUST_ALGORITHM_2_LOCATION.name()); // algorithm class path
+        try { return Class.forName(algorithmClassPath).getSimpleName(); }
+        catch (ClassNotFoundException e) { e.printStackTrace(); }
+        return "null"; //return null if class not found
+    }
+
+
 
 }
 

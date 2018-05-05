@@ -83,13 +83,10 @@ public enum AppPropertyTypes {
     CLASSIFIER_SERIES,
 
     /* clustering algorithm names */
-    CLUST_ALGORITHM_1,
     CLUST_ALGORITHM_1_LOCATION,
-    CLUST_ALGORITHM_2,
     CLUST_ALGORITHM_2_LOCATION,
 
     /* classification algorithm names */
-    CLASS_ALGORITHM_1,
     CLASS_ALGORITHM_1_LOCATION,
 
     }
