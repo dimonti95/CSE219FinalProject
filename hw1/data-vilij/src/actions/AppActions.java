@@ -93,11 +93,8 @@ public final class AppActions implements ActionComponent {
 
     @Override
     public void handleSaveRequest() {
+        processTextAreaInput(); // update TSDProcessor with current text
         AppData dataComponent  = (AppData) applicationTemplate.getDataComponent();
-        boolean duplicateFound = ((AppUI) applicationTemplate.getUIComponent()).duplicateFound;
-
-        if(duplicateFound) { duplicateHandlingHelper(); dataComponent.setDataIsValid(false); }
-        if(!dataComponent.getDataIsValid() && !duplicateFound) { errorHandlingHelper(); }
 
         if(dataComponent.getDataIsValid() && isUnsaved.getValue()) {
             if(dataFilePath != null) {
@@ -406,5 +403,8 @@ public final class AppActions implements ActionComponent {
         return dataSet;
     }
 
+    private void processTextAreaInput(){
+        ((AppData) applicationTemplate.getDataComponent()).loadData(((AppUI) applicationTemplate.getUIComponent()).getCurrentText());
+    }
 
 }

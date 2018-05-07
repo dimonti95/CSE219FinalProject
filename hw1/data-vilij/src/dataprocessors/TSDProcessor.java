@@ -2,7 +2,6 @@ package dataprocessors;
 
 import javafx.geometry.Point2D;
 import javafx.scene.chart.XYChart;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
