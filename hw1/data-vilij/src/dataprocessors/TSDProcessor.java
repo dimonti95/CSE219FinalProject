@@ -70,6 +70,7 @@ public final class TSDProcessor {
                   try {
                       currentLine.getAndIncrement();
                       numOfInstances++;
+                      if(list.get(1).equals("")) { throw new Exception("invalid label name"); }
                       String   name  = checkedname(list.get(0));
                       String   label = list.get(1);
                       String[] pair  = list.get(2).split(",");

@@ -174,6 +174,8 @@ public final class AppUI extends UITemplate {
         PropertyManager manager = applicationTemplate.manager;
         NumberAxis      xAxis   = new NumberAxis();
         NumberAxis      yAxis   = new NumberAxis();
+        yAxis.setForceZeroInRange(false);
+        xAxis.setForceZeroInRange(false);
         chart = new LineChart<>(xAxis, yAxis);
         chart.setTitle(manager.getPropertyValue(AppPropertyTypes.CHART_TITLE.name()));
         applicationTemplate.getUIComponent().getPrimaryScene().getStylesheets().add(cssPath);
