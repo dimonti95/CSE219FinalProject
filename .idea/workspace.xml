@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d9d0bc11-bf22-49ed-984c-ddc3dece9024" name="Default" comment="Initial HW2 commit">
+    <list default="true" id="d9d0bc11-bf22-49ed-984c-ddc3dece9024" name="Default" comment="KMeansClusterer class added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/hw1/data-vilij/resources/properties/app-properties.xml" afterPath="$PROJECT_DIR$/hw1/data-vilij/resources/properties/app-properties.xml" />
-      <change beforePath="$PROJECT_DIR$/hw1/data-vilij/src/settings/AppPropertyTypes.java" afterPath="$PROJECT_DIR$/hw1/data-vilij/src/settings/AppPropertyTypes.java" />
-      <change beforePath="$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java" afterPath="$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,12 +13,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -60,17 +59,29 @@
         <option value="$PROJECT_DIR$/hw1/vilij/src/vilij/propertymanager/PropertyManager.java" />
         <option value="$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java" />
         <option value="$PROJECT_DIR$/hw1/vilij/src/vilij/components/ActionComponent.java" />
-        <option value="$PROJECT_DIR$/hw1/vilij/src/vilij/templates/UITemplate.java" />
         <option value="$PROJECT_DIR$/hw1/vilij/src/vilij/templates/ApplicationTemplate.java" />
         <option value="$PROJECT_DIR$/hw1/data-vilij/resources/gui2/css/data-vilij.css" />
-        <option value="$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/TSDProcessor.java" />
-        <option value="$PROJECT_DIR$/hw1/data-vilij/src/actions/AppActions.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/resources/gui/css/data-vilij.css" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/ui/ConfigUI.java" />
+        <option value="$PROJECT_DIR$/hw1/vilij/src/vilij/templates/UITemplate.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/classification/Classifier.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/Classifier.java" />
         <option value="$PROJECT_DIR$/hw1/data-vilij/resources/data/sample-data.tsd" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/ui/ClassificationConfigUI.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/ui/ClusteringConfigUI.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/DataSet.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/Algorithm.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/RandomClassifier.java" />
         <option value="$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/AppData.java" />
-        <option value="$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/RandomClusterer.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/Clusterer.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/algorithms/KMeansClusterer.java" />
         <option value="$PROJECT_DIR$/hw1/data-vilij/src/settings/AppPropertyTypes.java" />
         <option value="$PROJECT_DIR$/hw1/data-vilij/resources/properties/app-properties.xml" />
-        <option value="$PROJECT_DIR$/hw1/data-vilij/resources/gui/css/data-vilij.css" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/tests/DataVisualizerTest.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/TSDProcessor.java" />
+        <option value="$PROJECT_DIR$/hw1/data-vilij/src/actions/AppActions.java" />
       </list>
     </option>
   </component>
@@ -80,10 +91,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="32" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="37" />
     <option name="y" value="23" />
-    <option name="width" value="1248" />
+    <option name="width" value="1243" />
     <option name="height" value="777" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -129,7 +140,9 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -145,7 +158,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -156,39 +168,16 @@
             <path>
               <item name="cse219homework" type="b2602c69:ProjectViewProjectNode" />
               <item name="data-vilij" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cse219homework" type="b2602c69:ProjectViewProjectNode" />
-              <item name="data-vilij" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="gui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cse219homework" type="b2602c69:ProjectViewProjectNode" />
-              <item name="data-vilij" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="gui" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cse219homework" type="b2602c69:ProjectViewProjectNode" />
-              <item name="data-vilij" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="cse219homework" type="b2602c69:ProjectViewProjectNode" />
-              <item name="data-vilij" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="ui" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="AndroidView" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -200,6 +189,11 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/hw1/data-vilij/resources/gui/icons" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -220,25 +214,6 @@
       <option name="HEIGHT" value="300" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <module />
-    </configuration>
-    <configuration name="ApplicationTemplate" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="vilij.templates.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="vilij.templates.ApplicationTemplate" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="vilij" />
-      <envs />
     </configuration>
     <configuration name="DataVisualizer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
@@ -272,6 +247,86 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
+    </configuration>
+    <configuration name="DataVisualizerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="data-vilij" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DataVisualizerTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="DataVisualizerTest.tsdLowerBoundaryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="data-vilij" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DataVisualizerTest" />
+      <option name="METHOD_NAME" value="tsdLowerBoundaryTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="DataVisualizerTest.tsdUpperBoundaryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="data-vilij" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DataVisualizerTest" />
+      <option name="METHOD_NAME" value="tsdUpperBoundaryTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="DataVisualizerTest.tsdValidDataTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="data-vilij" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="DataVisualizerTest" />
+      <option name="METHOD_NAME" value="tsdValidDataTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -333,17 +388,20 @@
       <option name="PROGRAM_PARAMETERS" />
       <predefined_log_file id="idea.log" enabled="true" />
     </configuration>
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="Application.ApplicationTemplate" />
-      <item index="1" class="java.lang.String" itemvalue="Application.DataVisualizer" />
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest.tsdValidDataTest" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest.tsdUpperBoundaryTest" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest.tsdLowerBoundaryTest" />
+      <item index="4" class="java.lang.String" itemvalue="Application.DataVisualizer" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Application.DataVisualizer" />
-        <item index="1" class="java.lang.String" itemvalue="Application.ApplicationTemplate" />
-        <item index="2" class="java.lang.String" itemvalue="Application.DataVisualizer" />
-        <item index="3" class="java.lang.String" itemvalue="Application.ApplicationTemplate" />
-        <item index="4" class="java.lang.String" itemvalue="Application.DataVisualizer" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest.tsdLowerBoundaryTest" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest.tsdUpperBoundaryTest" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.DataVisualizerTest.tsdValidDataTest" />
       </list>
     </recent_temporary>
   </component>
@@ -423,6 +481,131 @@
       <workItem from="1519692971215" duration="1104000" />
       <workItem from="1519699568012" duration="523000" />
       <workItem from="1519700468564" duration="462000" />
+      <workItem from="1519952099086" duration="794000" />
+      <workItem from="1519953020484" duration="135000" />
+      <workItem from="1519953558739" duration="4755000" />
+      <workItem from="1519959452627" duration="43000" />
+      <workItem from="1519965724185" duration="191000" />
+      <workItem from="1520099685385" duration="14726000" />
+      <workItem from="1520117182735" duration="2996000" />
+      <workItem from="1520124130313" duration="26000" />
+      <workItem from="1520128835236" duration="7115000" />
+      <workItem from="1520136635812" duration="56000" />
+      <workItem from="1520136765390" duration="162000" />
+      <workItem from="1520188534284" duration="16428000" />
+      <workItem from="1520208789939" duration="6401000" />
+      <workItem from="1520219275403" duration="1175000" />
+      <workItem from="1520221475720" duration="624000" />
+      <workItem from="1520222733060" duration="1525000" />
+      <workItem from="1520224640859" duration="471000" />
+      <workItem from="1520269669429" duration="51000" />
+      <workItem from="1520283336350" duration="233000" />
+      <workItem from="1520983578429" duration="4396000" />
+      <workItem from="1521061563236" duration="3506000" />
+      <workItem from="1521067669824" duration="95000" />
+      <workItem from="1521069503592" duration="1846000" />
+      <workItem from="1521141255777" duration="8467000" />
+      <workItem from="1521154723907" duration="3932000" />
+      <workItem from="1521221475637" duration="177000" />
+      <workItem from="1521470908365" duration="36000" />
+      <workItem from="1521472736185" duration="45000" />
+      <workItem from="1521560158800" duration="786000" />
+      <workItem from="1521561086526" duration="21000" />
+      <workItem from="1521590570081" duration="378000" />
+      <workItem from="1521654850619" duration="544000" />
+      <workItem from="1521763728749" duration="1103000" />
+      <workItem from="1521827618804" duration="227000" />
+      <workItem from="1521829989227" duration="518000" />
+      <workItem from="1522192770437" duration="95000" />
+      <workItem from="1522276775054" duration="9000" />
+      <workItem from="1522334450690" duration="254000" />
+      <workItem from="1522438410230" duration="115000" />
+      <workItem from="1522715156200" duration="6223000" />
+      <workItem from="1522764420690" duration="2242000" />
+      <workItem from="1522767180053" duration="1033000" />
+      <workItem from="1522794681696" duration="5022000" />
+      <workItem from="1522883151185" duration="7302000" />
+      <workItem from="1522937870421" duration="109000" />
+      <workItem from="1522967056694" duration="2541000" />
+      <workItem from="1522972103393" duration="7362000" />
+      <workItem from="1523028356082" duration="1294000" />
+      <workItem from="1523031713493" duration="11779000" />
+      <workItem from="1523061005849" duration="6957000" />
+      <workItem from="1523133495152" duration="145000" />
+      <workItem from="1523155981325" duration="4612000" />
+      <workItem from="1523203511297" duration="6350000" />
+      <workItem from="1523221115949" duration="6704000" />
+      <workItem from="1523293117847" duration="649000" />
+      <workItem from="1523293986740" duration="14000" />
+      <workItem from="1523294788466" duration="68000" />
+      <workItem from="1523321744095" duration="5081000" />
+      <workItem from="1523327529069" duration="1106000" />
+      <workItem from="1523374028163" duration="8329000" />
+      <workItem from="1523387831381" duration="4646000" />
+      <workItem from="1523492280757" duration="5243000" />
+      <workItem from="1523546973206" duration="3634000" />
+      <workItem from="1523553290308" duration="561000" />
+      <workItem from="1523571359574" duration="11445000" />
+      <workItem from="1523585082025" duration="1323000" />
+      <workItem from="1523587205462" duration="2086000" />
+      <workItem from="1523634145342" duration="218000" />
+      <workItem from="1523634431789" duration="388000" />
+      <workItem from="1523638053930" duration="283000" />
+      <workItem from="1523648740428" duration="1915000" />
+      <workItem from="1523840545384" duration="3082000" />
+      <workItem from="1523889210117" duration="6101000" />
+      <workItem from="1523913769879" duration="9990000" />
+      <workItem from="1523926599133" duration="3204000" />
+      <workItem from="1523980084903" duration="2706000" />
+      <workItem from="1524017103357" duration="3896000" />
+      <workItem from="1524068439281" duration="826000" />
+      <workItem from="1524097184880" duration="2746000" />
+      <workItem from="1524151900451" duration="4113000" />
+      <workItem from="1524158711558" duration="177000" />
+      <workItem from="1524190855175" duration="3536000" />
+      <workItem from="1524245830993" duration="167000" />
+      <workItem from="1524273556302" duration="6682000" />
+      <workItem from="1524283052505" duration="355000" />
+      <workItem from="1524511908273" duration="1191000" />
+      <workItem from="1524513094196" duration="2000" />
+      <workItem from="1524516907784" duration="3380000" />
+      <workItem from="1524529706347" duration="4481000" />
+      <workItem from="1524583729497" duration="3031000" />
+      <workItem from="1524589281287" duration="134000" />
+      <workItem from="1524613289515" duration="7129000" />
+      <workItem from="1524669624990" duration="5180000" />
+      <workItem from="1524677142326" duration="102000" />
+      <workItem from="1524695160104" duration="7379000" />
+      <workItem from="1524704192730" duration="127000" />
+      <workItem from="1524704707225" duration="136000" />
+      <workItem from="1524794978931" duration="314000" />
+      <workItem from="1525017048358" duration="643000" />
+      <workItem from="1525041442636" duration="7002000" />
+      <workItem from="1525101120653" duration="9072000" />
+      <workItem from="1525127774788" duration="6997000" />
+      <workItem from="1525190960837" duration="2499000" />
+      <workItem from="1525194192811" duration="2299000" />
+      <workItem from="1525197198065" duration="228000" />
+      <workItem from="1525213178892" duration="2456000" />
+      <workItem from="1525215692841" duration="9545000" />
+      <workItem from="1525274785777" duration="5141000" />
+      <workItem from="1525298188828" duration="8621000" />
+      <workItem from="1525371644588" duration="3173000" />
+      <workItem from="1525377697869" duration="128000" />
+      <workItem from="1525377829072" duration="1714000" />
+      <workItem from="1525383315934" duration="6544000" />
+      <workItem from="1525394579195" duration="83000" />
+      <workItem from="1525445259817" duration="266000" />
+      <workItem from="1525463057977" duration="10603000" />
+      <workItem from="1525484140200" duration="4316000" />
+      <workItem from="1525489564027" duration="340000" />
+      <workItem from="1525489907559" duration="226000" />
+      <workItem from="1525564421185" duration="7890000" />
+      <workItem from="1525640827940" duration="8611000" />
+      <workItem from="1525651621648" duration="224000" />
+      <workItem from="1525652269286" duration="247000" />
+      <workItem from="1525652602929" duration="2086000" />
+      <workItem from="1525656222414" duration="42000" />
     </task>
     <task id="LOCAL-00001" summary="fixed DataVisualizer bug">
       <created>1517539167072</created>
@@ -494,11 +677,281 @@
       <option name="project" value="LOCAL" />
       <updated>1519700026419</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="HW2 commit 1">
+      <created>1519952606789</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1519952606789</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Second HW2 commit">
+      <created>1520119899267</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1520119899267</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Another HW2 Commit">
+      <created>1520120197725</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1520120197725</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Final HW2 commit">
+      <created>1520215742313</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1520215742313</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Final HW2 commit">
+      <created>1520215833661</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1520215833661</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Final HW2 commit2">
+      <created>1520223253964</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1520223253964</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Final HW2 commit2">
+      <created>1520223346775</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1520223346775</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Complete HW2 Functionality">
+      <created>1522334606256</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1522334606257</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Use case 1 &amp; 2 implementation">
+      <created>1522937971777</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1522937971777</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Use Cases 1 through 6 implemented">
+      <created>1523048093050</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1523048093051</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Use Cases 1 through 6 implemented">
+      <created>1523048229819</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1523048229819</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Use Case 7 implemented">
+      <created>1523221287128</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1523221287128</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Use Case 7 implemented">
+      <created>1523222422061</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1523222422061</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Windows Separator Fix">
+      <created>1523293731401</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1523293731402</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Windows Separator Fix">
+      <created>1523294844602</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1523294844602</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Use Cases 1-7 Implemented">
+      <created>1523550546797</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1523550546798</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Use Cases 1-7 Implemented">
+      <created>1523550629695</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1523550629695</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Final HW4 Commit">
+      <created>1523638244401</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1523638244401</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Mock Algorithm Classes Added">
+      <created>1524193900261</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1524193900261</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Mock Algorithm Classes Added">
+      <created>1524193994000</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1524193994001</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Use Case 8 Implemented">
+      <created>1524520550992</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1524520550992</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Use Case 8 Implemented">
+      <created>1524520600558</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1524520600558</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Use Case's 9 &amp; 10 Implemented">
+      <created>1524677227523</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1524677227523</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Final HW5 Commit">
+      <created>1524704298330</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1524704298330</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Clustering Classes Added">
+      <created>1525101194639</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1525101194639</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Clustering Classes Added">
+      <created>1525101269858</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1525101269858</updated>
+    </task>
+    <task id="LOCAL-00037" summary="RandomClusterer class implemented">
+      <created>1525215806251</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1525215806252</updated>
+    </task>
+    <task id="LOCAL-00038" summary="KMeansClusterer class added">
+      <created>1525215877748</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1525215877748</updated>
+    </task>
+    <task id="LOCAL-00039" summary="KMeansClusterer implemented using Reflection">
+      <created>1525377886812</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1525377886812</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Algorithms implemented using Reflection">
+      <created>1525394648340</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1525394648340</updated>
+    </task>
+    <task id="LOCAL-00041" summary="KMeansClusterer BugFix &amp; Algorithm names shown using Reflection">
+      <created>1525490024855</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1525490024855</updated>
+    </task>
+    <task id="LOCAL-00042" summary="TSD Test Case Implemented">
+      <created>1525490109910</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1525490109910</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Test root classes and methods added &amp;&amp; chart display adjustment issue fixed">
+      <created>1525651838654</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1525651838654</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Save bugfix">
+      <created>1525656257907</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1525656257907</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="DataVisualizerTest - 2018.05.06 at 19h 34m 32s.xml">
+      <configuration name="DataVisualizerTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest - 2018.05.06 at 19h 35m 34s.xml">
+      <configuration name="DataVisualizerTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest - 2018.05.06 at 19h 37m 52s.xml">
+      <configuration name="DataVisualizerTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest - 2018.05.06 at 19h 44m 01s.xml">
+      <configuration name="DataVisualizerTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest - 2018.05.06 at 20h 03m 39s.xml">
+      <configuration name="DataVisualizerTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest_tsdLowerBoundaryTest - 2018.05.06 at 20h 03m 26s.xml">
+      <configuration name="DataVisualizerTest.tsdLowerBoundaryTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest_tsdUpperBoundaryTest - 2018.05.06 at 20h 02m 58s.xml">
+      <configuration name="DataVisualizerTest.tsdUpperBoundaryTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest_tsdValidDataTest - 2018.05.06 at 19h 34m 53s.xml">
+      <configuration name="DataVisualizerTest.tsdValidDataTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest_tsdValidDataTest - 2018.05.06 at 19h 35m 30s.xml">
+      <configuration name="DataVisualizerTest.tsdValidDataTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DataVisualizerTest_tsdValidDataTest - 2018.05.06 at 20h 02m 32s.xml">
+      <configuration name="DataVisualizerTest.tsdValidDataTest" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="160914000" />
+    <option name="totallyTimeSpent" value="543198000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -510,22 +963,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="32" y="23" width="1248" height="777" extended-state="0" />
+    <frame x="37" y="23" width="1243" height="777" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19007093" sideWeight="0.5027494" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19007093" sideWeight="0.3758013" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19007093" sideWeight="0.4972506" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19007093" sideWeight="0.62419873" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18589744" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18181819" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -537,8 +989,9 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.49679488" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32907802" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -574,195 +1027,40 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixed DataVisualizer bug" />
-    <MESSAGE value="workspace GUI set up" />
-    <MESSAGE value="Display functionality working" />
-    <MESSAGE value="Display Btn ErrorDialog working" />
-    <MESSAGE value="Saving implemented" />
-    <MESSAGE value="Final HW1 commit" />
-    <MESSAGE value="Saving functionality working" />
-    <MESSAGE value="Initial HW2 commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial HW2 commit" />
+    <MESSAGE value="HW2 commit 1" />
+    <MESSAGE value="Second HW2 commit" />
+    <MESSAGE value="Another HW2 Commit" />
+    <MESSAGE value="Final HW2 commit2" />
+    <MESSAGE value="Final HW2 commit" />
+    <MESSAGE value="Complete HW2 Functionality" />
+    <MESSAGE value="Use case 1 &amp; 2 implementation" />
+    <MESSAGE value="Use Cases 1 through 6 implemented" />
+    <MESSAGE value="Use Case 7 implemented" />
+    <MESSAGE value="Windows Separator Fix" />
+    <MESSAGE value="Use Cases 1-7 Implemented" />
+    <MESSAGE value="Final HW4 Commit" />
+    <MESSAGE value="Mock Algorithm Classes Added" />
+    <MESSAGE value="Use Case 8 Implemented" />
+    <MESSAGE value="Use Case's 9 &amp; 10 Implemented" />
+    <MESSAGE value="Final HW5 Commit" />
+    <MESSAGE value="Clustering Classes Added" />
+    <MESSAGE value="RandomClusterer class implemented" />
+    <MESSAGE value="KMeansClusterer class added" />
+    <MESSAGE value="KMeansClusterer implemented using Reflection" />
+    <MESSAGE value="Algorithms implemented using Reflection" />
+    <MESSAGE value="KMeansClusterer BugFix &amp; Algorithm names shown using Reflection" />
+    <MESSAGE value="TSD Test Case Implemented" />
+    <MESSAGE value="Test root classes and methods added &amp;&amp; chart display adjustment issue fixed" />
+    <MESSAGE value="Save bugfix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Save bugfix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="6" />
+      <option name="time" value="21" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/actions/AppActions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="34" column="5" lean-forward="true" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
-          <caret line="113" column="64" lean-forward="false" selection-start-line="113" selection-start-column="64" selection-end-line="113" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/actions/AppActions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="58" column="10" lean-forward="false" selection-start-line="58" selection-start-column="10" selection-end-line="58" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/templates/ApplicationTemplate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="63" column="46" lean-forward="false" selection-start-line="63" selection-start-column="46" selection-end-line="63" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1110">
-          <caret line="84" column="8" lean-forward="false" selection-start-line="84" selection-start-column="8" selection-end-line="84" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="990">
-          <caret line="72" column="30" lean-forward="true" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/templates/ApplicationTemplate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1080">
-          <caret line="72" column="0" lean-forward="false" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="15" column="19" lean-forward="false" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/templates/ApplicationTemplate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="72" column="0" lean-forward="true" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/xmlutil/xmlutil.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar!/sun/launcher/LauncherHelper.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/gui/icons/screenshot.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md" />
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/javafx-src.zip!/javafx/event/EventHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="44" column="9" lean-forward="false" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/ActionComponent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="30" lean-forward="false" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/DataComponent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/UIComponent.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -784,13 +1082,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/Dialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/javafx-src.zip!/javafx/stage/Stage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
@@ -805,27 +1096,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/data/Test.tsd" />
     <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/data/Untitled.tsd" />
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/ErrorDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/ConfirmationDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-706">
-          <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/vilij.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/settings/InitializationParams.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
@@ -854,89 +1124,278 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/templates/ApplicationTemplate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="43" column="76" lean-forward="false" selection-start-line="43" selection-start-column="76" selection-end-line="43" selection-end-column="76" />
+    <entry file="file://$PROJECT_DIR$/snapshot.png" />
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/vilij/resources/properties/properties.xml">
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/resources/gui/icons/saved.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/resources/gui/icons/save.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/src.zip!/java/lang/Thread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="16" column="60" lean-forward="true" selection-start-line="16" selection-start-column="60" selection-end-line="16" selection-end-column="60" />
+        <state relative-caret-position="182">
+          <caret line="747" column="0" lean-forward="false" selection-start-line="747" selection-start-column="0" selection-end-line="747" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/resources/gui/icons/exit.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/gui/icons/configuration.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/vilij.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/ConfirmationDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-353">
+          <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/ActionComponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="25" lean-forward="true" selection-start-line="0" selection-start-column="25" selection-end-line="0" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/ErrorDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/DataComponent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/components/Dialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="44" lean-forward="true" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/templates/ApplicationTemplate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="43">
+          <caret line="43" column="76" lean-forward="false" selection-start-line="43" selection-start-column="76" selection-end-line="43" selection-end-column="76" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hw1/vilij/src/vilij/templates/UITemplate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="118" column="7" lean-forward="true" selection-start-line="118" selection-start-column="7" selection-end-line="118" selection-end-column="7" />
+        <state relative-caret-position="195">
+          <caret line="26" column="82" lean-forward="true" selection-start-line="26" selection-start-column="82" selection-end-line="26" selection-end-column="82" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/TSDProcessor.java">
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/ConfigUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="63" column="24" lean-forward="false" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/actions/AppActions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="56" column="100" lean-forward="false" selection-start-line="56" selection-start-column="100" selection-end-line="56" selection-end-column="100" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/AppData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="45" column="12" lean-forward="false" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
+        <state relative-caret-position="411">
+          <caret line="33" column="37" lean-forward="false" selection-start-line="33" selection-start-column="37" selection-end-line="33" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/data/sample-data.tsd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-          <caret line="5" column="26" lean-forward="true" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/settings/AppPropertyTypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="42" column="22" lean-forward="false" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/properties/app-properties.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="43" column="5" lean-forward="false" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
+          <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/gui/css/data-vilij.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+        <state relative-caret-position="30">
+          <caret line="2" column="46" lean-forward="false" selection-start-line="2" selection-start-column="46" selection-end-line="2" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/data-vilij.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/vilij/resources/properties/properties.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="60" lean-forward="true" selection-start-line="16" selection-start-column="60" selection-end-line="16" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/Classifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="53" lean-forward="true" selection-start-line="13" selection-start-column="53" selection-end-line="13" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/src.zip!/java/util/HashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="1288" column="0" lean-forward="false" selection-start-line="1288" selection-start-column="0" selection-end-line="1288" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/ClassificationConfigUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-184">
+          <caret line="23" column="11" lean-forward="true" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/ClusteringConfigUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="170" column="41" lean-forward="false" selection-start-line="170" selection-start-column="41" selection-end-line="170" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/RandomClassifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1185">
+          <caret line="93" column="12" lean-forward="false" selection-start-line="93" selection-start-column="12" selection-end-line="93" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/DataVisualizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/DataSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="538">
+          <caret line="98" column="5" lean-forward="true" selection-start-line="98" selection-start-column="5" selection-end-line="98" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/src.zip!/java/util/ArrayList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="432" column="0" lean-forward="false" selection-start-line="432" selection-start-column="0" selection-end-line="432" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/Clusterer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="11" column="36" lean-forward="false" selection-start-line="11" selection-start-column="36" selection-end-line="11" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/RandomClusterer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="37" column="49" lean-forward="false" selection-start-line="37" selection-start-column="49" selection-end-line="37" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/KMeansClusterer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="153" column="57" lean-forward="false" selection-start-line="153" selection-start-column="57" selection-end-line="153" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/algorithms/Algorithm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="4" lean-forward="false" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/resources/properties/app-properties.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="478">
+          <caret line="85" column="47" lean-forward="false" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/junit/framework/TestCase.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/tests/DataVisualizerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1395">
+          <caret line="93" column="18" lean-forward="false" selection-start-line="93" selection-start-column="18" selection-end-line="93" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/settings/AppPropertyTypes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-677">
+          <caret line="9" column="12" lean-forward="false" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/TSDProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="475">
+          <caret line="87" column="0" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/dataprocessors/AppData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-151">
+          <caret line="25" column="13" lean-forward="false" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/actions/AppActions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3780">
+          <caret line="286" column="31" lean-forward="false" selection-start-line="286" selection-start-column="31" selection-end-line="286" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/hw1/data-vilij/src/ui/AppUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="179" column="13" lean-forward="false" selection-start-line="179" selection-start-column="13" selection-end-line="179" selection-end-column="13" />
+        <state relative-caret-position="15">
+          <caret line="176" column="41" lean-forward="false" selection-start-line="176" selection-start-column="41" selection-end-line="176" selection-end-column="41" />
           <folding />
         </state>
       </provider>

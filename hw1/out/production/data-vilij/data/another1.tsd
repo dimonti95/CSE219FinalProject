@@ -2,11 +2,9 @@
 @b	labelA	3,4
 @c	labelZ	-4,4
 @d	labelB	10,-4
-@e	labelB	15,5
+@e	labelB	-1,1
 @f	labelZ	-5,10
 @g	labelA	4,-10
 @h	labelC	-5,-10
-@i	labelG	10,10eee
+@i	labelG	10,10
 @j	labelG	-5,-5
-@k	labelF	7,7
-@l	labelL	8,-13

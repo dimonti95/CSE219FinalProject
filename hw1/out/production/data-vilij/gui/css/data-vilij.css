@@ -1,4 +1,6 @@
-.workspace-chart {
+.chart {
+    -fx-horizontal-zero-line-visible:	false;
+    -fx-vertical-zero-line-visible:		false;
 }
 
 .axis{
@@ -6,14 +8,18 @@
     -fx-minor-tick-count: 5;
     -fx-minor-tick-length: 10;
     -fx-tick-label-fill: brown;
+}
 
+.axis-tick-mark {
+    -fx-stroke: green;
+    -fx-stroke-width: 3.5;
+}
+
+.chart-series-line {
+    -fx-stroke-width: 0px;
 }
 
 .chart-plot-background {
     -fx-border-style: solid;
     -fx-border-width: 5px;
-
-    -fx-tick-mark-stroke: green;
-    -fx-tick-mark-stroke-width: 5px;
 }
-
